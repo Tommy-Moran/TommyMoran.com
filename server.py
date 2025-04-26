@@ -26,8 +26,7 @@ CORS(app, resources={
 
 # Initialize OpenAI client with only the API key
 client = OpenAI(
-    api_key=os.getenv('OPENAI_API_KEY'),
-    timeout=30.0
+    api_key=os.getenv('OPENAI_API_KEY')
 )
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
