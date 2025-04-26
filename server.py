@@ -70,22 +70,26 @@ def chat():
         user_message = data.get('message', '')
         logger.info(f"Received message: {user_message}")
 
-        # Create a thread
-        thread = client.beta.threads.create()
+        # Create a thread with v2 header
+        thread = client.beta.threads.create(
+            headers={"OpenAI-Beta": "assistants=v2"}
+        )
         logger.info(f"Created thread: {thread.id}")
 
-        # Add the user's message to the thread
+        # Add the user's message to the thread with v2 header
         message = client.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
-            content=user_message
+            content=user_message,
+            headers={"OpenAI-Beta": "assistants=v2"}
         )
         logger.info(f"Added message to thread: {message.id}")
 
-        # Run the assistant on the thread
+        # Run the assistant on the thread with v2 header
         run = client.beta.threads.runs.create(
             thread_id=thread.id,
-            assistant_id="asst_TuRXN1c893HGDyQvzO83W3YT"
+            assistant_id="asst_TuRXN1c893HGDyQvzO83W3YT",
+            headers={"OpenAI-Beta": "assistants=v2"}
         )
         logger.info(f"Created run: {run.id}")
 
@@ -93,7 +97,8 @@ def chat():
         while True:
             run_status = client.beta.threads.runs.retrieve(
                 thread_id=thread.id,
-                run_id=run.id
+                run_id=run.id,
+                headers={"OpenAI-Beta": "assistants=v2"}
             )
             if run_status.status == 'completed':
                 break
@@ -102,8 +107,11 @@ def chat():
                 raise Exception(f"Assistant run failed: {run_status.last_error}")
             time.sleep(1)  # Wait for 1 second before checking again
 
-        # Get the assistant's response
-        messages = client.beta.threads.messages.list(thread_id=thread.id)
+        # Get the assistant's response with v2 header
+        messages = client.beta.threads.messages.list(
+            thread_id=thread.id,
+            headers={"OpenAI-Beta": "assistants=v2"}
+        )
         logger.info("Retrieved messages from thread")
         
         # Get the last assistant message
