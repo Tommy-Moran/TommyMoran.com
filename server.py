@@ -24,8 +24,11 @@ CORS(app, resources={
     }
 })
 
-# Initialize OpenAI client with environment variable
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Initialize OpenAI client with explicit proxy configuration
+client = OpenAI(
+    api_key=os.getenv('OPENAI_API_KEY'),
+    http_client=None  # Explicitly set to None to prevent proxy issues
+)
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 def chat():
