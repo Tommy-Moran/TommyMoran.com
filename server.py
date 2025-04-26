@@ -24,11 +24,8 @@ CORS(app, resources={
     }
 })
 
-# Initialize OpenAI client with only the API key
-client = OpenAI()
-
-# Set the API key
-client.api_key = os.getenv('OPENAI_API_KEY')
+# Initialize OpenAI client with environment variable
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 def chat():
@@ -48,7 +45,7 @@ def chat():
         thread = client.beta.threads.create()
 
         # Add the user's message to the thread
-        client.beta.threads.messages.create(
+        message = client.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
             content=user_message
