@@ -24,13 +24,9 @@ CORS(app, resources={
     }
 })
 
-# Initialize OpenAI client with explicit configuration
+# Initialize OpenAI client with only the API key
 client = OpenAI(
-    api_key=os.getenv('OPENAI_API_KEY'),
-    base_url="https://api.openai.com/v1",
-    timeout=60.0,
-    max_retries=2,
-    http_client=None  # Force using the default client without proxies
+    api_key=os.getenv('OPENAI_API_KEY')
 )
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
