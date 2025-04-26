@@ -1,0 +1,613 @@
+/* Base Styles */
+:root {
+    --primary-color: #000000;
+    --secondary-color: #ffffff;
+    --accent-color: #0070f3;
+    --text-color: #333333;
+    --background-color: #ffffff;
+    --sidebar-width: 300px;
+    --content-padding: 2rem;
+    --section-bg: #ffffff;
+    --section-bg-alt: #f8f9fa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: var(--background-color);
+}
+
+/* Split Layout */
+.split-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Left Side - Fixed Navigation */
+.left-side {
+    width: var(--sidebar-width);
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 2rem;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.logo {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-svg {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 5px;
+}
+
+.logo-svg rect,
+.logo-svg polyline {
+    fill: white;
+    stroke: white;
+}
+
+.logo-text {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    letter-spacing: 0.09em;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.vertical-nav ul {
+    list-style: none;
+}
+
+.vertical-nav li {
+    margin-bottom: 1.5rem;
+}
+
+.vertical-nav a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    display: block;
+    opacity: 0.7;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.vertical-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.vertical-nav a:hover,
+.vertical-nav a.active {
+    opacity: 1;
+    color: var(--accent-color);
+}
+
+.vertical-nav a:hover::after,
+.vertical-nav a.active::after {
+    width: 100%;
+}
+
+/* Navigation Submenu Styles */
+.vertical-nav .submenu {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.vertical-nav .has-submenu.active .submenu {
+    max-height: 500px;
+    transition: max-height 0.5s ease-in;
+}
+
+.vertical-nav .submenu li {
+    margin-bottom: 0.75rem;
+}
+
+/* All submenu links */
+.vertical-nav .submenu a {
+    font-size: 0.95rem;
+    padding: 0.25rem 0;
+    opacity: 0.7;
+}
+
+/* Remove underline from ALL submenu links */
+.vertical-nav .submenu a::after {
+    display: none !important;
+}
+
+/* Hover and active states for submenu items */
+.vertical-nav .submenu a:hover,
+.vertical-nav .submenu a.active {
+    opacity: 1;
+    color: var(--accent-color);
+}
+
+/* Parent menu item styles */
+.vertical-nav .has-submenu > a {
+    position: relative;
+}
+
+.vertical-nav .has-submenu.active > a {
+    opacity: 1;
+    color: var(--accent-color);
+}
+
+/* Right Side - Scrollable Content */
+.right-side {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    padding: var(--content-padding);
+}
+
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 4rem 0;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+}
+
+.profile-image {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.titles p {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.contact-info {
+    margin-top: 2rem;
+}
+
+.contact-info p {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* About Section */
+.about {
+    padding: 4rem 0;
+}
+
+.about h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.about-text {
+    font-size: 1.1rem;
+    max-width: 800px;
+    line-height: 1.8;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+/* Timeline Section */
+.timeline {
+    padding: 4rem 0;
+}
+
+.timeline h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.timeline-container {
+    display: grid;
+    gap: 3rem;
+}
+
+.timeline-block {
+    position: relative;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.timeline-block:target {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-block:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-block h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-date {
+    min-width: 100px;
+    font-weight: 600;
+    color: var(--accent-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-content h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.timeline-content p {
+    color: var(--text-color);
+    line-height: 1.6;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+/* Interests Section */
+.interests {
+    padding: 4rem 0;
+}
+
+.interests h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.interest-item {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.interest-item:hover {
+    transform: translateY(-5px);
+}
+
+.interest-item i {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.interest-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+/* References Section */
+.references {
+    padding: 4rem 0;
+}
+
+.references h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.references-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.reference-item {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.reference-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.reference-item p {
+    margin-bottom: 0.5rem;
+}
+
+/* Footer */
+footer {
+    padding: 2rem 0;
+    text-align: center;
+    color: var(--text-color);
+    background-color: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .split-layout {
+        flex-direction: column;
+    }
+
+    .left-side {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .right-side {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-image {
+        width: 200px;
+        height: 200px;
+    }
+
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Section Styles */
+section {
+    padding: 4rem 0;
+    position: relative;
+}
+
+section:not(:last-child) {
+    margin-bottom: 2rem;
+}
+
+/* Container consistency */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+}
+
+/* Tools Link Special Styling */
+.vertical-nav > ul > li:last-child > a {
+    border-left: 3px solid var(--accent-color);
+    padding-left: 1rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+    color: var(--secondary-color);
+}
+
+.vertical-nav > ul > li:last-child > a:hover {
+    opacity: 1;
+    color: var(--accent-color);
+}
+
+.vertical-nav > ul > li:last-child > a::after {
+    display: none;
+}
+
+/* Chatbot Styles */
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.chatbot-container.collapsed {
+    transform: translateY(calc(100% - 40px));
+}
+
+.chatbot-header {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 10px 15px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chatbot-header h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.chatbot-toggle {
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 3px;
+    transition: transform 0.3s ease;
+}
+
+.chatbot-container.collapsed .chatbot-toggle {
+    transform: rotate(180deg);
+}
+
+.chatbot-body {
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.message.bot {
+    background-color: #f0f0f0;
+    align-self: flex-start;
+    border-radius: 12px 12px 12px 4px;
+}
+
+.message.user {
+    background-color: var(--accent-color);
+    color: white;
+    align-self: flex-end;
+    border-radius: 12px 12px 4px 12px;
+}
+
+.message.loading {
+    opacity: 0.7;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 0.4; }
+    100% { opacity: 0.7; }
+}
+
+.chat-input {
+    padding: 10px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    outline: none;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 0.9rem;
+}
+
+.chat-input input:focus {
+    border-color: var(--accent-color);
+}
+
+.send-button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
+}

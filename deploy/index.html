@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thomas Moran | Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="split-layout">
+        <!-- Left Side - Fixed Titles -->
+        <div class="left-side">
+            <div class="logo">
+                <svg class="logo-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Thomas Moran Logo">
+                    <!-- Horizontal line -->
+                    <rect x="30" y="30" width="60" height="8" fill="currentColor"/>
+                    
+                    <!-- Vertical lines forming M -->
+                    <rect x="40" y="38" width="8" height="52" fill="currentColor"/>
+                    <rect x="72" y="38" width="8" height="52" fill="currentColor"/>
+                    
+                    <!-- Diagonal line for M -->
+                    <path d="M40 90 L60 50 L80 90" stroke="currentColor" stroke-width="8" fill="none"/>
+                </svg>
+                <span class="logo-text">Thomas Moran</span>
+            </div>
+            <nav class="vertical-nav">
+                <ul>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li class="has-submenu">
+                        <a href="#timeline">Experience</a>
+                        <ul class="submenu">
+                            <li><a href="#achievements">Achievements/Awards</a></li>
+                            <li><a href="#education">Education</a></li>
+                            <li><a href="#clinical">Clinical Experience</a></li>
+                            <li><a href="#certifications">Certifications</a></li>
+                            <li><a href="#educational-roles">Educational Roles</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu">
+                        <a href="#research">Research</a>
+                        <ul class="submenu">
+                            <li><a href="#publications">Publications</a></li>
+                            <li><a href="#presentations">Presentations</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#memberships">Memberships</a></li>
+                    <li><a href="#interests">Interests</a></li>
+                    <li><a href="#references">References</a></li>
+                    <li><a href="#">Tools</a></li>
+                    <li><a href="/EchoApp">Echo App</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Right Side - Scrollable Content -->
+        <div class="right-side">
+            <section id="home" class="hero">
+                <div class="hero-content">
+                    <div class="profile-image">
+                        <img src="profile-image.jpg" alt="Thomas Moran">
+                    </div>
+                    <div class="hero-text">
+                        <h1>Thomas Moran</h1>
+                        <div class="titles">
+                            <p>Cardiology Advanced Trainee</p>
+                            <p>AI Developer/Software Composer</p>
+                            <p>Clinical Researcher</p>
+                        </div>
+                        <div class="contact-info">
+                            <p><i class="fas fa-map-marker-alt"></i> Melbourne/Hobart, Australia</p>
+                            <p><i class="fas fa-envelope"></i> TommyMoran@gmail.com</p>
+                            <p><i class="fas fa-phone"></i> +61 0470-608-609</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="about">
+                <h2>About Me</h2>
+                <p class="about-text">
+                    I am a patient-focused cardiology registrar with an interest in interventional cardiology, programming
+                    and app development, and have a research focus on integrating artificial intelligence into clinical practice.
+                    I hold a Bachelor's with Honours and a Master's degree from Ontario, Canada, as well as a Doctor of Medicine
+                    from the University of Melbourne. My goal is to pursue a fellowship in interventional cardiology at a centre
+                    that supports advancing my research interests.
+                </p>
+            </section>
+
+            <section id="timeline" class="timeline">
+                <div class="container">
+                    <h2>Experience & Education</h2>
+                    <div class="timeline-container">
+                        <!-- Achievements/Awards Section -->
+                        <div id="achievements" class="timeline-block">
+                            <h3>Achievements/Awards</h3>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2022</div>
+                                <div class="timeline-content">
+                                    <h4>Divisional Clinical Exam - Superior Echelon</h4>
+                                    <p>Royal Australian College of Physicians</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2020</div>
+                                <div class="timeline-content">
+                                    <h4>Best Resident Prescriber Award</h4>
+                                    <p>Royal Melbourne Hospital, Intensive Care Unit</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content">
+                                    <h4>Best Oral Presentation</h4>
+                                    <p>Thoracic Society of Australia and New Zealand, Annual Scientific Meeting</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>Best Oral Presentation</h4>
+                                    <p>Thoracic Society of Australia and New Zealand & Australia and New Zealand Society of Science, Victoria Branch, Annual Scientific Meeting</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Education Section -->
+                        <div id="education" class="timeline-block">
+                            <h3>Education</h3>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content">
+                                    <h4>Certification in RAG Model Development</h4>
+                                    <p>Duke University</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2015-2018</div>
+                                <div class="timeline-content">
+                                    <h4>Doctor of Medicine</h4>
+                                    <p>University of Melbourne</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2013-2014</div>
+                                <div class="timeline-content">
+                                    <h4>Master's of Biomedical Science</h4>
+                                    <p>Ontario Veterinary College</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2008-2012</div>
+                                <div class="timeline-content">
+                                    <h4>Bachelor's of Science, Honours</h4>
+                                    <p>University of Guelph</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Clinical Experience Section -->
+                        <div id="clinical" class="timeline-block">
+                            <h3>Clinical Experience</h3>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024-2025</div>
+                                <div class="timeline-content">
+                                    <h4>Advanced Trainee, Cardiology</h4>
+                                    <p>Royal Hobart Hospital</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Advanced Trainee, General Medicine</h4>
+                                    <p>Royal Melbourne Hospital</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2020-2022</div>
+                                <div class="timeline-content">
+                                    <h4>Basic Physician Trainee</h4>
+                                    <p>Royal Melbourne Hospital</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content">
+                                    <h4>Internship</h4>
+                                    <p>Royal Melbourne Hospital</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Certifications Section -->
+                        <div id="certifications" class="timeline-block">
+                            <h3>Certifications</h3>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Certification in Biostatistics in Public Health</h4>
+                                    <p>John Hopkins – Bloomberg School of Public Health</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>Advanced Life Support 2 - Australia</h4>
+                                    <p>Resuscitation Council</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2020</div>
+                                <div class="timeline-content">
+                                    <h4>Central Venous Line Accreditation</h4>
+                                    <p>Royal Melbourne Hospital</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content">
+                                    <h4>Mechanical Lung Ventilation Course</h4>
+                                    <p>Hamilton Medical</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>Advanced Life Support 1 - Australia</h4>
+                                    <p>Resuscitation Council</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Educational Roles Section -->
+                        <div id="educational-roles" class="timeline-block">
+                            <h3>Educational Roles and Professional Activities</h3>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024-2025</div>
+                                <div class="timeline-content">
+                                    <h4>Cardiology Practice Exam Coordinator, Royal Hobart Hospital</h4>
+                                    <p>Organised a Mock exam for RACP Clinical Exam candidates</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024-2025</div>
+                                <div class="timeline-content">
+                                    <h4>RACP Practice Clinical Exam Tutor, Royal Hobart Hospital</h4>
+                                    <p>Provided exam preparation and tutoring for clinical exam candidates at RHH</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content">
+                                    <h4>University of Tasmania Medical School, Volunteer Lecturer</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Education Registrar – The Royal Melbourne Hospital</h4>
+                                    <p>Appointment organizing/teaching BPTs preparing for written and clinical exams</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Volunteer Lecturer – University of Melbourne, RMH Clinical School</h4>
+                                    <p>Lectures on ECGs and Fundamentals in Cardiology for first-year medical students</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>RACP Clinical Divisional Exam – Royal Melbourne Hospital candidate training</h4>
+                                    <p>Provided regular, scheduled short and long case practice for candidates. Organized a Speciality Night Mock Exam with the RMH cardiology department</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2020-2024</div>
+                                <div class="timeline-content">
+                                    <h4>Med School For Mum - Creator</h4>
+                                    <p>Launched an online medical education web-series for laypersons</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2020-2024</div>
+                                <div class="timeline-content">
+                                    <h4>Royal Melbourne Hospital Peer Mentor</h4>
+                                    <p>Mentoring role for new interns/HMOs at The Royal Melbourne Hospital</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2020-2024</div>
+                                <div class="timeline-content">
+                                    <h4>PMCV Intern Application Information – Session Speaker</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content">
+                                    <h4>Medical Student Tutoring – RMH clinical school</h4>
+                                    <p>Regularly teach medical students on rotations throughout clinical training</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>Paediatric Medicine Tutorial Coordinator – University of Melbourne</h4>
+                                    <p>Launched high-quality online tutorials in paediatric medicine</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2017-2018</div>
+                                <div class="timeline-content">
+                                    <h4>RMH Student Peer Mentoring Program – Co-Founder/Mentor</h4>
+                                    <p>Partnered with RMH clinical school to develop a new mentoring program focused on student mentorship, emotional intelligence, education and conflict resolution</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2017-2018</div>
+                                <div class="timeline-content">
+                                    <h4>Chief Peer Tutoring Coordinator - University of Melbourne</h4>
+                                    <p>Head coordinator for a committee providing services to over 800 medical students. Developed a novel webinar series to help disseminate tutoring access rurally.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2018</div>
+                                <div class="timeline-content">
+                                    <h4>Preclinical Curriculum Working Group – University of Melbourne</h4>
+                                    <p>Worked with executive staff at the medical school to redesign the M.D. program</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2018</div>
+                                <div class="timeline-content">
+                                    <h4>Review Lecture Coordinator – University of Melbourne</h4>
+                                    <p>Established an original program of review lectures for first-year medical students</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2018</div>
+                                <div class="timeline-content">
+                                    <h4>Wilderness Medical Students' Society – Founding Member and Treasurer</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2018</div>
+                                <div class="timeline-content">
+                                    <h4>Cardiovascular Review Lecturer – University of Melbourne</h4>
+                                    <p>Presented a review of key concepts in cardiology for medical students</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2018</div>
+                                <div class="timeline-content">
+                                    <h4>UMMSS Medical Student Tutoring – University of Melbourne</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2017</div>
+                                <div class="timeline-content">
+                                    <h4>Peer Tutoring Video Series Coordinator – University of Melbourne</h4>
+                                    <p>Developed a video series of tutorials on core topics in the preclinical curriculum</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2017</div>
+                                <div class="timeline-content">
+                                    <h4>Neuroscience Tutoring Coordinator – University of Melbourne</h4>
+                                    <p>Developed a program for medical students on the Principles of Neuroscience</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2016-2017</div>
+                                <div class="timeline-content">
+                                    <h4>Medical Student Peer Tutor – University of Melbourne</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2013-2014</div>
+                                <div class="timeline-content">
+                                    <h4>The Biomimicry Collaboration – Founder</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="research" class="timeline">
+                <div class="container">
+                    <h2>Research</h2>
+                    <div class="timeline-container">
+                        <!-- Publications Section -->
+                        <div id="publications" class="timeline-block">
+                            <h3>Publications</h3>
+                            <!-- 2025 Publications -->
+                            <div class="timeline-item">
+                                <div class="timeline-date">2025</div>
+                                <div class="timeline-content">
+                                    <h4>Clinical Evaluation of SPICY-AI in a Rapid Access Chest Pain Clinic: A Comparative Validation Study of a Novel, Locally Deployed AI Model Versus Physicians and GPT-4o</h4>
+                                    <p>T. Moran, C. Lees, W. Martin, and A. Black. Manuscript in preparation. Abstract submitted to CSANZ Annual Scientific Meeting 2025.</p>
+                                </div>
+                            </div>
+                            <!-- 2024 Publications -->
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content">
+                                    <h4>Arterial blood gas analysis or venous blood gas analysis for adult hospitalised patients with respiratory presentations: a systematic review</h4>
+                                    <p>Weimar Z, Smallwood N, Shao J, Chen XE, Moran T, Khor YH. Intern Med J. 2024 Sep;54(9):1531-1540. doi: 10.1111/imj.16438. Epub 2024 Jun 10. PMID: 38856155.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content">
+                                    <h4>A Systematic Review of Aboriginal and Torres Strait Islander People's Representation in Evidence-Based Recommendations from Australian Cardiology Guidelines</h4>
+                                    <p>Hamid, S. and Moran T. Heart, Lung and Circulation, Volume 33, S462.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content">
+                                    <h4>Comparative Systematic Review of Coronary Artery Calcium Scoring Guidelines: CSANZ Versus ACC/AHA, ESC and SCCT Recommendations</h4>
+                                    <p>Sharma, A., Batchelor, R., Biswas, S., Grbac, A., Norman, S., Moran, T., Park, I., Thackray, S., Iyer, R., Brooks, M., Venkataraman, P., Lefkovits, J., Koshy, A. Heart, Lung and Circulation, Volume 33, S174.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content">
+                                    <h4>Right Posterior Descending Artery Versus Left Posterior Descending Artery Percutaneous Coronary Intervention: Is There a Difference in Outcome?</h4>
+                                    <p>M. Rahman Zahin, R. Batchelor, D. Dinh, A. Brennan, W. van Gaal, A. Koshy, S. Biswas, S. Norman, T. Moran, S. Goh, M. Brooks, D. Stub, C. Reid, and J. Lefkovits. Volume 33, Supplement 4 (August 2024): S570.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2024</div>
+                                <div class="timeline-content">
+                                    <h4>Risk of Cardiovascular Events in Renal Transplant Recipients Undergoing PCI: A Systematic Review and Meta-Analysis</h4>
+                                    <p>I. Ellison, R. Batchelor, G. Hill, T. Moran, S. Norman, W. Wilson, S. Biswas, R. Iyer, J. Lefkovits, and A. Koshy. Abstract only, Volume 33, Supplement 4 (August 2024): S570–S571.</p>
+                                </div>
+                            </div>
+                            <!-- 2023 Publications -->
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Surgical LV lead implantation is associated with no surgical radiation or mortality, with exceptional long-term morbidity, survival and epicardial lead outcomes</h4>
+                                    <p>Moran T, Tran J, Wang B, Jayadeva P, Larobina M, Skillington P, Sparks P. Heart, Lung and Circulation. 2023 Apr. doi: 10.1016/j.hlc.2023.04.151.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Clinical Evaluation of SPICY-AI in a Rapid Access Chest Pain Clinic: A Comparative Validation Study of a Novel, Locally Deployed AI Model Versus Physicians and GPT-4o</h4>
+                                    <p>T. Moran, C. Lees, W. Martin, and A. Black. Manuscript in preparation. Abstract submitted to CSANZ Annual Scientific Meeting 2025.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Clinical outcomes of percutaneous coronary intervention in older patients with ACS complicated by cardiogenic shock</h4>
+                                    <p>C. Lees, D. Chew, V. Goel, D. Stub, A. Brennan, D. Dinh, T. Moran, and A. Black. Manuscript in preparation. Abstract submitted to CSANZ Annual Scientific Meeting 2025.</p>
+                                </div>
+                            </div>
+                            <!-- 2022 Publication -->
+                            <div class="timeline-item">
+                                <div class="timeline-date">2022</div>
+                                <div class="timeline-content">
+                                    <h4>Subarachnoid haemorrhage as the initial presentation of aortic coarctation in a 28-year-old man</h4>
+                                    <p>Moran T, Tran J, Joshi S. Heart, Lung and Circulation. 2022 Jun. doi: 10.1016/j.hlc.2022.06.465.</p>
+                                </div>
+                            </div>
+                            <!-- 2021 Publications -->
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>Coronary CT Angiography Pre Pulmonary Vein Isolation - Incidental Coronary Disease</h4>
+                                    <p>Moran T, Lammoza N, Ratnakanthan P, Fogarty S, Langenberg F, Mose S, Upton A, Kalman J, Joshi S. Journal of Cardiovascular Computed Tomography. 2021 Jul. doi: 10.1016/j.jcct.2021.06.206.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>CCTA During COVID Pandemic Without Beta-Blockade Using High Temporal Resolution Scanners</h4>
+                                    <p>Lammoza N, Ratnakanthan P, Moran T, O'Sullivan P, Gould R, Langenberg F, O'Donnell K, Berman I, Upton A, Joshi S. Journal of Cardiovascular Computed Tomography. 2021 Jul. doi: 10.1016/j.jcct.2021.06.192.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>CTCA Acquired at Elevated Heart Rates Using Triggered End Systolic Scanning</h4>
+                                    <p>Lammoza N, Ratnakanthan P, Moran T, O'Sullivan P, Gould R, Langenberg F, O'Donnell K, Berman I, Upton A, Joshi S. Journal of Cardiovascular Computed Tomography. 2021 Jul. doi: 10.1016/j.jcct.2021.06.194.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>Incidental Coronary Disease on Pre-AF Ablation CT Scans</h4>
+                                    <p>Moran T, Lammoza N, Ratnakanthan P, Fogarty S, Graham M, Sparks P, Lee G, Wynn G, McLellan A, Morton J, Kalman J, Joshi S. Heart, Lung and Circulation. 2021 Jan;30:S192. doi: 10.1016/j.hlc.2021.06.217.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>CTCA Acquired at Elevated Heart Rates Using Triggered End Systolic Scanning</h4>
+                                    <p>Lammoza N, Ratnakanthan P, Moran T, Gould R, Langenberg F, O'Sullivan P, O'Donnell K, Berman I, Ling Y, Upton A, Joshi S. Heart, Lung and Circulation. 2021 Jan;30:S186. doi: 10.1016/j.hlc.2021.06.205.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>Streamlined CTCA During COVID-19 Pandemic Without Beta-Blockade Using High Temporal Resolution Scanners</h4>
+                                    <p>Lammoza N, Ratnakanthan P, Moran T, O'Sullivan P, O'Donnell K, Berman I, Upton A, Joshi S. Heart, Lung and Circulation. 2021 Jan. doi: 10.1016/j.hlc.2021.06.244.</p>
+                                </div>
+                            </div>
+                            <!-- 2019 Publications -->
+                            <div class="timeline-item">
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content">
+                                    <h4>Patients' perceptions of opioids pre-prescription for breathlessness in cardiorespiratory disease</h4>
+                                    <p>Moran T, Zentner D, Eastman P, Philip J, Le B, Wong J, Smallwood N. Respirology. 2019 Mar 24;(Suppl. 1):22–102. doi: 10.1111/resp.13491.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content">
+                                    <h4>Patients' perceptions of opioids post-prescription for breathlessness in advanced COPD</h4>
+                                    <p>Moran T, Zentner D, Eastman P, Philip J, Le B, Wong J, Smallwood N. Respirology. 2019 Mar 24;(Suppl. 1):22–102. doi: 10.1111/resp.13491.</p>
+                                </div>
+                            </div>
+                            <!-- 2018 Publications -->
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>Patient and Carer Perceptions Regarding the Advanced Lung Disease Service – A New Model of Integrated Respiratory and Palliative Care</h4>
+                                    <p>Moran T, Thompson M, Le B, Irving L, Smallwood N. European Respiratory Journal. 2018;52:PA4015. doi: 10.1183/13993003.congress-2018.PA4015.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>A new integrated respiratory and palliative care model: patients/carers perceptions</h4>
+                                    <p>Moran T, Thompson M, Le B, Irving L, Smallwood N. Respirology. 2018 Mar 23;(Suppl. 1):170–170. doi: 10.1111/resp.13268.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Presentations Section -->
+                        <div id="presentations" class="timeline-block">
+                            <h3>Presentations</h3>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2025</div>
+                                <div class="timeline-content">
+                                    <h4>Clinical Evaluation of SPICY-AI in a Rapid Access Chest Pain Clinic: A Comparative Validation Study of a Novel, Locally Deployed AI Model Versus Physicians and GPT-4o</h4>
+                                    <p>CSANZ Annual Scientific Meeting 2025, Tasmania Branch. Oral Presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Surgical LV lead implantation is associated with no surgical radiation or mortality, with exceptional long-term morbidity, survival and epicardial lead outcomes</h4>
+                                    <p>The Inaugural Tri-Society Cardiac & Thoracic Symposium. Poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2022</div>
+                                <div class="timeline-content">
+                                    <h4>A systematic review of the evidence-base in Australian cardiology and cardiothoracic guidelines</h4>
+                                    <p>71st Annual Scientific Meeting of the Cardiac Society of Australia and New Zealand 2022. Poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2022</div>
+                                <div class="timeline-content">
+                                    <h4>Subarachnoid haemorrhage as the initial presentation of aortic coarctation in a 28-year-old man</h4>
+                                    <p>70th Annual Scientific Meeting of the Cardiac Society of Australia and New Zealand 2022. Poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>Streamlined CTCA During COVID-19 Pandemic Without Beta-Blockade Using High Temporal Resolution Scanners</h4>
+                                    <p>The Society of Cardiovascular Computed Tomography Conference 2021. Oral presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>CTCA Acquired at Elevated Heart Rates Using Triggered End Systolic Scanning</h4>
+                                    <p>69th Annual Scientific Meeting of the Cardiac Society of Australia and New Zealand 2021. Poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>CCTA During COVID Pandemic Without Beta-Blockade Using High Temporal Resolution Scanners</h4>
+                                    <p>69th Annual Scientific Meeting of the Cardiac Society of Australia and New Zealand 2021. Poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2021</div>
+                                <div class="timeline-content">
+                                    <h4>Coronary CT Angiography Pre Pulmonary Vein Isolation - Incidental Coronary Disease</h4>
+                                    <p>69th Annual Scientific Meeting of the Cardiac Society of Australia and New Zealand 2021. Poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2019</div>
+                                <div class="timeline-content">
+                                    <h4>Opioids for refractory breathlessness in advanced cardiorespiratory disease: a qualitative study of patients' perceptions</h4>
+                                    <p>TSANZ Annual Scientific Meeting 2019. Oral presentation, best oral presentation award.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>Opioids for refractory breathlessness in advanced cardiorespiratory disease: a qualitative study of patients' perceptions</h4>
+                                    <p>Australian and New Zealand Society of Palliative Medicine Biennial Conference 2018. Oral presentation.</p>
+                                    <p>TSANZ & ANZSRS Victoria Branch Annual Scientific Meeting 2018. Oral presentation, best oral presentation award.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>Patient and carer perceptions regarding the advanced lung disease service – A novel model of integrated respiratory and palliative care</h4>
+                                    <p>European Respiratory Society International Congress 2018, Paris. Poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2018</div>
+                                <div class="timeline-content">
+                                    <h4>A new integrated respiratory and palliative care model: patients and carers perceptions</h4>
+                                    <p>Thoracic Society of Australian and New Zealand – Annual Scientific Meeting 2018. Oral and poster presentation.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2017</div>
+                                <div class="timeline-content">
+                                    <h4>Patient and carer perceptions regarding the advanced lung disease service – A novel model of integrated respiratory and palliative care</h4>
+                                    <p>Australia Palliative Care Conference 2017 and Melbourne Health Research Symposium 2017. Oral presentation.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="memberships" class="memberships">
+                <div class="container">
+                    <h2>Memberships</h2>
+                    <ul class="membership-list">
+                        <li>Cardiac Society of Australia and New Zealand</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="interests" class="interests">
+                <div class="container">
+                    <h2>Personal Interests</h2>
+                    <div class="interests-grid">
+                        <div class="interest-item">
+                            <i class="fas fa-music"></i>
+                            <h3>Music</h3>
+                            <p>Trained in classical piano, guitar, and violin. I have recorded albums and play live gigs when I can.</p>
+                        </div>
+                        <div class="interest-item">
+                            <i class="fas fa-hockey-puck"></i>
+                            <h3>Ice Hockey</h3>
+                            <p>Member of the Ice Hockey Victoria Sharks Club. Assistant team captain; 2018 Premier League H.H. Kleiner Trophy Champion; 2018 Sharks Club MVP.</p>
+                        </div>
+                        <div class="interest-item">
+                            <i class="fas fa-pen-fancy"></i>
+                            <h3>Creative writing</h3>
+                            <p>I recently authored a screenplay on a fictional rural hospital, submitted for production.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="references" class="references">
+                <div class="container">
+                    <h2>References</h2>
+                    <div class="references-grid">
+                        <div class="reference-item">
+                            <h3>Dr. Nathan Dwyer</h3>
+                            <p>Cardiologist; Director of Cardiology, Royal Hobart Hospital</p>
+                            <p><i class="fas fa-phone"></i> 0448-400-881</p>
+                            <p><i class="fas fa-envelope"></i> nathan.dwyer@ths.tas.gov.au</p>
+                        </div>
+                        <div class="reference-item">
+                            <h3>Dr. William Martin</h3>
+                            <p>Cardiologist, Royal Hobart Hospital</p>
+                            <p><i class="fas fa-phone"></i> 0438-430-370</p>
+                            <p><i class="fas fa-envelope"></i> bill.martin@ths.tas.gov.au</p>
+                        </div>
+                        <div class="reference-item">
+                            <h3>Dr. Andrew Black</h3>
+                            <p>Cardiologist; Supervisor of Clinical Training, Royal Hobart Hospital</p>
+                            <p><i class="fas fa-phone"></i> 0407-533-654</p>
+                            <p><i class="fas fa-envelope"></i> andrew.black@ths.tas.gov.au</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Thomas Moran. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <!-- Chatbot UI -->
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <h3>Ask Me Anything</h3>
+            <button class="chatbot-toggle">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div class="chatbot-body">
+            <div class="chat-messages">
+                <div class="message bot">
+                    <p>Hello! I'm an AI assistant trained on Thomas Moran's CV and professional background. How can I help you today?</p>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message here..." />
+                <button class="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

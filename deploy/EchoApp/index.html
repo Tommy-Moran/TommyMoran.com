@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Echocardiogram Appropriateness Tool for Royal Hobart Hospital">
+    <title>Royal Hobart Hospital - Echocardiogram Request Page</title>
+    <link rel="stylesheet" href="/EchoApp/styles/main.css">
+    <script src="/EchoApp/js/app.js" defer></script>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px 0;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .logo-container {
+            margin-bottom: 15px;
+        }
+
+        .hospital-logo {
+            max-width: 150px;
+            height: auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            margin-top: 5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .subtitle::after {
+            content: '';
+            display: block;
+            width: 60%;
+            height: 2px;
+            background-color: var(--primary-color);
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            max-width: 800px;
+        }
+
+        .screen {
+            display: none;
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        select, input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        select:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0,86,179,0.2);
+        }
+
+        .checkbox-container {
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .button-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .button-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .button-tertiary {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            border: 1px solid #ddd;
+        }
+
+        .info-box, .warning-box {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+        }
+
+        .info-box {
+            background-color: rgba(23,162,184,0.1);
+            border-left: 4px solid var(--info-color);
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .warning-box {
+            background-color: rgba(255,193,7,0.1);
+            border-left: 4px solid var(--warning-color);
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--light-color);
+            font-weight: 600;
+        }
+
+        .result-container {
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        .result-appropriate {
+            background-color: rgba(40,167,69,0.1);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .result-inappropriate {
+            background-color: rgba(220,53,69,0.1);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .tag-test {
+            background-color: rgba(23,162,184,0.1);
+            color: var(--info-color);
+        }
+
+        .tag-billing {
+            background-color: rgba(0,86,179,0.1);
+            color: var(--primary-color);
+        }
+
+        .tag-timing {
+            background-color: rgba(255,193,7,0.1);
+            color: var(--warning-color);
+        }
+
+        .tag-setting {
+            background-color: rgba(108,117,125,0.1);
+            color: var(--secondary-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px 120px 20px 20px;
+            color: var(--secondary-color);
+            font-size: 14px;
+            position: relative;
+            border-top: 1px solid #eee;
+        }
+
+        .logo-container-footer {
+            position: absolute;
+            bottom: 50%;
+            right: 20px;
+            transform: translateY(50%);
+        }
+
+        .hospital-logo-footer {
+            max-width: 100px;
+            height: auto;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .hospital-logo-footer:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                margin-bottom: 5px;
+            }
+            
+            table {
+                font-size: 0.8rem;
+            }
+            
+            table th, table td {
+                padding: 5px;
+            }
+
+            footer {
+                padding: 20px;
+                padding-bottom: 90px;
+            }
+
+            .logo-container-footer {
+                bottom: 20px;
+                right: 50%;
+                transform: translateX(50%);
+            }
+
+            .hospital-logo-footer {
+                max-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Royal Hobart Hospital</h1>
+            <p class="subtitle">Echocardiogram Request Page</p>
+        </header>
+        
+        <!-- Landing Screen -->
+        <div id="landingScreen" class="screen active">
+            <h2 class="section-title">Welcome to the Echocardiogram Appropriateness Tool</h2>
+            <p class="section-description">This tool helps determine if an echocardiogram is indicated based on clinical guidelines and Medicare billing criteria.</p>
+            
+            <div class="info-box">
+                <p><strong>Important:</strong> This tool is designed to assist clinical decision-making but does not replace clinical judgment. Always consult with a cardiologist when in doubt.</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="patientType">Is the patient currently an inpatient?</label>
+                <select id="patientType">
+                    <option value="" selected>-- Please select --</option>
+                    <option value="inpatient">Yes - Currently an inpatient</option>
+                    <option value="outpatient">No - Outpatient or external referral</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="echoType">Please select the type of echo you are considering:</label>
+                <select id="echoType">
+                    <option value="" selected>-- Please select --</option>
+                    <optgroup label="Assessment Categories">
+                        <option value="initial">Initial Assessment</option>
+                        <option value="valvular">Valvular Heart Disease Follow-up</option>
+                        <option value="prosthetic">Prosthetic Valve/Post-Cardiac Surgery Follow-up</option>
+                        <option value="intervention">Interventional Cardiology Procedures</option>
+                        <option value="heartfailure">Heart Failure Follow-up</option>
+                        <option value="congenital">Congenital Heart Disease</option>
+                        <option value="pericardial">Pericardial Disease</option>
+                        <option value="chemo">Chemotherapy Monitoring</option>
+                        <option value="preop">Peri-Operative Assessment</option>
+                        <option value="other">Other Specialized Indications</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div class="warning-box">
+                <p><strong>Before Requesting:</strong> Please check if appropriate prior tests have been performed. Inappropriate echo requests may delay assessment for patients who need it most.</p>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" id="viewGuidelinesBtn" data-navigate-to="guidelinesScreen">View Guidelines</button>
+                <button type="button" id="nextFromLanding" class="button-primary" disabled data-navigate-to="nextFromLanding">Next</button>
+            </div>
+        </div>
+        
+        <!-- Guidelines Screen -->
+        <div id="guidelinesScreen" class="screen">
+            <h2>Echocardiogram Guidelines</h2>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="indications">Indications</div>
+                <div class="tab" data-tab="inappropriate">Inappropriate Requests</div>
+                <div class="tab" data-tab="alternatives">Test Selection</div>
+            </div>
+            
+            <div id="indicationsTab" class="tab-content active">
+                <h3>Common Appropriate Indications</h3>
+                <table>
+                    <tr>
+                        <th>Indication</th>
+                        <th>Prior Tests</th>
+                        <th>Timeframe</th>
+                    </tr>
+                    <tr>
+                        <td>New cardiac symptoms</td>
+                        <td>ECG, cardiac biomarkers if acute</td>
+                        <td>Within 2-4 weeks</td>
+                    </tr>
+                    <tr>
+                        <td>Suspected heart failure</td>
+                        <td>ECG, BNP/NT-proBNP, chest X-ray</td>
+                        <td>Within 1-2 weeks</td>
+                    </tr>
+                    <tr>
+                        <td>New cardiac murmur</td>
+                        <td>ECG</td>
+                        <td>Within 2-4 weeks</td>
+                    </tr>
+                    <tr>
+                        <td>Acute myocardial infarction</td>
+                        <td>ECG, troponin, coronary angiography</td>
+                        <td>During admission</td>
+                    </tr>
+                    <tr>
+                        <td>New-onset atrial fibrillation</td>
+                        <td>ECG, thyroid function, electrolytes</td>
+                        <td>Within 1-2 weeks</td>
+                    </tr>
+                    <tr>
+                        <td>Valvular heart disease follow-up</td>
+                        <td>ECG</td>
+                        <td>Based on severity</td>
+                    </tr>
+                </table>
+                
+                <h3>Valvular Disease Follow-up Intervals</h3>
+                <table>
+                    <tr>
+                        <th>Valve Condition</th>
+                        <th>Severity</th>
+                        <th>Recommended Interval</th>
+                    </tr>
+                    <tr>
+                        <td>Aortic Stenosis</td>
+                        <td>Mild</td>
+                        <td>3-5 yearly</td>
+                    </tr>
+                    <tr>
+                        <td>Aortic Stenosis</td>
+                        <td>Moderate</td>
+                        <td>1-2 yearly</td>
+                    </tr>
+                    <tr>
+                        <td>Aortic Stenosis</td>
+                        <td>Severe</td>
+                        <td>6-12 monthly</td>
+                    </tr>
+                    <tr>
+                        <td>Mitral Regurgitation</td>
+                        <td>Mild</td>
+                        <td>3-5 yearly</td>
+                    </tr>
+                    <tr>
+                        <td>Mitral Regurgitation</td>
+                        <td>Moderate</td>
+                        <td>1-2 yearly</td>
+                    </tr>
+                    <tr>
+                        <td>Mitral Regurgitation</td>
+                        <td>Severe</td>
+                        <td>6-12 monthly</td>
+                    </tr>
+                    <tr>
+                        <td>Prosthetic Valve</td>
+                        <td>Mechanical</td>
+                        <td>3 yearly</td>
+                    </tr>
+                    <tr>
+                        <td>Prosthetic Valve</td>
+                        <td>Bioprosthetic</td>
+                        <td>2-3 yearly (1st 10 years)</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="inappropriateTab" class="tab-content">
+                <h3>Common Inappropriate Echo Requests</h3>
+                <table>
+                    <tr>
+                        <th>Inappropriate Request</th>
+                        <th>Why Inappropriate</th>
+                        <th>Alternative</th>
+                    </tr>
+                    <tr>
+                        <td>Annual echo in stable asymptomatic patient</td>
+                        <td>No change in clinical status</td>
+                        <td>Clinical assessment, ECG if indicated</td>
+                    </tr>
+                    <tr>
+                        <td>Echo for uncomplicated hypertension</td>
+                        <td>Low yield, unlikely to change management</td>
+                        <td>ECG to assess for LVH</td>
+                    </tr>
+                    <tr>
+                        <td>Echo for palpitations without other cardiac symptoms</td>
+                        <td>Low yield in absence of other findings</td>
+                        <td>12-lead ECG, Holter monitoring</td>
+                    </tr>
+                    <tr>
+                        <td>Echo for comprehensive annual physical</td>
+                        <td>No evidence for screening echocardiography</td>
+                        <td>Clinical assessment, ECG if indicated</td>
+                    </tr>
+                    <tr>
+                        <td>Repeat echo within 1 year for mild stable valve disease</td>
+                        <td>Guidelines recommend longer intervals</td>
+                        <td>Clinical assessment</td>
+                    </tr>
+                    <tr>
+                        <td>Echo for transient fever without positive blood cultures</td>
+                        <td>Low yield, rarely appropriate</td>
+                        <td>Blood cultures, clinical assessment</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="alternativesTab" class="tab-content">
+                <h3>When to Choose Other Tests Before Echocardiography</h3>
+                <table>
+                    <tr>
+                        <th>Clinical Scenario</th>
+                        <th>First-line Tests</th>
+                        <th>When to Progress to Echo</th>
+                    </tr>
+                    <tr>
+                        <td>Chest Pain</td>
+                        <td>ECG, cardiac biomarkers, stress test</td>
+                        <td>Positive biomarkers, abnormal stress test</td>
+                    </tr>
+                    <tr>
+                        <td>Suspected Pulmonary Embolism</td>
+                        <td>D-dimer, CTPA or V/Q scan</td>
+                        <td>After PE diagnosis to assess right heart strain</td>
+                    </tr>
+                    <tr>
+                        <td>Dyspnea</td>
+                        <td>Chest X-ray, BNP/NT-proBNP, PFTs, ECG</td>
+                        <td>If elevated BNP/NT-proBNP (>100/300 pg/mL)</td>
+                    </tr>
+                    <tr>
+                        <td>Palpitations/Arrhythmias</td>
+                        <td>ECG, Holter monitoring or event recorder</td>
+                        <td>If documented arrhythmia or abnormal ECG</td>
+                    </tr>
+                    <tr>
+                        <td>Syncope</td>
+                        <td>ECG, orthostatic vitals, tilt-table testing</td>
+                        <td>If cardiac cause suspected</td>
+                    </tr>
+                    <tr>
+                        <td>Stroke/TIA</td>
+                        <td>CT/MRI brain, carotid imaging, ECG</td>
+                        <td>After other tests to assess for cardiac source</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" data-navigate-to="landingScreen">Back to Main Screen</button>
+            </div>
+        </div>
+        
+        <!-- Initial Assessment Screen -->
+        <div id="initialAssessmentScreen" class="screen">
+            <h2 class="section-title">Initial Assessment Details</h2>
+            <p class="section-description">Please select the specific reason for the initial assessment.</p>
+            
+            <div class="form-group">
+                <label for="initialReason">Reason for Initial Assessment:</label>
+                <select id="initialReason">
+                    <option value="">-- Please select --</option>
+                    <option value="arrhythmia">Arrhythmias</option>
+                    <option value="heartFailure">Heart Failure</option>
+                    <option value="myocardialInfarction">Myocardial Infarction</option>
+                    <option value="myocarditis">Myocarditis</option>
+                    <option value="takotsubo">Takotsubo Cardiomyopathy</option>
+                    <option value="endocarditis">Endocarditis</option>
+                    <option value="aorticDisease">Aortic Disease</option>
+                    <option value="pulmonaryEmbolism">Pulmonary Embolism</option>
+                    <option value="valvularDisease">Valvular Disease</option>
+                </select>
+            </div>
+            
+            <div class="info-box">
+                <p><strong>Note:</strong> The initial evaluation should be supported by clinical findings that suggest a cardiac abnormality.</p>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" id="backFromInitial" data-navigate-to="landingScreen">Back</button>
+                <button type="button" id="nextFromInitial" class="button-primary" disabled data-navigate-to="nextFromInitial">Next</button>
+            </div>
+        </div>
+        
+        <!-- Initial Cardiovascular Evaluation Screen -->
+        <div id="initialScreen" class="screen">
+            <h2>Initial Cardiovascular Evaluation</h2>
+            
+            <div class="form-group">
+                <label for="initialIndication">Primary Indication:</label>
+                <select id="initialIndication">
+                    <option value="">-- Please select --</option>
+                    <option value="newSymptoms">New cardiac symptoms (no echo in last 2 years)</option>
+                    <option value="newMurmur">New cardiac murmur</option>
+                    <option value="suspectedStructural">Suspected structural heart disease</option>
+                    <option value="suspectedPHTN">Suspected pulmonary hypertension</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Prior Tests Completed:</label>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="priorECG">
+                        ECG
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="priorBNP">
+                        BNP/NT-proBNP
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="priorCXR">
+                        Chest X-ray
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="priorTroponin">
+                        Cardiac biomarkers (troponin)
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="priorPFT">
+                        Pulmonary function tests
+                    </label>
+                </div>
+            </div>
+            
+            <div id="bnpResultGroup" class="form-group" style="display: none;">
+                <label for="bnpResult">BNP/NT-proBNP Result:</label>
+                <select id="bnpResult">
+                    <option value="">-- Please select --</option>
+                    <option value="elevated">BNP >100 pg/mL or NT-proBNP >300 pg/mL</option>
+                    <option value="normal">Normal range</option>
+                    <option value="unknown">Result unknown/pending</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="priorEcho">Has the patient had a prior echocardiogram?</label>
+                <select id="priorEcho">
+                    <option value="">-- Please select --</option>
+                    <option value="no">No prior echo</option>
+                    <option value="lessThan12Months">Yes, within last 12 months</option>
+                    <option value="12To24Months">Yes, 12-24 months ago</option>
+                    <option value="moreThan24Months">Yes, more than 24 months ago</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="referringDoctor">Referring Doctor Type:</label>
+                <select id="referringDoctor">
+                    <option value="">-- Please select --</option>
+                    <option value="gp">General Practitioner</option>
+                    <option value="gpRural">General Practitioner (Rural - MMM 3 to 7)</option>
+                    <option value="cardiologist">Cardiologist</option>
+                    <option value="nonCardioSpecialist">Non-Cardiology Specialist</option>
+                    <option value="consultantPhysician">Consultant Physician</option>
+                </select>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" data-navigate-to="initialAssessmentScreen">Back</button>
+                <button type="button" id="processInitial" data-navigate-to="processInitial">Next</button>
+            </div>
+        </div>
+        
+        <!-- Acute Cardiac Conditions Screen -->
+        <div id="acuteScreen" class="screen">
+            <h2>Acute Cardiac Conditions</h2>
+            
+            <div class="form-group">
+                <label for="acuteIndication">Primary Indication:</label>
+                <select id="acuteIndication">
+                    <option value="">-- Please select --</option>
+                    <option value="suspectedHF">Suspected heart failure</option>
+                    <option value="newHF">New heart failure diagnosis</option>
+                    <option value="acuteHF">Acute heart failure decompensation</option>
+                    <option value="suspectedAMI">Suspected acute myocardial infarction</option>
+                    <option value="acuteMI">Acute myocardial infarction</option>
+                    <option value="suspectedMyocarditis">Suspected myocarditis</option>
+                    <option value="confirmedMyocarditis">Confirmed myocarditis</option>
+                    <option value="takotsubo">Suspected Takotsubo cardiomyopathy</option>
+                    <option value="confirmedTakotsubo">Confirmed Takotsubo cardiomyopathy</option>
+                    <option value="shock">Undifferentiated shock</option>
+                    <option value="cardiacArrest">Cardiac arrest survivor</option>
+                    <option value="suspectedEndocarditis">Suspected endocarditis</option>
+                    <option value="aorticDissection">Suspected aortic dissection</option>
+                    <option value="pulmonaryEmbolism">Suspected/confirmed pulmonary embolism</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Prior Tests Completed:</label>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="acutePriorECG">
+                        ECG
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="acutePriorTroponin">
+                        Cardiac biomarkers (troponin)
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="acutePriorBNP">
+                        BNP/NT-proBNP
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="acutePriorAngio">
+                        Coronary angiography
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="acutePriorPOCUS">
+                        Point-of-care ultrasound (POCUS)
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="acutePriorCXR">
+                        Chest X-ray
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="acutePriorBloodCultures">
+                        Blood cultures
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="acutePatientLocation">Patient Location:</label>
+                <select id="acutePatientLocation">
+                    <option value="">-- Please select --</option>
+                    <option value="ed">Emergency Department</option>
+                    <option value="icu">Intensive Care Unit</option>
+                    <option value="coronaryCare">Coronary Care Unit</option>
+                    <option value="ward">General Ward</option>
+                    <option value="outpatient">Outpatient</option>
+                </select>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" data-navigate-to="initialAssessmentScreen">Back</button>
+                <button type="button" id="processAcute" data-navigate-to="processAcute">Next</button>
+            </div>
+        </div>
+        
+        <!-- Arrhythmias Screen -->
+        <div id="arrhythmiaScreen" class="screen">
+            <h2>Arrhythmia Assessment</h2>
+            
+            <div class="form-group">
+                <label for="arrhythmiaType">Type of Arrhythmia:</label>
+                <select id="arrhythmiaType">
+                    <option value="">-- Please select --</option>
+                    <option value="newAF">New-onset atrial fibrillation</option>
+                    <option value="persistentAF">Persistent atrial fibrillation</option>
+                    <option value="atrialFlutter">Atrial flutter</option>
+                    <option value="newVT">New ventricular tachycardia</option>
+                    <option value="recurrentVT">Recurrent ventricular tachycardia</option>
+                    <option value="avBlock">High-grade AV block</option>
+                    <option value="svt">Supraventricular tachycardia</option>
+                    <option value="frequentPVCs">Frequent PVCs</option>
+                    <option value="bradycardia">Symptomatic bradycardia</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Prior Tests Completed:</label>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="arrhythmiaPriorECG">
+                        12-lead ECG
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="arrhythmiaPriorHolter">
+                        Holter monitoring
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="arrhythmiaPriorThyroid">
+                        Thyroid function tests
+                    </label>
+                </div>
+                <div class="checkbox-container">
+                    <label>
+                        <input type="checkbox" id="arrhythmiaPriorElectrolytes">
+                        Electrolytes
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="arrhythmiaStability">Patient Status:</label>
+                <select id="arrhythmiaStability">
+                    <option value="">-- Please select --</option>
+                    <option value="stable">Stable (asymptomatic/mildly symptomatic)</option>
+                    <option value="moderateSymptoms">Moderate symptoms</option>
+                    <option value="unstable">Unstable (requiring urgent treatment)</option>
+                </select>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" data-navigate-to="initialAssessmentScreen">Back</button>
+                <button type="button" id="processArrhythmia" data-navigate-to="processArrhythmia">Next</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="screen">
+            <h2>Echocardiogram Assessment Results</h2>
+            
+            <div id="appropriatenessResult" class="result-container">
+                <h3>Appropriateness Assessment</h3>
+                <div id="resultContent"></div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Recommended Timeframe</h3>
+                <div id="timeframeResult" class="info-box">
+                    <p><strong>Recommended Timeframe:</strong> <span id="timeframeValue">Based on clinical urgency</span></p>
+                    <p><strong>Patient Type:</strong> This is recommended as an <strong><span id="patientTypeValue">inpatient/outpatient</span></strong> test.</p>
+                    <p id="timeframeNote"></p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Billing Information</h3>
+                <div id="billingResult" class="info-box"></div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Additional Recommendations</h3>
+                <div id="recommendationsResult" class="info-box"></div>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" data-navigate-to="landingScreen">Back to Start</button>
+                <button type="button" id="printResults" data-action="print">Print Results</button>
+            </div>
+        </div>
+        
+        <!-- Not Indicated Screen -->
+        <div id="notIndicatedScreen" class="screen">
+            <h2>Echocardiogram Not Indicated</h2>
+            
+            <div class="result-container result-inappropriate">
+                <h3>Based on the information provided, an echocardiogram is not indicated at this time.</h3>
+                <div id="notIndicatedContent"></div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Required Tests</h3>
+                <div id="alternativeTests" class="info-box"></div>
+            </div>
+            
+            <div class="form-group">
+                <h3>When to Reconsider Echo</h3>
+                <div id="reconsiderEcho" class="info-box"></div>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" data-navigate-to="landingScreen">Back to Start</button>
+                <button type="button" id="printNotIndicated" data-action="print">Print Results</button>
+            </div>
+        </div>
+        
+        <!-- Indicated Screen -->
+        <div id="indicatedScreen" class="screen">
+            <h2>Echocardiogram Indicated</h2>
+            
+            <div class="result-container result-appropriate">
+                <h3>Based on the information provided, an echocardiogram is indicated.</h3>
+                <div id="indicatedContent"></div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Recommended Timeframe</h3>
+                <div id="indicatedTimeframe" class="info-box"></div>
+            </div>
+            
+            <div class="form-group">
+                <h3>Next Steps</h3>
+                <div id="nextSteps" class="info-box">
+                    <p>Please complete the RHH Echo Request Form:</p>
+                    <a href="https://forms.office.com/r/example" target="_blank" class="button-primary">RHH Echo Request Form</a>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="back-btn" data-navigate-to="landingScreen">Back to Start</button>
+                <button type="button" id="printIndicated" data-action="print">Print Results</button>
+            </div>
+        </div>
+        
+        <!-- Main Form Screen -->
+        <div id="mainFormScreen" class="screen">
+            <h2 class="section-title">Echo Request Form</h2>
+            <p class="section-description">Please complete the following information to assess the appropriateness of the echo request.</p>
+            
+            <div class="app-main">
+                <!-- Form will be dynamically rendered here by JavaScript -->
+            </div>
+            
+            <div class="button-container">
+                <button type="button" id="backFromMain" class="button-secondary" data-navigate-to="backFromMain">Back</button>
+                <button type="button" id="submitForm" class="button-primary" data-action="submit">Submit</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Based on Medicare Echo Billing Code Summary & Appropriate Echo Surveillance Intervals</p>
+            <p>This tool is for clinical guidance only. © 2025 Royal Hobart Hospital</p>
+            <div class="logo-container-footer">
+                <img src="images/rhh-logo.jpg" alt="Royal Hobart Hospital Logo" class="hospital-logo-footer">
+            </div>
+        </footer>
+    </div>
+    
+    <script type="module">
+        import { EchoApp } from './js/app.js';
+        
+        // Make EchoApp available globally
+        window.EchoApp = EchoApp;
+        
+        // Enable debug mode to ensure navigation works even with errors
+        const DEBUG_MODE = true;
+        
+        // Declare app in global scope
+        let app;
+        
+        // Centralized navigation system
+        function setupNavigation() {
+            // Use event delegation to handle all navigation buttons
+            document.addEventListener('click', (event) => {
+                // Check if the clicked element is a button with navigation data
+                const button = event.target.closest('[data-navigate-to]');
+                if (!button) return;
+                
+                event.preventDefault();
+                const navigateTo = button.getAttribute('data-navigate-to');
+                console.log(`Navigation requested to: ${navigateTo}`);
+                
+                // Handle special navigation cases
+                if (navigateTo === 'nextFromLanding') {
+                    handleNextFromLanding();
+                } 
+                else if (navigateTo === 'nextFromInitial') {
+                    handleNextFromInitial();
+                }
+                else if (navigateTo === 'backFromMain') {
+                    handleBackFromMain();
+                }
+                else if (navigateTo === 'processInitial' || 
+                         navigateTo === 'processAcute' || 
+                         navigateTo === 'processArrhythmia') {
+                    // Process buttons typically go to the results screen
+                    saveFormData();
+                    navigate('resultsScreen');
+                }
+                else {
+                    // Direct navigation to a screen
+                    navigate(navigateTo);
+                }
+            });
+            
+            // Handle action buttons (print, submit, etc.)
+            document.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-action]');
+                if (!button) return;
+                
+                event.preventDefault();
+                const action = button.getAttribute('data-action');
+                console.log(`Action requested: ${action}`);
+                
+                // Handle different actions
+                if (action === 'print') {
+                    window.print();
+                }
+                else if (action === 'submit') {
+                    handleSubmit();
+                }
+            });
+            
+            // Handle tabs in the guidelines screen
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.dataset.tab;
+                    
+                    // Make the clicked tab active
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show the corresponding tab content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    const tabContent = document.getElementById(tabId + 'Tab');
+                    if (tabContent) {
+                        tabContent.classList.add('active');
+                    } else {
+                        console.error('Tab content not found for', tabId);
+                    }
+                });
+            });
+        }
+        
+        // Navigation helper functions
+        function navigate(screenId) {
+            if (typeof screenId !== 'string' || !screenId) {
+                console.error('Invalid screen ID for navigation');
+                return;
+            }
+            
+            console.log(`Navigating to screen: ${screenId}`);
+            
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show the target screen
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                window.scrollTo(0, 0);
+                console.log(`Screen ${screenId} is now active`);
+            } else {
+                console.error(`Target screen "${screenId}" not found`);
+            }
+        }
+        
+        function handleNextFromLanding() {
+            const echoType = document.getElementById('echoType')?.value;
+            const patientType = document.getElementById('patientType')?.value;
+            
+            console.log('Next from landing with values:', { echoType, patientType });
+            
+            if (!echoType || !patientType) {
+                alert('Please select both patient type and echo type.');
+                return;
+            }
+            
+            // Store these values in sessionStorage
+            sessionStorage.setItem('echoType', echoType);
+            sessionStorage.setItem('patientType', patientType);
+            
+            // Navigate based on selection
+            if (echoType === 'initial') {
+                navigate('initialAssessmentScreen');
+            } else {
+                // Direct navigation to main form is more reliable than using the app
+                navigate('mainFormScreen');
+            }
+        }
+        
+        function handleNextFromInitial() {
+            const initialReason = document.getElementById('initialReason')?.value;
+            
+            if (!initialReason) {
+                alert('Please select a reason for the initial assessment.');
+                return;
+            }
+            
+            sessionStorage.setItem('initialReason', initialReason);
+            
+            // Navigate based on the initial reason
+            if (initialReason === 'arrhythmia') {
+                navigate('arrhythmiaScreen');
+            } else if (['heartFailure', 'myocardialInfarction', 'myocarditis', 'takotsubo', 
+                        'endocarditis', 'aorticDisease', 'pulmonaryEmbolism'].includes(initialReason)) {
+                navigate('acuteScreen');
+            } else if (initialReason === 'valvularDisease') {
+                navigate('valvularScreen');
+            } else {
+                // For other initial reasons, navigate to the generic initial screen
+                navigate('initialScreen');
+            }
+        }
+        
+        function handleBackFromMain() {
+            // Check if we came from a specific assessment screen
+            const echoType = sessionStorage.getItem('echoType');
+            const initialReason = sessionStorage.getItem('initialReason');
+            
+            if (echoType === 'initial') {
+                if (initialReason === 'arrhythmia') {
+                    navigate('arrhythmiaScreen');
+                } else if (['heartFailure', 'myocardialInfarction', 'myocarditis', 
+                           'takotsubo', 'endocarditis', 'aorticDisease', 
+                           'pulmonaryEmbolism'].includes(initialReason)) {
+                    navigate('acuteScreen');
+                } else if (initialReason === 'valvularDisease') {
+                    navigate('valvularScreen');
+                } else {
+                    navigate('initialAssessmentScreen');
+                }
+            } else {
+                navigate('landingScreen');
+            }
+        }
+        
+        function handleSubmit() {
+            saveFormData();
+            // Determine appropriate result screen based on assessment
+            navigate('indicatedScreen'); // Or notIndicatedScreen based on logic
+        }
+        
+        function saveFormData() {
+            // Collect form data from the current screen
+            // This would need to be expanded based on your actual form fields
+            console.log('Saving form data');
+            // For demonstration, we're just logging
+        }
+        
+        // Set up form field change handlers
+        function setupFormHandlers() {
+            console.log('Setting up form handlers');
+            
+            // Patient Type and Echo Type on landing page
+            const patientTypeSelect = document.getElementById('patientType');
+            const echoTypeSelect = document.getElementById('echoType');
+            const nextFromLandingBtn = document.getElementById('nextFromLanding');
+            
+            function updateNextButtonState() {
+                if (patientTypeSelect && echoTypeSelect && nextFromLandingBtn) {
+                    const patientTypeValue = patientTypeSelect.value;
+                    const echoTypeValue = echoTypeSelect.value;
+                    
+                    console.log('Checking next button state:', {
+                        patientTypeValue,
+                        echoTypeValue
+                    });
+                    
+                    nextFromLandingBtn.disabled = !patientTypeValue || !echoTypeValue;
+                    
+                    if (DEBUG_MODE && patientTypeValue && echoTypeValue) {
+                        console.log('Debug mode: Ensuring next button is enabled');
+                        nextFromLandingBtn.disabled = false;
+                    }
+                    
+                    console.log('Next button disabled:', nextFromLandingBtn.disabled);
+                }
+            }
+            
+            if (patientTypeSelect) {
+                patientTypeSelect.addEventListener('change', updateNextButtonState);
+            }
+            
+            if (echoTypeSelect) {
+                echoTypeSelect.addEventListener('change', updateNextButtonState);
+            }
+            
+            // Initial assessment reason
+            const initialReasonSelect = document.getElementById('initialReason');
+            const nextFromInitialBtn = document.getElementById('nextFromInitial');
+            
+            if (initialReasonSelect && nextFromInitialBtn) {
+                initialReasonSelect.addEventListener('change', () => {
+                    nextFromInitialBtn.disabled = !initialReasonSelect.value;
+                });
+            }
+            
+            // BNP checkbox (from the original code)
+            const bnpCheckbox = document.getElementById('priorBNP');
+            const bnpResultGroup = document.getElementById('bnpResultGroup');
+            
+            if (bnpCheckbox && bnpResultGroup) {
+                bnpCheckbox.addEventListener('change', () => {
+                    bnpResultGroup.style.display = bnpCheckbox.checked ? 'block' : 'none';
+                    const bnpResult = document.getElementById('bnpResult');
+                    if (bnpResult) {
+                        bnpResult.required = bnpCheckbox.checked;
+                    }
+                });
+            }
+            
+            // Check initial state
+            if (DEBUG_MODE) {
+                setTimeout(updateNextButtonState, 500);
+            }
+        }
+        
+        // Initialize the app and navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing app...');
+            
+            // Make our navigation function globally available
+            window.showScreen = navigate;
+            
+            // Initialize the app if needed
+            try {
+                if (typeof EchoApp === 'function') {
+                    app = new EchoApp();
+                    window.app = app;
+                    console.log('App initialized successfully');
+                } else {
+                    console.warn('EchoApp constructor not available - using simplified navigation');
+                    // Create a minimal app object to prevent errors
+                    window.app = {
+                        navigateToMainForm: function() {
+                            navigate('mainFormScreen');
+                        },
+                        handleNextFromLanding: function() {
+                            handleNextFromLanding();
+                        },
+                        handleNextFromInitial: function() {
+                            handleNextFromInitial();
+                        },
+                        navigateTo: function(screenId) {
+                            navigate(screenId);
+                        }
+                    };
+                }
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                // Create fallback app object to prevent further errors
+                window.app = {
+                    navigateToMainForm: function() {
+                        navigate('mainFormScreen');
+                    },
+                    handleNextFromLanding: function() {
+                        handleNextFromLanding();
+                    },
+                    handleNextFromInitial: function() {
+                        handleNextFromInitial();
+                    },
+                    navigateTo: function(screenId) {
+                        navigate(screenId);
+                    }
+                };
+            }
+            
+            // Set up all navigation handlers
+            setupNavigation();
+            
+            // Set up form field handlers
+            setupFormHandlers();
+            
+            // Make sure we start on the landing screen
+            navigate('landingScreen');
+            
+            // Debug mode hack - force enable buttons after a delay
+            if (DEBUG_MODE) {
+                setTimeout(() => {
+                    // Find the next button on landing page and enable it
+                    const nextBtn = document.getElementById('nextFromLanding');
+                    if (nextBtn) {
+                        nextBtn.disabled = false;
+                        console.log('Debug mode: Forced next button to enabled state');
+                    }
+                    
+                    // Ensure at least one option is selected in each dropdown to prevent errors
+                    const patientType = document.getElementById('patientType');
+                    const echoType = document.getElementById('echoType');
+                    
+                    if (patientType && !patientType.value) {
+                        patientType.value = 'inpatient';
+                        console.log('Debug mode: Set default patient type');
+                    }
+                    
+                    if (echoType && !echoType.value) {
+                        echoType.value = 'initial';
+                        console.log('Debug mode: Set default echo type');
+                    }
+                }, 1000);
+            }
+            
+            console.log('Initialization complete');
+        });
+    </script>
+</body>
+</html> 
