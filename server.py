@@ -10,8 +10,19 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Enable CORS for all routes during development
-CORS(app)
+# Enable CORS for all routes with proper configuration
+CORS(app, resources={
+    r"/chat": {
+        "origins": [
+            "https://tommymoran.com",
+            "https://tommymoran-com-chatbot.onrender.com",
+            "http://localhost:8000"
+        ],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": False
+    }
+})
 
 # Initialize OpenAI client with only the API key
 client = OpenAI(
@@ -23,7 +34,7 @@ def chat():
     if request.method == 'OPTIONS':
         # Handle preflight request
         response = jsonify({'status': 'ok'})
-        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Origin', 'https://tommymoran.com')
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
         response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
         return response
@@ -88,4 +99,7 @@ def chat():
         }), 500
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True) 
+    # Get port from environment variable or default to 5000
+    port = int(os.environ.get('PORT', 5000))
+    # Run on all interfaces (0.0.0.0) to allow external connections
+    app.run(host='0.0.0.0', port=port, debug=False) 

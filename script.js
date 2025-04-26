@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
                 // Call the backend API
-                const response = await fetch('http://127.0.0.1:5000/chat', {
+                const response = await fetch('https://tommymoran-com-chatbot.onrender.com/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
