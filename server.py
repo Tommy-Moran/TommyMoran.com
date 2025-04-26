@@ -4,6 +4,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import time
+import httpx
 
 # Load environment variables from .env file
 load_dotenv()
@@ -24,8 +25,12 @@ CORS(app, resources={
     }
 })
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Initialize OpenAI client with custom HTTP client
+http_client = httpx.Client()
+client = OpenAI(
+    api_key=os.getenv('OPENAI_API_KEY'),
+    http_client=http_client
+)
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 def chat():
