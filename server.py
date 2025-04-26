@@ -5,6 +5,11 @@ from dotenv import load_dotenv
 import os
 import time
 import httpx
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,14 +31,31 @@ CORS(app, resources={
 })
 
 # Initialize OpenAI client with custom HTTP client
-http_client = httpx.Client()
-client = OpenAI(
-    api_key=os.getenv('OPENAI_API_KEY'),
-    http_client=http_client
-)
+try:
+    api_key = os.getenv('OPENAI_API_KEY')
+    if not api_key:
+        logger.error("OPENAI_API_KEY environment variable is not set")
+        raise ValueError("OPENAI_API_KEY environment variable is not set")
+    
+    http_client = httpx.Client(timeout=30.0)  # Increased timeout
+    client = OpenAI(
+        api_key=api_key,
+        http_client=http_client,
+        max_retries=3  # Add retries for better reliability
+    )
+    logger.info("OpenAI client initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize OpenAI client: {str(e)}")
+    raise
+
+@app.route('/')
+def index():
+    logger.info("Root route accessed")
+    return jsonify({"status": "ok", "message": "Server is running"})
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 def chat():
+    logger.info("Chat endpoint accessed")
     if request.method == 'OPTIONS':
         # Handle preflight request
         response = jsonify({'status': 'ok'})
@@ -45,9 +67,11 @@ def chat():
     try:
         data = request.json
         user_message = data.get('message', '')
+        logger.info(f"Received message: {user_message}")
 
         # Create a thread
         thread = client.beta.threads.create()
+        logger.info(f"Created thread: {thread.id}")
 
         # Add the user's message to the thread
         message = client.beta.threads.messages.create(
@@ -55,12 +79,14 @@ def chat():
             role="user",
             content=user_message
         )
+        logger.info(f"Added message to thread: {message.id}")
 
         # Run the assistant on the thread
         run = client.beta.threads.runs.create(
             thread_id=thread.id,
             assistant_id="asst_TuRXN1c893HGDyQvzO83W3YT"
         )
+        logger.info(f"Created run: {run.id}")
 
         # Wait for the run to complete
         while True:
@@ -71,11 +97,13 @@ def chat():
             if run_status.status == 'completed':
                 break
             elif run_status.status == 'failed':
-                raise Exception("Assistant run failed")
+                logger.error(f"Run failed: {run_status.last_error}")
+                raise Exception(f"Assistant run failed: {run_status.last_error}")
             time.sleep(1)  # Wait for 1 second before checking again
 
         # Get the assistant's response
         messages = client.beta.threads.messages.list(thread_id=thread.id)
+        logger.info("Retrieved messages from thread")
         
         # Get the last assistant message
         for message in messages.data:
@@ -86,20 +114,32 @@ def chat():
                 # Ensure the message ends with proper punctuation
                 if not assistant_message.endswith(('.', '!', '?')):
                     assistant_message = assistant_message.rstrip() + '.'
+                logger.info("Successfully processed assistant response")
                 return jsonify({
                     'response': assistant_message
                 })
         
         # If no assistant message found
+        logger.warning("No assistant message found in thread")
         return jsonify({
             'error': 'No response from assistant'
         }), 500
         
     except Exception as e:
-        print(f"Error: {str(e)}")  # Add server-side logging
+        logger.error(f"Error in chat endpoint: {str(e)}")
         return jsonify({
             'error': str(e)
         }), 500
+
+@app.route('/debug')
+def debug():
+    logger.info("Debug endpoint accessed")
+    return jsonify({
+        "status": "ok",
+        "openai_api_key_set": bool(os.getenv('OPENAI_API_KEY')),
+        "port": os.getenv('PORT'),
+        "python_version": os.getenv('PYTHON_VERSION')
+    })
 
 if __name__ == '__main__':
     # Get port from environment variable or default to 5000
