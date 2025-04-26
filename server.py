@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from openai import OpenAI
+import openai
 from dotenv import load_dotenv
 import os
 import time
@@ -24,11 +24,8 @@ CORS(app, resources={
     }
 })
 
-# Initialize OpenAI client with explicit proxy configuration
-client = OpenAI(
-    api_key=os.getenv('OPENAI_API_KEY'),
-    http_client=None  # Explicitly set to None to prevent proxy issues
-)
+# Set OpenAI API key
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 def chat():
@@ -45,24 +42,24 @@ def chat():
         user_message = data.get('message', '')
 
         # Create a thread
-        thread = client.beta.threads.create()
+        thread = openai.beta.threads.create()
 
         # Add the user's message to the thread
-        message = client.beta.threads.messages.create(
+        message = openai.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
             content=user_message
         )
 
         # Run the assistant on the thread
-        run = client.beta.threads.runs.create(
+        run = openai.beta.threads.runs.create(
             thread_id=thread.id,
             assistant_id="asst_TuRXN1c893HGDyQvzO83W3YT"
         )
 
         # Wait for the run to complete
         while True:
-            run_status = client.beta.threads.runs.retrieve(
+            run_status = openai.beta.threads.runs.retrieve(
                 thread_id=thread.id,
                 run_id=run.id
             )
@@ -73,7 +70,7 @@ def chat():
             time.sleep(1)  # Wait for 1 second before checking again
 
         # Get the assistant's response
-        messages = client.beta.threads.messages.list(thread_id=thread.id)
+        messages = openai.beta.threads.messages.list(thread_id=thread.id)
         
         # Get the last assistant message
         for message in messages.data:
