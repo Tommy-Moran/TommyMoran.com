@@ -1,5 +1,9 @@
 flask==3.0.2
 flask-cors==4.0.0
 openai==1.23.6
+httpx==0.28.1
+httpcore==1.0.9
+pydantic==2.11.3
+pydantic-core==2.33.1
 python-dotenv==1.0.1
 gunicorn==21.2.0 
