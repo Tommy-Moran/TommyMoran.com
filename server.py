@@ -10,17 +10,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Configure CORS to allow requests from your frontend
-CORS(app, resources={
-    r"/chat": {
-        "origins": ["http://localhost:8000", "http://127.0.0.1:8000"],
-        "methods": ["POST", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+# Enable CORS for all routes during development
+CORS(app)
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Initialize OpenAI client with only the API key
+client = OpenAI(
+    api_key=os.getenv('OPENAI_API_KEY')
+)
 
 @app.route('/chat', methods=['POST', 'OPTIONS'])
 def chat():
