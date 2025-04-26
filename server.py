@@ -41,7 +41,8 @@ try:
     client = OpenAI(
         api_key=api_key,
         http_client=http_client,
-        max_retries=3  # Add retries for better reliability
+        max_retries=3,  # Add retries for better reliability
+        default_headers={"OpenAI-Beta": "assistants=v2"}  # Add v2 header
     )
     logger.info("OpenAI client initialized successfully")
 except Exception as e:
