@@ -240,4 +240,49 @@ document.addEventListener('DOMContentLoaded', function() {
             sendMessage();
         }
     });
+
+    // Sidebar toggle for mobile
+    function handleSidebarToggle() {
+        const sidebar = document.getElementById('sidebar');
+        const logo = document.getElementById('sidebar-logo');
+        if (!sidebar || !logo) return;
+        // Remove any previous event listeners
+        logo.onclick = null;
+        logo.removeEventListener('click', logo._sidebarToggleHandler || (()=>{}));
+        // Define and store the handler so it can be removed later
+        const toggleSidebar = function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                sidebar.classList.toggle('expanded');
+            }
+        };
+        logo._sidebarToggleHandler = toggleSidebar;
+        logo.addEventListener('click', toggleSidebar);
+        // Ensure correct state on resize
+        function checkSidebarState() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('expanded');
+            }
+        }
+        window.addEventListener('resize', checkSidebarState);
+    }
+    // Always enable the toggle on mobile, even after scrolling or resizing or navigation
+    function enableMobileSidebarToggle() {
+        handleSidebarToggle();
+    }
+    enableMobileSidebarToggle();
+    window.addEventListener('resize', enableMobileSidebarToggle);
+    window.addEventListener('scroll', enableMobileSidebarToggle);
+
+    // Collapse nav bar after clicking a nav link on mobile
+    const sidebar = document.getElementById('sidebar');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768 && sidebar.classList.contains('expanded')) {
+                setTimeout(() => {
+                    sidebar.classList.remove('expanded');
+                }, 300); // allow scroll to finish
+            }
+        });
+    });
 }); 
