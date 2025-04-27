@@ -120,16 +120,28 @@ def chat():
         # Get the last assistant message
         for message in messages.data:
             if message.role == "assistant":
-                assistant_message = message.content[0].text.value
-                # Remove any reference links or citations
-                assistant_message = assistant_message.split('【')[0].strip()
-                # Ensure the message ends with proper punctuation
-                if not assistant_message.endswith(('.', '!', '?')):
-                    assistant_message = assistant_message.rstrip() + '.'
-                logger.info("Successfully processed assistant response")
-                return jsonify({
-                    'response': assistant_message
-                })
+                try:
+                    # Handle different possible message content structures
+                    if hasattr(message.content[0], 'text') and hasattr(message.content[0].text, 'value'):
+                        assistant_message = message.content[0].text.value
+                    elif isinstance(message.content[0], dict) and 'text' in message.content[0]:
+                        assistant_message = message.content[0]['text']
+                    else:
+                        logger.warning(f"Unexpected message content format: {message.content}")
+                        continue
+                    
+                    # Remove any reference links or citations
+                    assistant_message = assistant_message.split('【')[0].strip()
+                    # Ensure the message ends with proper punctuation
+                    if not assistant_message.endswith(('.', '!', '?')):
+                        assistant_message = assistant_message.rstrip() + '.'
+                    logger.info("Successfully processed assistant response")
+                    return jsonify({
+                        'response': assistant_message
+                    })
+                except Exception as e:
+                    logger.error(f"Error processing message content: {str(e)}")
+                    continue
         
         # If no assistant message found
         logger.warning("No assistant message found in thread")
