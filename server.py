@@ -152,6 +152,8 @@ def chat():
                         assistant_message = message.content[0].text.value
                     elif isinstance(message.content[0], dict) and 'text' in message.content[0]:
                         assistant_message = message.content[0]['text']
+                    elif hasattr(message.content[0], 'text') and isinstance(message.content[0].text, dict):
+                        assistant_message = message.content[0].text.get('value', '')
                     else:
                         logger.warning(f"Unexpected message content format: {message.content}")
                         continue
