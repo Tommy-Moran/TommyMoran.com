@@ -37,13 +37,19 @@ try:
         logger.error("OPENAI_API_KEY environment variable is not set")
         raise ValueError("OPENAI_API_KEY environment variable is not set")
     
-    # Create a custom HTTP client with the v2 header
-    class CustomHTTPClient(httpx.Client):
-        def _prepare_request(self, request):
-            request.headers["OpenAI-Beta"] = "assistants=v2"
-            return super()._prepare_request(request)
+    # Create an event hook to add the v2 header
+    def add_v2_header(request):
+        request.headers["OpenAI-Beta"] = "assistants=v2"
+        return request
     
-    http_client = CustomHTTPClient(timeout=30.0)
+    # Create HTTP client with event hook
+    http_client = httpx.Client(
+        timeout=30.0,
+        event_hooks={
+            'request': [add_v2_header]
+        }
+    )
+    
     client = OpenAI(
         api_key=api_key,
         http_client=http_client,
