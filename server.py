@@ -37,12 +37,17 @@ try:
         logger.error("OPENAI_API_KEY environment variable is not set")
         raise ValueError("OPENAI_API_KEY environment variable is not set")
     
-    http_client = httpx.Client(timeout=30.0)  # Increased timeout
+    # Create a custom HTTP client with the v2 header
+    class CustomHTTPClient(httpx.Client):
+        def _prepare_request(self, request):
+            request.headers["OpenAI-Beta"] = "assistants=v2"
+            return super()._prepare_request(request)
+    
+    http_client = CustomHTTPClient(timeout=30.0)
     client = OpenAI(
         api_key=api_key,
         http_client=http_client,
-        max_retries=3,  # Add retries for better reliability
-        default_headers={"OpenAI-Beta": "assistants=v2"}  # Add v2 header
+        max_retries=3
     )
     logger.info("OpenAI client initialized successfully")
 except Exception as e:
@@ -70,26 +75,22 @@ def chat():
         user_message = data.get('message', '')
         logger.info(f"Received message: {user_message}")
 
-        # Create a thread with v2 header
-        thread = client.beta.threads.create(
-            headers={"OpenAI-Beta": "assistants=v2"}
-        )
+        # Create a thread
+        thread = client.beta.threads.create()
         logger.info(f"Created thread: {thread.id}")
 
-        # Add the user's message to the thread with v2 header
+        # Add the user's message to the thread
         message = client.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
-            content=user_message,
-            headers={"OpenAI-Beta": "assistants=v2"}
+            content=user_message
         )
         logger.info(f"Added message to thread: {message.id}")
 
-        # Run the assistant on the thread with v2 header
+        # Run the assistant on the thread
         run = client.beta.threads.runs.create(
             thread_id=thread.id,
-            assistant_id="asst_TuRXN1c893HGDyQvzO83W3YT",
-            headers={"OpenAI-Beta": "assistants=v2"}
+            assistant_id="asst_TuRXN1c893HGDyQvzO83W3YT"
         )
         logger.info(f"Created run: {run.id}")
 
@@ -97,8 +98,7 @@ def chat():
         while True:
             run_status = client.beta.threads.runs.retrieve(
                 thread_id=thread.id,
-                run_id=run.id,
-                headers={"OpenAI-Beta": "assistants=v2"}
+                run_id=run.id
             )
             if run_status.status == 'completed':
                 break
@@ -107,11 +107,8 @@ def chat():
                 raise Exception(f"Assistant run failed: {run_status.last_error}")
             time.sleep(1)  # Wait for 1 second before checking again
 
-        # Get the assistant's response with v2 header
-        messages = client.beta.threads.messages.list(
-            thread_id=thread.id,
-            headers={"OpenAI-Beta": "assistants=v2"}
-        )
+        # Get the assistant's response
+        messages = client.beta.threads.messages.list(thread_id=thread.id)
         logger.info("Retrieved messages from thread")
         
         # Get the last assistant message
