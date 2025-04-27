@@ -42,9 +42,9 @@ try:
         request.headers["OpenAI-Beta"] = "assistants=v2"
         return request
     
-    # Create HTTP client with event hook
+    # Create HTTP client with event hook and increased timeout
     http_client = httpx.Client(
-        timeout=30.0,
+        timeout=60.0,  # Increased timeout to 60 seconds
         event_hooks={
             'request': [add_v2_header]
         }
@@ -100,18 +100,44 @@ def chat():
         )
         logger.info(f"Created run: {run.id}")
 
-        # Wait for the run to complete
-        while True:
-            run_status = client.beta.threads.runs.retrieve(
-                thread_id=thread.id,
-                run_id=run.id
-            )
-            if run_status.status == 'completed':
-                break
-            elif run_status.status == 'failed':
-                logger.error(f"Run failed: {run_status.last_error}")
-                raise Exception(f"Assistant run failed: {run_status.last_error}")
-            time.sleep(1)  # Wait for 1 second before checking again
+        # Wait for the run to complete with a maximum timeout
+        max_attempts = 30  # 30 seconds maximum
+        attempts = 0
+        
+        while attempts < max_attempts:
+            try:
+                run_status = client.beta.threads.runs.retrieve(
+                    thread_id=thread.id,
+                    run_id=run.id
+                )
+                
+                if run_status.status == 'completed':
+                    break
+                elif run_status.status == 'failed':
+                    logger.error(f"Run failed: {run_status.last_error}")
+                    return jsonify({
+                        'error': f"Assistant run failed: {run_status.last_error}"
+                    }), 500
+                elif run_status.status == 'expired':
+                    logger.error("Run expired")
+                    return jsonify({
+                        'error': "Assistant run expired. Please try again."
+                    }), 500
+                
+                attempts += 1
+                time.sleep(1)  # Wait for 1 second before checking again
+                
+            except Exception as e:
+                logger.error(f"Error checking run status: {str(e)}")
+                return jsonify({
+                    'error': "Error communicating with OpenAI. Please try again."
+                }), 500
+
+        if attempts >= max_attempts:
+            logger.error("Run timed out")
+            return jsonify({
+                'error': "Request timed out. Please try again."
+            }), 500
 
         # Get the assistant's response
         messages = client.beta.threads.messages.list(thread_id=thread.id)
