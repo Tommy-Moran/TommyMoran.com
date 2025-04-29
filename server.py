@@ -22,7 +22,14 @@ CORS(app, resources={
         "origins": [
             "https://tommymoran.com",
             "https://tommymoran-com-chatbot.onrender.com",
-            "http://localhost:8000"
+            "http://localhost:8000",
+            "http://127.0.0.1:8000",
+            "http://localhost:8080",
+            "http://127.0.0.1:8080",
+            "http://localhost:8081",
+            "http://127.0.0.1:8081",
+            "http://localhost:8082",
+            "http://127.0.0.1:8082"
         ],
         "methods": ["POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
@@ -71,7 +78,23 @@ def chat():
     if request.method == 'OPTIONS':
         # Handle preflight request
         response = jsonify({'status': 'ok'})
-        response.headers.add('Access-Control-Allow-Origin', 'https://tommymoran.com')
+        # Get the Origin header from the request
+        origin = request.headers.get('Origin')
+        # Check if the origin is in our allowed origins
+        allowed_origins = [
+            "https://tommymoran.com",
+            "https://tommymoran-com-chatbot.onrender.com",
+            "http://localhost:8000",
+            "http://127.0.0.1:8000",
+            "http://localhost:8080",
+            "http://127.0.0.1:8080",
+            "http://localhost:8081",
+            "http://127.0.0.1:8081",
+            "http://localhost:8082",
+            "http://127.0.0.1:8082"
+        ]
+        if origin in allowed_origins:
+            response.headers.add('Access-Control-Allow-Origin', origin)
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
         response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
         return response
@@ -194,7 +217,18 @@ def debug():
     })
 
 if __name__ == '__main__':
-    # Get port from environment variable or default to 5000
-    port = int(os.environ.get('PORT', 5000))
-    # Run on all interfaces (0.0.0.0) to allow external connections
-    app.run(host='0.0.0.0', port=port, debug=False) 
+    try:
+        # Get port from environment variable or default to 8081
+        port = int(os.environ.get('PORT', 8081))
+        logger.info(f"Starting server on port {port}")
+        
+        # Verify OpenAI client initialization
+        logger.info(f"OpenAI API Key present: {bool(os.getenv('OPENAI_API_KEY'))}")
+        logger.info(f"Assistant ID configured: {bool('asst_TuRXN1c893HGDyQvzO83W3YT')}")
+        
+        # Run on all interfaces (0.0.0.0) to allow external connections
+        # Debug mode off to prevent auto-reloading
+        app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
+    except Exception as e:
+        logger.error(f"Failed to start server: {str(e)}")
+        raise 

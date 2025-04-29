@@ -3,8 +3,74 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('section[id], .timeline-block');
     const navLinks = document.querySelectorAll('.vertical-nav a');
     const submenuToggles = document.querySelectorAll('.has-submenu > a');
+    const sidebar = document.getElementById('sidebar');
     let isScrolling = false;
     let scrollTimeout;
+
+    // Initialize mobile sidebar toggle immediately
+    initializeMobileToggle();
+
+    // Sidebar toggle for mobile
+    function initializeMobileToggle() {
+        const logo = document.getElementById('sidebar-logo');
+        
+        if (!sidebar || !logo) return;
+        
+        // Clean up old event listeners
+        if (logo._sidebarToggleHandler) {
+            logo.removeEventListener('click', logo._sidebarToggleHandler);
+        }
+        
+        // Define toggle function
+        const toggleSidebar = function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                e.stopPropagation();
+                sidebar.classList.toggle('expanded');
+            }
+        };
+        
+        // Store and add the event listener
+        logo._sidebarToggleHandler = toggleSidebar;
+        logo.addEventListener('click', toggleSidebar);
+        
+        // Handle window resize
+        function checkSidebarState() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('expanded');
+            }
+        }
+        
+        // Clean up old resize listener
+        if (window._sidebarResizeHandler) {
+            window.removeEventListener('resize', window._sidebarResizeHandler);
+        }
+        
+        // Add new resize listener
+        window._sidebarResizeHandler = checkSidebarState;
+        window.addEventListener('resize', checkSidebarState);
+    }
+
+    // Re-initialize mobile toggle on navigation
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            initializeMobileToggle();
+        }
+    });
+
+    // Ensure mobile toggle works after any dynamic content changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                initializeMobileToggle();
+            }
+        });
+    });
+
+    // Observe the sidebar for any changes
+    if (sidebar) {
+        observer.observe(sidebar, { childList: true, subtree: true });
+    }
 
     // Get element's offset from the top of the page
     function getOffset(el) {
@@ -119,8 +185,17 @@ document.addEventListener('DOMContentLoaded', function() {
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
-            if (targetId && targetId !== '#' && !targetId.startsWith('http')) {
+            
+            // Handle external links (like tools.html)
+            if (targetId && !targetId.startsWith('#')) {
+                // Don't prevent default - let the browser handle the navigation
+                return;
+            }
+            
+            // Handle same-page anchor links
+            if (targetId && targetId.startsWith('#')) {
                 e.preventDefault();
+                document.documentElement.classList.add('smooth-scroll');
                 const targetSection = document.querySelector(targetId);
                 if (targetSection) {
                     const offset = getOffset(targetSection);
@@ -129,6 +204,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         behavior: 'smooth'
                     });
                 }
+                // Remove smooth scroll after animation
+                setTimeout(() => {
+                    document.documentElement.classList.remove('smooth-scroll');
+                }, 1000);
             }
         });
     });
@@ -181,8 +260,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatMessages.appendChild(loadingDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
+                // Determine the API URL based on the environment
+                const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:8081/chat'
+                    : 'https://tommymoran-com-chatbot.onrender.com/chat';
+
                 // Call the backend API
-                const response = await fetch('https://tommymoran-com-chatbot.onrender.com/chat', {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -241,44 +325,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Sidebar toggle for mobile
-    function handleSidebarToggle() {
-        const sidebar = document.getElementById('sidebar');
-        const logo = document.getElementById('sidebar-logo');
-        if (!sidebar || !logo) return;
-        // Remove any previous event listeners
-        logo.onclick = null;
-        logo.removeEventListener('click', logo._sidebarToggleHandler || (()=>{}));
-        // Define and store the handler so it can be removed later
-        const toggleSidebar = function(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                sidebar.classList.toggle('expanded');
-            }
-        };
-        logo._sidebarToggleHandler = toggleSidebar;
-        logo.addEventListener('click', toggleSidebar);
-        // Ensure correct state on resize
-        function checkSidebarState() {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('expanded');
-            }
-        }
-        window.addEventListener('resize', checkSidebarState);
-    }
-    // Always enable the toggle on mobile, even after scrolling or resizing or navigation
-    function enableMobileSidebarToggle() {
-        handleSidebarToggle();
-    }
-    enableMobileSidebarToggle();
-    window.addEventListener('resize', enableMobileSidebarToggle);
-    window.addEventListener('scroll', enableMobileSidebarToggle);
-
     // Collapse nav bar after clicking a nav link on mobile
-    const sidebar = document.getElementById('sidebar');
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
-            if (window.innerWidth <= 768 && sidebar.classList.contains('expanded')) {
+            const href = this.getAttribute('href');
+            // Only collapse for same-page navigation
+            if (window.innerWidth <= 768 && href.startsWith('#') && sidebar.classList.contains('expanded')) {
                 setTimeout(() => {
                     sidebar.classList.remove('expanded');
                 }, 300); // allow scroll to finish
