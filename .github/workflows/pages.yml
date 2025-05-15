@@ -25,6 +25,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      # Add Node.js setup for HEART app
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: HEART/package-lock.json
+          
+      # Install and build HEART app
+      - name: Install HEART dependencies
+        working-directory: ./HEART
+        run: npm ci
+        
+      - name: Build HEART app
+        working-directory: ./HEART
+        run: npm run build
+        env:
+          NEXT_PUBLIC_AUDIT_API_URL: ${{ secrets.NEXT_PUBLIC_AUDIT_API_URL }}
+          OPENAI_ASSISTANT_ID: ${{ secrets.OPENAI_ASSISTANT_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          
+      # Move HEART build output to main directory
+      - name: Copy HEART build output
+        run: mkdir -p HEART && cp -r HEART/out/* HEART/
+        
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
