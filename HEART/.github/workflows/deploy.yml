@@ -1,0 +1,42 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'heart-app/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: heart-app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./heart-app
+        run: npm ci
+
+      - name: Build
+        working-directory: ./heart-app
+        run: |
+          npm run build
+          touch out/.nojekyll
+        env:
+          NEXT_PUBLIC_AUDIT_API_URL: https://heart-audit-api.onrender.com
+          OPENAI_ASSISTANT_ID: ${{ secrets.OPENAI_ASSISTANT_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: heart-app/out
+          branch: gh-pages 

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: heart-audit-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app
+    envVars:
+      - key: AUDIT_PASSWORD
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+    autoDeploy: true
+    # Uncomment and set these options if needed
+    # plan: free  # or starter, etc.
+    # region: oregon  # or any other Render region
+    # domains:
+    #   - heart-audit-api.onrender.com 
