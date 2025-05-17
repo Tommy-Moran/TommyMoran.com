@@ -1,0 +1,93 @@
+[
+  {
+    "case_id": "2874711",
+    "timestamp": "2025-05-16T16:54:37.019539",
+    "clinical_context": "84M with murmur",
+    "clinical_question": "cause?",
+    "ai_response": "Recommendation:\nOutpatient echocardiogram is indicated within a few weeks. The clinical context does not provide sufficient justification for an inpatient echocardiogram as there are no indications of acute symptoms or severe signs such as syncope, heart failure, or recent cardiac events linked to the new murmur.\n\nRationale:\nAn isolated murmur in an 84-year-old male, without associated acute symptoms or recent changes in clinical status, aligns with outpatient criteria. New murmurs are typically assessed as outpatients unless associated with acute changes, symptoms, or within certain acute contexts where immediate investigation is necessary\u30104:10\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries\u30104:10\u2020RHH_Echo_Indications.txt\u3011.\n\nConsult Other Teams:\nNone."
+  },
+  {
+    "case_id": "2100036",
+    "timestamp": "2025-05-17T20:08:59.753372",
+    "clinical_context": "68M with MSSA bacteraemia.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nAn echocardiogram is indicated. Proceed with an inpatient echocardiogram within 24 hours to investigate possible infective endocarditis due to the MSSA bacteraemia, as persistent positive blood cultures suggest this likelihood.\n\nRationale:\nIn the presence of MSSA bacteraemia, the possibility of infective endocarditis exists, especially with persistent positive cultures. This scenario corresponds to indications for echocardiography to rule out endocarditis, given the high risk associated with persistent cultures or if there are any new murmurs or features suggestive of endocardial infection\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure that all relevant investigations are included, particularly any signs of endocarditis such as new murmurs or embolic phenomena. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries. If additional features such as new conduction abnormalities or persistent bacteremia continue, these should be escalated promptly.\n\nConsult Other Teams:\nCardiology should be consulted to discuss the findings and further management options, especially if the echocardiographic results confirm endocarditis or other cardiac involvement."
+  },
+  {
+    "case_id": "1676419",
+    "timestamp": "2025-05-17T20:11:55.857660",
+    "clinical_context": "67M with heart failure and new murmur.",
+    "clinical_question": "?valvular disease",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated within 24 hours to assess for valvular disease in the context of heart failure and a new murmur. This is due to the possibility of significant valvular pathology, such as mitral regurgitation or aortic stenosis, which may be contributing to the patient's heart failure symptoms\u30104:13\u2020RHH_Echo_Indications.txt\u3011.\n\nRationale:\nThe presence of a new murmur in a patient with heart failure raises suspicion for significant valvular heart disease, such as mitral regurgitation, which could worsen heart failure. These conditions require prompt evaluation to guide management\u30104:13\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nCardiology."
+  },
+  {
+    "case_id": "1740805",
+    "timestamp": "2025-05-17T20:14:54.904846",
+    "clinical_context": "78M with heart failure and a new murmur",
+    "clinical_question": "?valvular disease",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated within 24 hours to evaluate the new murmur and potential valvular disease in the context of heart failure.\n\nRationale:\nThe presence of a new murmur in a patient with heart failure suggests possible valvular disease or other structural cardiac changes. This scenario requires timely assessment to determine the cause and guide appropriate management\u30104:1\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure prior investigations include an ECG (looking for arrhythmias or signs of LVH) and examination findings that document the new murmur. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nCardiology consultation is recommended, especially if acute valvular intervention might be considered."
+  },
+  {
+    "case_id": "2057267",
+    "timestamp": "2025-05-17T20:16:56.070824",
+    "clinical_context": "78M with a new murmur and heart failure.",
+    "clinical_question": "?valvular disease",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated, to be conducted within 24 hours. This is based on the clinical presentation of a new murmur associated with heart failure which necessitates assessment for potential valvular disease severity and function.\n\nRationale:\nThe presence of a new murmur in the context of heart failure strongly suggests a change in cardiac status that requires urgent evaluation to determine the severity of potential valvular disease, which aligns with the inpatient indications for such scenarios\u30104:1\u2020RHH_Echo_Indications.txt\u3011. \n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Given the acute presentation, ensure that all necessary prior investigations such as ECG and clinical examination findings are documented to support the inpatient echocardiogram request. Recommendations are based on clinical appropriateness criteria, but if there are any further queries, discussion with the Cardiology team is advised.\n\nConsult Other Teams:\nCardiology team discussions are advised to ensure optimal management given the new cardiac findings."
+  },
+  {
+    "case_id": "1225580",
+    "timestamp": "2025-05-17T20:19:21.973302",
+    "clinical_context": "78M with a new murmur and heart failure.",
+    "clinical_question": "?valuvlar heart disease\n",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated within 24 hours. The clinical scenario of a new murmur and heart failure suggests potential mitral regurgitation (MR) or other valvular pathology which requires assessment of MR severity and left ventricular function\u30104:8\u2020source\u3011.\n\nRationale:\nThe presence of a new murmur in conjunction with heart failure could indicate significant valvular heart disease, which needs urgent evaluation. Prompt assessment is crucial to diagnose potential complications such as acute mitral regurgitation or aortic stenosis\u30104:8\u2020source\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. This recommendation is based on the clinical appropriateness criteria. If there are any queries or further details needed, please discuss them with the Cardiology team.\n\nConsult Other Teams:\nNone."
+  },
+  {
+    "case_id": "2248730",
+    "timestamp": "2025-05-17T20:24:16.885765",
+    "clinical_context": "78M with a new murmur and heart failure.",
+    "clinical_question": "?valvular heart disease",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated within 24 hours for the assessment of valvular heart disease, particularly concerning the severity and impact of the murmur and heart failure in this context\u30104:8\u2020RHH_Echo_Indications.txt\u3011.\n\nRationale:\nThe presence of a new murmur and heart failure suggests a potential acute change in valvular function or new valvular pathology. In this scenario, inpatient evaluation is appropriate to determine the severity of involvement and guide urgent management.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure prior investigations and relevant clinical details, such as the nature of the murmur and any accompanying symptoms, are available for the echocardiography team. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nDiscuss with the Cardiology team for further management and potential intervention based on echocardiogram findings."
+  },
+  {
+    "case_id": "7153721",
+    "timestamp": "2025-05-17T20:34:13.024419",
+    "clinical_context": "68M with a murmur and heart failure.",
+    "clinical_question": "?new heart failure",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24 hours.\n\nRationale:\nThe presence of a murmur and new heart failure aligns with the clinical indication for assessing mitral regurgitation (MR) severity and left ventricle (LV) function, particularly when a new pansystolic murmur is noted, as per the RHH Echo Indications\u30104:1\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Given the new murmur and heart failure, a timely echocardiogram is needed to assess the potential for mitral regurgitation or other structural issues. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nCardiology."
+  },
+  {
+    "case_id": "3018759",
+    "timestamp": "2025-05-17T23:01:51.711466",
+    "clinical_context": "457hbh",
+    "clinical_question": "vdv",
+    "ai_response": "More information is required. Please provide further clinical details including symptoms/signs, relevant investigations, age, and any suspicion of a cardiac source or specific condition. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries."
+  },
+  {
+    "case_id": "8588902",
+    "timestamp": "2025-05-17T23:09:20.049719",
+    "clinical_context": "dfsf",
+    "clinical_question": "sdfsdf",
+    "ai_response": "More information is required. Please provide the patient's age, symptoms, signs, relevant investigations, and any specific conditions or clinical scenarios related to the request. \n\nNext Steps:\nPlease provide further clinical details including the missing information as stated above. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nNone."
+  },
+  {
+    "case_id": "2768891",
+    "timestamp": "2025-05-17T23:10:22.500177",
+    "clinical_context": "58M with a new murmur, admitted for cellulitis.",
+    "clinical_question": "?cause of murmur",
+    "ai_response": "Recommendation:\nOutpatient echocardiogram is indicated within a few weeks, as the patient has a new murmur without acute cardiovascular symptoms.\n\nRationale:\nThe clinical context of the new murmur, without accompanying acute cardiovascular symptoms or features suggesting an urgent inpatient need, aligns with outpatient follow-up. No urgent inpatient indications such as endocarditis or acute valvular dysfunction due to new murmur have been provided\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nNone."
+  },
+  {
+    "case_id": "2787686",
+    "timestamp": "2025-05-17T23:11:40.646386",
+    "clinical_context": "58M with a new murmur, admitted for MSSA bacteraemia.",
+    "clinical_question": "?cause of murmur",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated within 24 hours due to the presence of a new murmur in the context of MSSA bacteraemia.\n\nRationale:\nThe presence of a fever coupled with a new murmur in a patient with positive blood cultures suggests the possibility of endocarditis, specifically the formation of vegetations or cardiac structural damage. This clinical scenario requires urgent evaluation with an inpatient echocardiogram to assess for these complications\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure that all relevant prior investigations, particularly positive blood cultures, are documented. Recommendations are based on clinical appropriateness criteria but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nCardiology to evaluate and manage potential infective endocarditis."
+  },
+  {
+    "case_id": "1424927",
+    "timestamp": "2025-05-17T23:13:25.028713",
+    "clinical_context": "58M admitted for fevers of unclear aetiology.",
+    "clinical_question": "?cause of fevers",
+    "ai_response": "Recommendation:\nMore information is required. Please provide details regarding any signs of endocarditis, such as a new murmur or positive blood cultures, and any specific risk factors for infective endocarditis or other cardiac issues.\n\nRationale:\nAn echocardiogram for fevers of unclear aetiology is not typically indicated unless there are additional risk factors or clinical findings such as a new murmur, positive blood cultures, or risk factors for infective endocarditis\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nPlease provide further clinical details including any suspected cardiac or endocarditis signs, and any relevant investigation results such as blood cultures. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nNone."
+  }
+]

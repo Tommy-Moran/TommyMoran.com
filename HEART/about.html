@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About HEART | Hobart Echo Appropriateness Review Tool</title>
+    <link rel="stylesheet" href="css/heart.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>About HEART</h1>
+        </header>
+        
+        <main class="about-content">
+            <div class="about-section-box">
+                <section>
+                    <h2>What is HEART?</h2>
+                    <p>HEART (Hobart Echo Appropriateness Review Tool) is a clinical decision support tool designed to help clinicians at the Royal Hobart Hospital determine the appropriateness of echocardiogram requests based on validated clinical criteria.</p>
+                    
+                    <p>This tool assists in assessing:</p>
+                    <ul>
+                        <li>If an echocardiogram is indicated for a specific clinical scenario</li>
+                        <li>The appropriate timeframe for the study</li>
+                        <li>Whether it should be performed as an inpatient or outpatient</li>
+                        <li>If consultation with other specialist teams is recommended</li>
+                    </ul>
+                </section>
+            </div>
+            
+            <div class="about-section-box">
+                <section>
+                    <h2>How It Works</h2>
+                    <p>HEART uses artificial intelligence to analyze the clinical context and specific question provided by the clinician. It references comprehensive, evidence-based echocardiogram appropriateness criteria to generate recommendations.</p>
+                    
+                    <p>The assessment process includes:</p>
+                    <ol>
+                        <li>Screening against echo inappropriateness criteria</li>
+                        <li>Matching the clinical scenario to validated indications</li>
+                        <li>Determining the appropriate setting and timeframe</li>
+                        <li>Identifying when specialist consultation is needed</li>
+                    </ol>
+                    
+                    <p>Each assessment is assigned a unique case ID for audit and reference purposes.</p>
+                </section>
+            </div>
+            
+            <div class="about-section-box">
+                <section>
+                    <h2>Important Safety Information</h2>
+                    <p><strong>HEART is a clinical guidance tool only and does not replace clinical judgment.</strong></p>
+                    <p>Recommendations are based on validated appropriateness criteria, but should always be evaluated in the context of the individual patient's clinical situation. When in doubt, please discuss with the Cardiology team. The HEART application is fully compliant with APP (Australian Privacy Principles) and HIPAA (Health Insurance Portability and Accountability Act) standards, ensuring the secure handling, storage, and transmission of sensitive health information. It is designed to assess common clinical scenarios. Complex cases should be discussed with the Cardiology team. It is important that patient identifiers not be used.</p>
+                </section>
+            </div>
+            
+            <div class="about-section-box">
+                <section>
+                    <h2>Development</h2>
+                    <p>HEART was developed by Dr. Tommy Moran, Cardiology Advanced Trainee at the Royal Hobart Hospital, in collaboration with the Department of Cardiology.</p>
+                    <p>For questions, feedback, or support, please use the <a href="help.html">Help</a> page.</p>
+                </section>
+            </div>
+            
+            <div class="about-section-box">
+                <section>
+                    <h2>References</h2>
+                    <ul>
+                        <li>ACCF/ASE/AHA/ASNC/HFSA/HRS/SCAI/SCCM/SCCT/SCMR 2011 Appropriate Use Criteria for Echocardiography (J Am Soc Echocardiogr. 2011)</li>
+                        <li>ACC/AATS/AHA/ASE/ASNC/HRS/SCAI/SCCT/SCMR/STS 2019 Appropriate Use Criteria for Multimodality Imaging (JACC. 2019)</li>
+                        <li>2020 ACC/AHA Valvular Heart Disease Guidelines (JACC. 2021)</li>
+                        <li>2021 ESC Heart Failure Guidelines (EHJ. 2021)</li>
+                        <li>Medicare Cardiac Echo Item Numbers (Australia)</li>
+                        <li>Development and validation of a screening tool for the identification of inappropriate transthoracic echocardiograms (BMJ Open. 2016)</li>
+                    </ul>
+                </section>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="help.html">Help</a>
+            </div>
+            <div class="copyright">
+                &copy; Tommy Moran <span id="current-year">2025</span>. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Set current year in copyright
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html> 

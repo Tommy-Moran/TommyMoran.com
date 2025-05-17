@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support | HEART</title>
+    <link rel="stylesheet" href="css/heart.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Help & Support</h1>
+        </header>
+        
+        <main class="help-content">
+            <section class="help-intro">
+                <h2>Need Assistance?</h2>
+                <p>If you have questions about using HEART, need technical support, or want to provide feedback, please fill out the form below. </p>
+            </section>
+            
+            <section class="contact-form-section">
+                <form id="help-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="" disabled selected>Select a subject</option>
+                            <option value="technical">Technical Issue</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="question">Question about Recommendations</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="submit-button">Send Message</button>
+                    </div>
+                </form>
+                
+                <!-- Success message (hidden by default) -->
+                <div id="success-message" class="success-message">
+                    <h3>Thank You!</h3>
+                    <p>Your message has been sent. We'll get back to you as soon as possible.</p>
+                </div>
+            </section>
+            
+            <section class="faq-section">
+                <h2>Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <h3>What should I do if I disagree with HEART's recommendation?</h3>
+                    <p>HEART is designed as a decision support tool and does not replace clinical judgment. If you disagree with the recommendation, please discuss with the Cardiology team directly via the hospital switchboard (03 6166 8308).</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>Can I use HEART for pediatric patients?</h3>
+                    <p>HEART includes indications for neonates, but comprehensive pediatric echo appropriateness criteria may be limited. For pediatric cases, consultation with the Pediatric Cardiology team is recommended.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>What happens to the clinical information I enter?</h3>
+                    <p>Clinical information is stored securely without patient identifiers for audit and tool improvement purposes. Please never include patient names, DOB, URN, or other identifiers.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+            </div>
+            <div class="copyright">
+                &copy; Tommy Moran <span id="current-year">2025</span>. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Set current year in copyright
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Handle form submission
+        document.getElementById('help-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // Send to backend
+            fetch('/HEART/help', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    message: message
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Show success message and hide form
+                document.getElementById('help-form').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('There was an error sending your message. Please try again later.');
+            });
+        });
+    </script>
+</body>
+</html> 

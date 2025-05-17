@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEART: Clinical Context | Hobart Echo Appropriateness Review Tool</title>
+    <link rel="stylesheet" href="css/heart.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Clinical Context Checker</h1>
+        </header>
+        
+        <main>
+            <div class="context-warning-box">
+                <p style="font-weight: 400;">
+                  This tool uses a custom AI model trained on cardiology guidelines and validated criteria to assess inpatient echocardiogram requests.<br>
+                  <strong>Do not</strong> include patient-identifiable details such as names, date of birth, URNs, or addresses.
+                </p>
+            </div>
+            
+            <form id="clinical-form" class="clinical-form">
+                <div class="form-group">
+                    <label for="clinical-context">Clinical Context</label>
+                    <textarea 
+                        id="clinical-context" 
+                        name="clinical-context" 
+                        rows="8" 
+                        placeholder="Enter clinical context: history, exam findings, investigations, etc. (Do not use patient identifiers)."
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clinical-question">Specific Clinical Question</label>
+                    <textarea 
+                        id="clinical-question" 
+                        name="clinical-question" 
+                        rows="5" 
+                        placeholder="What is the specific clinical question you would like to investigate with an echocardiogram?"
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="back-button" onclick="window.location.href='index.html'">Back</button>
+                    <button type="submit" class="submit-button">Submit</button>
+                </div>
+            </form>
+            
+            <!-- Loading animation (hidden by default) -->
+            <div id="loading-screen" class="loading-screen">
+                <h2>Assessing Echo Appropriateness...</h2>
+                <div class="spinner"></div>
+                <p>Please wait while we analyze your request...</p>
+            </div>
+            
+            <!-- Results container (hidden by default) -->
+            <div id="results-container" class="results-container">
+                <div class="case-id">
+                    <span>Case ID: </span><span id="case-id-value"></span>
+                </div>
+                
+                <div class="result-section recommendation">
+                    <h3>Recommendation</h3>
+                    <div id="recommendation-content"></div>
+                </div>
+                
+                <div class="result-section rationale">
+                    <h3>Rationale</h3>
+                    <div id="rationale-content"></div>
+                </div>
+                
+                <div class="result-section next-steps">
+                    <h3>Next Steps</h3>
+                    <div id="next-steps-content"></div>
+                    <div id="inpatient-actions" class="inpatient-actions">
+                        <button id="copy-context-button" class="action-button">Copy Clinical Context</button>
+                        <a id="inpatient-form-link" href="https://cms-cardiologysouth.health.local/icvis" target="_blank" class="action-button">Open RHH Echo Inpatient Request Form</a>
+                    </div>
+                </div>
+                
+                <div class="result-section consult">
+                    <h3>Consider Consulting</h3>
+                    <div id="consult-content"></div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="new-assessment-button" class="back-button">Edit Context</button>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="help.html">Help</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/heart.js"></script>
+</body>
+</html> 
