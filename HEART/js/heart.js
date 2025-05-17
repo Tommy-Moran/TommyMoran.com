@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingScreen.style.display = 'flex';
             
             // Send request to the backend
-            fetch('/HEART/assess', {
+            fetch('https://tommymoran-com-chatbot.onrender.com/HEART/assess', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
