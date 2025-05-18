@@ -103,5 +103,362 @@
     "clinical_context": "58M with a murmur, heart failure",
     "clinical_question": "?cause",
     "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated within 24 hours.\n\nRationale:\nThe presence of a new murmur and heart failure in this case suggests a need to assess for potential structural heart or valvular pathology. New heart murmurs associated with heart failure symptoms typically warrant prompt inpatient evaluation to determine the underlying cause and guide urgent management\u30104:14\u2020source\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Recommendations are based on clinical appropriateness criteria but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "1994676",
+    "timestamp": "2025-05-18T13:53:41.862516",
+    "clinical_context": "85F with heart failure",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nMore information is required. Please provide: current symptoms and signs of heart failure, recent chest X-ray (CXR) and C-reactive protein (CRP) results (or equivalent to assess for infection/non-cardiac causes), evidence of infection or sepsis, and any relevant investigations already performed (e.g., BNP, troponin).\n\nRationale:\nFor patients over 75 with suspected heart failure, it is essential to confirm the likelihood of heart failure and to ensure that infection or non-cardiac causes have been excluded or investigated before recommending echocardiography. The clinical context does not include symptoms, signs, or the necessary investigations (CXR and CRP) to meet appropriateness criteria.\n\nNext Steps:\nPlease provide further clinical details, including:\n- Symptoms and signs of heart failure (e.g., dyspnoea, orthopnoea, pulmonary oedema)\n- Recent CXR and CRP results to help assess for alternative diagnoses\n- Any evidence of infection or sepsis\n- Relevant investigations (BNP, troponin)\nRecommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology"
+  },
+  {
+    "case_id": "1810938",
+    "timestamp": "2025-05-18T13:54:15.099921",
+    "clinical_context": "65F with heart failure",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nMore information is required. Please provide: evidence that infection and other non-cardiac causes have been excluded or investigated (e.g., most recent CXR and CRP results, or explicit documentation that infection is not suspected), as well as any recent relevant investigations and the reason for inpatient assessment if the patient is clinically stable.\n\nRationale:\nFor patients with heart failure, it is necessary to confirm that non-cardiac causes such as infection have been excluded or appropriately investigated before recommending an echocardiogram, particularly for new or acute presentations. Required investigations include chest X-ray and CRP (or equivalent). This ensures that the indication for echocardiogram is appropriate and meets clinical criteria.\n\nNext Steps:\nPlease provide further clinical details including results of CXR and CRP (or equivalent), recent relevant investigations, and clarify if there is any suspicion for infection or alternative diagnosis. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "1482037",
+    "timestamp": "2025-05-18T13:54:42.546051",
+    "clinical_context": "Sepsis and new murmur",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated and should be performed within 24 hours.\n\nRationale:\nThe presence of sepsis with a new murmur is a validated clinical indication for urgent inpatient echocardiography due to high suspicion for infective endocarditis. This aligns with criteria for acute assessment where endocarditis is suspected with sepsis and a new murmur. This scenario requires prompt evaluation as per clinical appropriateness standards.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form.\nInitiate or continue appropriate assessment and management for suspected endocarditis.\nBlood cultures and other relevant investigations should be collected prior to starting antibiotics if not already done.\nRecommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology\nInfectious Diseases"
+  },
+  {
+    "case_id": "2037337",
+    "timestamp": "2025-05-18T14:17:09.684366",
+    "clinical_context": "65M with MSSA bacteraemia, new murmur and heart failure symptoms.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours to investigate possible infective endocarditis in the setting of MSSA bacteraemia, new murmur, and heart failure symptoms.\n\nRationale:  \nThe presence of MSSA bacteraemia, a new murmur, and symptoms of heart failure strongly indicate possible infective endocarditis and acute valvular involvement, each of which warrants urgent inpatient echocardiography. These are validated acute inpatient indications regardless of previous echo findings.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures and other relevant investigations are underway prior to the study. Initiate discussion with the Cardiology and Infectious Diseases teams. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases, Cardiothoracics"
+  },
+  {
+    "case_id": "7139104",
+    "timestamp": "2025-05-18T14:18:55.681946",
+    "clinical_context": "65M with MSSA bacteraemia, new murmur and heart failure symptoms.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours to assess for infective endocarditis.\n\nRationale:  \nThe patient has MSSA bacteraemia, a new murmur, and symptoms of heart failure. This combination of definite bacteraemia with a new murmur and clinical features of heart failure meets criteria for urgent inpatient echocardiography to assess for infective endocarditis and haemodynamic compromise. Delayed assessment could miss acute valvular dysfunction or endocarditis complications.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures, ECG, clinical examination, and other relevant investigations are performed prior to the study. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases, Cardiothoracic Surgery."
+  },
+  {
+    "case_id": "2863893",
+    "timestamp": "2025-05-18T14:20:53.677325",
+    "clinical_context": "65M with MSSA bacteraemia, new murmur and heart failure symptoms.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours to assess for infective endocarditis given MSSA bacteraemia, new murmur, and heart failure symptoms.\n\nRationale:  \nMSSA bacteraemia combined with a new murmur and symptoms of heart failure strongly indicate a high risk of infective endocarditis. Inpatient echocardiography is required urgently in this scenario to assess for vegetations, valve dysfunction, and cardiac complications. This scenario meets the criteria for high-risk endocarditis and acute cardiac decompensation, which warrant high acuity assessment.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures, ECG, and other relevant investigations are performed prior to the echo. Initiate discussions regarding antimicrobial and cardiac management if not already underway. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "2893592",
+    "timestamp": "2025-05-18T14:21:28.975233",
+    "clinical_context": "56M with MSSA bacteraemia, new murmur and heart failure.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours to assess for infective endocarditis and cardiac function.\n\nRationale:  \nThe patient has MSSA bacteraemia, a new murmur, and signs of heart failure, all of which are high-risk features for infective endocarditis. In this context, urgent inpatient echocardiography is indicated to evaluate for valvular infection and associated complications. Inpatient assessment is required given the acute presentation and potential for rapid clinical deterioration.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures, ECG, and chest X-ray are obtained prior to the echocardiogram if not already performed. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology; Infectious Diseases."
+  },
+  {
+    "case_id": "2831195",
+    "timestamp": "2025-05-18T14:24:52.258469",
+    "clinical_context": "56M with MSSA bacteraemia, new murmur and heart failure.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours to assess for infective endocarditis.\n\nRationale:  \nThe presence of Staphylococcus aureus bacteraemia, a new murmur, and heart failure constitutes a strong indication for urgent inpatient echocardiography to assess for infective endocarditis, as per validated clinical criteria. Early imaging is required due to the high risk and potential for rapid deterioration.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures, clinical examination, ECG, and relevant laboratory investigations are performed prior to the echocardiogram. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases, Cardiothoracic Surgery."
+  },
+  {
+    "case_id": "1157170",
+    "timestamp": "2025-05-18T14:30:03.095339",
+    "clinical_context": "56M with MSSA bacteraemia, new murmur and heart failure.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24 hours to assess for infective endocarditis given MSSA bacteraemia, new murmur, and heart failure.\n\nRationale:\nThe presence of Staphylococcus aureus bacteraemia, a new murmur, and signs of heart failure is a validated indication for urgent inpatient echocardiography to assess for infective endocarditis. MSSA bacteraemia with new cardiac signs is high-risk and echocardiography should not be delayed.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure that blood cultures and all relevant investigations are performed prior to the echocardiogram. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "3294431",
+    "timestamp": "2025-05-18T14:36:10.968588",
+    "clinical_context": "56m with mssa bacterameia, new murmur, heart failure",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours to assess for infective endocarditis.\n\nRationale:  \nThe presence of MSSA bacteraemia, a new murmur, and clinical heart failure constitutes a classic indication for urgent inpatient echocardiography to assess for infective endocarditis. These are all major criteria for endocarditis, and urgent imaging is required to guide management and identify valvular or structural complications.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form for urgent assessment. Ensure blood cultures, clinical examination, ECG, chest X-ray, and relevant laboratory tests are up to date. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases"
+  },
+  {
+    "case_id": "2054078",
+    "timestamp": "2025-05-18T14:47:51.276148",
+    "clinical_context": "56m with mssa bacterameia, new murmur, heart failure",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours to assess for infective endocarditis in the setting of MSSA bacteraemia, new murmur, and heart failure.\n\nRationale:  \nThe combination of MSSA bacteraemia, a new murmur, and heart failure is a high-risk scenario for infective endocarditis. Inpatient echocardiography is urgently indicated to confirm the diagnosis, assess severity, and guide management. Delayed assessment may compromise patient safety.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure appropriate blood cultures, clinical evaluation, ECG, and other standard investigations are performed prior to the echocardiogram. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases, Cardiothoracic Surgery."
+  },
+  {
+    "case_id": "1073636",
+    "timestamp": "2025-05-18T14:48:21.758183",
+    "clinical_context": "56m with an incidental finding of a new murmur.",
+    "clinical_question": "?cause",
+    "ai_response": "Recommendation:  \nOutpatient echocardiogram is indicated within a few weeks to assess the new murmur and exclude significant valvular heart disease.\n\nRationale:  \nA new murmur without cardiovascular symptoms or signs does not require urgent inpatient echocardiography, but outpatient assessment is appropriate to evaluate for underlying valvular or structural heart disease.\n\nNext Steps:  \nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Outpatient echo should be performed within a few weeks, or sooner if symptoms develop. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone."
+  },
+  {
+    "case_id": "1550488",
+    "timestamp": "2025-05-18T14:49:05.270808",
+    "clinical_context": "56m with an incidental finding of a murmur. Unclear if new. He had an echo six months ago with mild aortic stenosis.",
+    "clinical_question": "?cause",
+    "ai_response": "Recommendation:  \nOutpatient echocardiogram is indicated for routine surveillance of mild aortic stenosis, with repeat imaging typically every 3\u20135 years. A new echocardiogram is not indicated at this time unless there are new symptoms or a change in clinical status.\n\nRationale:  \nThe patient had an echocardiogram six months ago showing mild aortic stenosis and there is no clear evidence of this being a new murmur or any new cardiovascular symptoms. Routine surveillance for mild aortic stenosis does not require repeat echocardiogram within 12 months in the absence of clinical changes.\n\nNext Steps:  \nNo immediate echocardiogram is required. Routine outpatient surveillance can be continued with repeat echocardiography in 3\u20135 years, or sooner if there are new symptoms or clinical changes. If there is uncertainty regarding the murmur, or new symptoms develop, consider earlier repeat assessment. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone."
+  },
+  {
+    "case_id": "3279095",
+    "timestamp": "2025-05-18T14:56:23.796106",
+    "clinical_context": "56m with an incidental finding of a murmur. Unclear if new. He had an echo six months ago with mild aortic stenosis.",
+    "clinical_question": "?cause",
+    "ai_response": "Recommendation:  \nOutpatient echocardiogram is indicated within a few weeks to reassess the murmur and monitor for progression of aortic stenosis.\n\nRationale:  \nThe patient has no new cardiovascular symptoms or signs requiring urgent inpatient assessment and had a recent echocardiogram showing only mild aortic stenosis. Outpatient reassessment is appropriate to exclude progression or change, especially since it is unclear if the murmur is new. Inpatient echocardiogram is not indicated in the absence of acute symptoms or clinical deterioration.\n\nNext Steps:  \nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Outpatient echocardiogram should be performed within a few weeks or sooner if symptoms develop. Ensure relevant clinical details and previous echo report are provided. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone."
+  },
+  {
+    "case_id": "1691648",
+    "timestamp": "2025-05-18T14:56:56.298971",
+    "clinical_context": "56m with an incidental finding of a murmur. Unclear if new. He had an echo six months ago with mild aortic stenosis.",
+    "clinical_question": "?cause",
+    "ai_response": "Recommendation:  \nOutpatient echocardiogram is indicated within a few weeks to assess the murmur and monitor for progression of aortic stenosis.\n\nRationale:  \nThere are no acute cardiovascular symptoms or clinical features suggesting decompensation or urgent cardiac pathology. In the setting of a previously known mild aortic stenosis and an unclear new murmur, routine outpatient follow-up echocardiography is appropriate to assess for any progression. Inpatient echocardiography is not indicated as there are no new symptoms or signs of acute deterioration.\n\nNext Steps:  \nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Outpatient echo should be performed within a few weeks or sooner if symptoms develop. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone."
+  },
+  {
+    "case_id": "2026087",
+    "timestamp": "2025-05-18T14:58:17.610412",
+    "clinical_context": "56m with an incidental finding of a murmur. Unclear if new. but he did have an echo six months ago with mild aortic stenosis.",
+    "clinical_question": "?cause",
+    "ai_response": "Recommendation:  \nOutpatient echocardiogram is indicated within 3\u20135 years for routine surveillance of mild aortic stenosis, unless there are new symptoms or clinical changes.\n\nRationale:  \nIn the absence of new symptoms or a clear change in clinical status, and with a recent echocardiogram showing mild aortic stenosis six months ago, neither inpatient nor early outpatient echocardiogram is indicated. Periodic surveillance of mild aortic stenosis is appropriate at intervals of 3\u20135 years. If there are any new symptoms or clinical changes, earlier reassessment would be warranted.\n\nNext Steps:  \nNo immediate echocardiogram is required. Plan for routine outpatient surveillance echo in 3\u20135 years or sooner if new symptoms develop. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone."
+  },
+  {
+    "case_id": "1818451",
+    "timestamp": "2025-05-18T14:58:51.485407",
+    "clinical_context": "78M with moderate aortic regurgitation.",
+    "clinical_question": "?status",
+    "ai_response": "Recommendation:  \nOutpatient echocardiogram is indicated for surveillance of moderate aortic regurgitation. The appropriate interval for routine surveillance is every 1\u20132 years, provided there are no new symptoms or clinical changes.\n\nRationale:  \nRoutine surveillance echocardiography is appropriate in patients with moderate aortic regurgitation to monitor for progression. In the absence of symptoms or acute clinical findings, inpatient assessment is not required. Outpatient echo every 1\u20132 years is the standard surveillance interval unless new symptoms, signs of heart failure, or left ventricular dysfunction develop.\n\nNext Steps:  \nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Arrange outpatient echocardiogram within 1\u20132 years. If new symptoms or clinical deterioration occur, re-assess for more urgent review. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone."
+  },
+  {
+    "case_id": "3182521",
+    "timestamp": "2025-05-18T14:59:51.949210",
+    "clinical_context": "78M with aortic regurgitation murmur and MSSA bacteraemia",
+    "clinical_question": "?status",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24 hours.\n\nRationale:  \nThe presence of aortic regurgitation murmur in the context of MSSA bacteraemia constitutes a high-risk scenario for infective endocarditis, which requires urgent inpatient echocardiographic assessment. Early imaging is necessary to assess for vegetations, valve destruction, or other complications.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures and other relevant investigations are performed before the echocardiogram. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "6440547",
+    "timestamp": "2025-05-18T15:00:26.628850",
+    "clinical_context": "78F with sepsis under gen med. Has a murmur.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nMore information is required. Please provide details on whether there are positive blood cultures, evidence of infection with an identified organism known to cause endocarditis, or any new clinical features suggestive of endocarditis (such as new or changing murmur, embolic phenomena, or stigmata of endocarditis).\n\nRationale:  \nAn inpatient echocardiogram for suspected infective endocarditis generally requires the presence of a positive blood culture for an organism known to cause endocarditis, or characteristic clinical features such as a new or changing murmur, embolic complications, or supporting stigmata. Current information does not specify blood culture results or confirm clinical suspicion beyond a murmur and general sepsis.\n\nNext Steps:  \nPlease provide further details including results of blood cultures, presence of new or changing murmur, features of embolic phenomena, or other stigmata of endocarditis. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology; Infectious Diseases."
+  },
+  {
+    "case_id": "1462471",
+    "timestamp": "2025-05-18T15:01:36.046585",
+    "clinical_context": "78F with sepsis under gen med. Has a murmur. BCs are negative. CRP 300",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nMore information is required. Please provide whether there is a new murmur, any history of intravenous drug use, the presence of prosthetic valves or intracardiac devices, clinical features of heart failure, and whether there has been any recent echocardiogram.\n\nRationale:  \nTo determine the appropriateness of inpatient echocardiogram in suspected infective endocarditis, key details are required, including whether the murmur is new, the presence of any prosthetic material, intracardiac device, clinical features of heart failure, or high suspicion for IE. Negative blood cultures and the absence of new murmur or other major risk features may make inpatient echo inappropriate. These details are necessary for accurate scenario-matching and to avoid unnecessary scans.\n\nNext Steps:  \nPlease provide further clinical details including whether the murmur is new, any history of intravenous drug use, the presence of prosthetic valves or intracardiac devices, clinical features of heart failure, and details of any recent echocardiogram. Recommendations are based on clinical appropriateness criteria but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology."
+  },
+  {
+    "case_id": "8901989",
+    "timestamp": "2025-05-18T15:02:46.387060",
+    "clinical_context": "78F with sepsis under gen med. Has a murmur. BCs are negative. CRP 300.\n\nI'm not sure if the murmur is new. The only prosthetic material is a knee replacement. No intracardiac device, no clinical features of heart failure, not a high suspicion for IE.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nEchocardiogram is not indicated during this admission.\n\nRationale:  \nThere is no strong suspicion of infective endocarditis: blood cultures are negative, there is no intracardiac prosthetic material or device, no clinical features suggestive of IE, and it is unclear if the murmur is new. In the absence of positive blood cultures, a new murmur, or high clinical suspicion for IE, echocardiography is not indicated inpatient. The presence of a knee prosthesis alone does not increase concern for intracardiac infection.\n\nNext Steps:  \nAn echocardiogram is not indicated during this admission. If clinical suspicion for infective endocarditis increases (e.g., new murmur confirmed, positive blood cultures, features of heart failure, or embolic/vascular phenomena), reassess need for echo and discuss with Cardiology. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone."
+  },
+  {
+    "case_id": "1523456",
+    "timestamp": "2025-05-18T15:09:33.946640",
+    "clinical_context": "57M with MSSA",
+    "clinical_question": "?IE\n",
+    "ai_response": "Recommendation:  \nMore information is required. Please specify whether the patient has positive blood cultures, new murmur, clinical features suggestive of endocarditis (such as embolic phenomena or stigmata of endocarditis), fever, or other supporting findings. Additionally, please provide details of any prior echocardiogram within this admission.\n\nRationale:  \nA diagnosis of infective endocarditis (IE) requires specific clinical features such as positive blood cultures, new heart murmur, embolic phenomena, or other suggestive findings. Echocardiography is not indicated solely on the basis of MSSA bacteraemia unless there are additional clinical features or risk factors for endocarditis. These details are necessary to determine if an inpatient echocardiogram is appropriate.\n\nNext Steps:  \nPlease provide further clinical details including the presence of positive blood cultures, new or changing heart murmur, clinical features suggestive of endocarditis, fever, embolic phenomena, and history of any prior echocardiogram during this admission. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nNone, unless endocarditis is suspected, in which case consult Cardiology and Infectious Diseases."
+  },
+  {
+    "case_id": "3766804",
+    "timestamp": "2025-05-18T15:19:18.519467",
+    "clinical_context": "57M with MSSA",
+    "clinical_question": "?IE\n",
+    "ai_response": "Recommendation:  \nMore information is required. Please specify whether the patient has any clinical features or risk factors suggestive of infective endocarditis, such as a new murmur, prosthetic valves, cardiac devices, known valvular disease, or evidence of embolic phenomena.\n\nRationale:  \nThe indication for inpatient echocardiogram in the context of MSSA requires additional details. Echocardiography is appropriate if there is a new murmur, prosthetic material, cardiac device, underlying valvular disease, or clinical suspicion or features of endocarditis. Without these specific features, echocardiogram may not be indicated as an inpatient investigation.\n\nNext Steps:  \nPlease provide further clinical details, including whether there is a new murmur, prosthetic material, cardiac device, underlying valvular disease, or other features suggestive of infective endocarditis (such as embolic phenomena or persistent bacteraemia). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "3189680",
+    "timestamp": "2025-05-18T15:23:36.417658",
+    "clinical_context": "57M with MSSA",
+    "clinical_question": "?IE\n",
+    "ai_response": "Recommendation:\nMore information is required. Please specify whether there is evidence of persistent bacteraemia, new murmur, cardiac or embolic phenomena, prosthetic valves, intracardiac devices, or other clinical features suggestive of infective endocarditis.\n\nRationale:\nAn echocardiogram is indicated in the context of Staphylococcus aureus bacteraemia only if there are features suspicious for infective endocarditis, such as persistent positive blood cultures, a new murmur, cardiac/embolic phenomena, prosthetic material, or other signs as detailed in the criteria. Without this information, appropriateness for inpatient echocardiography cannot be determined.\n\nNext Steps:\nPlease provide further clinical details, specifically the presence or absence of persistent bacteraemia, new murmurs, prosthetic material, or clinical features of endocarditis (e.g., embolic phenomena). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "2876360",
+    "timestamp": "2025-05-18T15:24:09.622821",
+    "clinical_context": "58M with MSSA bacteraemia",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24\u201348 hours to assess for infective endocarditis.\n\nRationale:  \nMSSA bacteraemia is a significant risk factor for infective endocarditis. In such cases, inpatient echocardiography is appropriate to assess for the presence of vegetations, valvular involvement, or other cardiac complications. Early imaging is essential to guide management.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure that blood cultures, clinical examination for stigmata of endocarditis, and other relevant investigations (such as ECG and inflammatory markers) are performed. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "2758942",
+    "timestamp": "2025-05-18T15:33:29.779897",
+    "clinical_context": "58M with MSSA bacteraemia",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24\u201348 hours to assess for infective endocarditis.\n\nRationale:  \nMSSA bacteraemia is a recognised indication for inpatient echocardiography to assess for infective endocarditis, as Staphylococcus aureus bacteraemia carries a significant risk for endocardial involvement. Echocardiography is needed irrespective of the presence or absence of cardiac symptoms or signs.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Blood cultures and other relevant investigations should be performed prior to the echo. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "8628037",
+    "timestamp": "2025-05-18T15:35:54.773918",
+    "clinical_context": "58M with MSSA bacteraemia",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:  \nInpatient echocardiogram is indicated within 24\u201348 hours to assess for infective endocarditis.\n\nRationale:  \nMSSA bacteraemia is a recognised indication for inpatient echocardiography to assess for infective endocarditis. Timely echo is warranted even in the absence of a murmur or other classic features, as early imaging may alter management, especially for Staphylococcus aureus bacteraemia.\n\nNext Steps:  \nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures, ECG, and other relevant investigations are performed prior to the study. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "3813980",
+    "timestamp": "2025-05-18T15:42:13.130843",
+    "clinical_context": "58M with MSSA bacteraemia",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nMore information is required. Please provide the reason for admission, clinical context for the scan request, relevant examination findings (e.g., presence of murmur, fever, heart failure signs), and results of investigations (e.g., blood cultures, inflammatory markers, imaging).\n\nRationale:\nMinimum clinical information is required for safe and appropriate assessment. Basic scenario, examination findings, and investigation results are missing, which are essential for matching with validated clinical indications for echocardiography in suspected infective endocarditis.\n\nNext Steps:\nPlease provide details of the patient\u2019s admission diagnosis, relevant clinical context (such as symptoms and timing), examination findings (including new or changing murmur, or stigmata of endocarditis), and results of relevant investigations (blood cultures, echocardiogram findings if any, inflammatory markers, chest imaging). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2959622",
+    "timestamp": "2025-05-18T15:42:46.016379",
+    "clinical_context": "58M with MSSA bacteraemia.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nMore information is required. Please provide the reason for admission, clinical context for the scan request, relevant examination findings (e.g., presence of murmur, fever, heart failure signs), and results of investigations (e.g., blood cultures, inflammatory markers, imaging).\n\nRationale:\nMinimum clinical information is required for safe and appropriate assessment. Basic scenario, examination findings, and relevant investigations are missing. These are necessary to determine if inpatient echocardiography is indicated for suspected infective endocarditis or if outpatient or no echo is appropriate.\n\nNext Steps:\nPlease provide details of the patient\u2019s admission diagnosis, relevant clinical context for the scan, examination findings (e.g., murmur, evidence of heart failure), and results of investigations (including blood cultures, inflammatory markers, and any relevant imaging). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "4106204",
+    "timestamp": "2025-05-18T15:50:18.046686",
+    "clinical_context": "58M with MSSA bacteraemia",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nMore information is required. Please provide the reason for admission, clinical context for the scan request, relevant examination findings (e.g., presence of murmur, fever, heart failure signs), and results of investigations (e.g., blood cultures, inflammatory markers, imaging).\n\nRationale:\nMinimum clinical information is required for safe and appropriate assessment. Details on the patient's symptoms, physical examination findings, and relevant investigations are essential to determine the appropriateness of inpatient echocardiography in the context of bacteraemia and potential infective endocarditis.\n\nNext Steps:\nPlease provide details of the patient\u2019s admission diagnosis, relevant clinical context (including any symptoms or signs suggesting infective endocarditis), examination findings, and investigation results (including blood cultures, CRP, imaging, etc). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2465386",
+    "timestamp": "2025-05-18T15:51:07.483931",
+    "clinical_context": "58M with MSSA bacteraemia. Admitted for NoF. No signs of infection on examine. BCs negative. CRP 78",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nEchocardiogram is not indicated during this admission.\n\nRationale:\nThe patient with MSSA bacteraemia is now blood culture negative, has no signs of infection on examination, and no positive examination findings suggestive of endocarditis. In accordance with clinical appropriateness criteria, inpatient echocardiography for endocarditis is not indicated in the absence of ongoing bacteraemia, fever, new murmur, signs of cardiac involvement, or other high-risk features. There is no validated indication for either inpatient or outpatient echocardiogram in this scenario.\n\nNext Steps:\nAn echocardiogram is not indicated during this admission. If you feel it is still clinically required, discuss with the Cardiology team via the hospital switchboard (03 6166 8308). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "1154546",
+    "timestamp": "2025-05-18T15:51:54.275891",
+    "clinical_context": "58M with MSSA bacteraemia. Admitted for NoF. No signs of infection on examine. BCs x2 positive. CRP 78",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nMore information is required. Please provide further details regarding the clinical context, specifically the presence or absence of fever during admission, any cardiac examination findings (including murmurs or heart failure signs), and whether there are any embolic or immunological phenomena suggesting endocarditis.\n\nRationale:\nAssessment for infective endocarditis in the context of MSSA bacteraemia requires additional clinical details: fever, presence or absence of murmur, cardiac exam findings, heart failure signs, and any embolic or immunological features. Without these, it is not possible to determine if echocardiography is indicated.\n\nNext Steps:\nPlease provide further clinical details including:\n- Whether the patient is currently febrile or has had fever during admission\n- Cardiac examination findings (presence/absence of murmur, heart failure signs)\n- Evidence of any embolic or immunological phenomena (e.g., petechiae, Janeway lesions, splenomegaly, etc.)\n- Any new findings suggestive of endocarditis on clinical or other investigation\nRecommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2561595",
+    "timestamp": "2025-05-18T15:52:31.091221",
+    "clinical_context": "58M with MSSA bacteraemia. Admitted for NoF. No signs of infection on examine. BCs x2 positive. CRP 78. Fevers resolved. No peripheral stigmata of IE. No signs of heart failure.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nMore information is required. Please provide whether a new murmur is present on examination, results of transthoracic echocardiogram (if previously performed), and whether there is any evidence of intracardiac prosthetic material or pre-existing cardiac abnormality. \n\nRationale:\nFor suspected infective endocarditis in the setting of MSSA bacteraemia, echocardiography is indicated only if there are risk factors such as a new murmur, prosthetic valve or material, known valvular disease, or persistent bacteraemia. The absence or presence of a new murmur is a required detail for assessment, as is clarification regarding cardiac history or devices.\n\nNext Steps:\nPlease clarify whether a new murmur is present, and provide any history of prosthetic heart valves/devices or known valvular heart disease. If an echo has already been performed, please provide the result. Recommendations are based on clinical appropriateness criteria but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2188885",
+    "timestamp": "2025-05-18T15:53:10.333888",
+    "clinical_context": "58M with MSSA bacteraemia. Admitted for NoF. No signs of infection on examine. BCs x2 positive. CRP 78. Fevers resolved. No peripheral stigmata of IE. No signs of heart failure.\n\nNo new murmur on examination, no prior TTE. No evidence of intracardiac prosthetic material or pre-existing cardiac abnormality.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nOutpatient echocardiogram is indicated within 2\u20134 weeks to screen for infective endocarditis in the setting of MSSA bacteraemia without ongoing fever, clinical cardiac findings, or prosthetic material.\n\nRationale:\nIn the absence of clinical cardiac findings (no new murmur, no heart failure, no peripheral stigmata), no intracardiac prosthetic material, resolution of fevers, and no evidence of pre-existing cardiac abnormality, inpatient echocardiography is not indicated. Outpatient echocardiogram is appropriate for screening as MSSA bacteraemia carries risk for endocarditis, but the patient does not meet criteria for urgent inpatient assessment.\n\nNext Steps:\nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Outpatient echo should be performed within 2\u20134 weeks. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nInfectious Diseases; Cardiology (for further advice if clinical suspicion changes or new signs develop)."
+  },
+  {
+    "case_id": "1002081",
+    "timestamp": "2025-05-18T15:59:03.763695",
+    "clinical_context": "58M with MSSA bacteraemia. Admitted for NoF. No signs of infection on examine. BCs x2 positive. CRP 78. Fevers resolved. No peripheral stigmata of IE. No signs of heart failure.\n\nNo new murmur on examination, no prior TTE. No evidence of intracardiac prosthetic material or pre-existing cardiac abnormality.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated to assess for infective endocarditis.\n\nRationale:\nMSSA is a high-risk organism for infective endocarditis. The patient has confirmed bacteraemia (BCs x2 positive), which is a validated inpatient indication for echocardiography to assess for infective endocarditis, even in the absence of clinical stigmata or a murmur. Inpatient assessment is required for all cases of Staphylococcus aureus bacteraemia regardless of clinical findings.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure relevant clinical details and blood culture results are included. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "2419474",
+    "timestamp": "2025-05-18T16:00:21.160602",
+    "clinical_context": "58M with MSSA bacteraemia. Admitted for NoF. No signs of infection on examine. BCs x2 positive. CRP 78. Fevers resolved. No peripheral stigmata of IE. No signs of heart failure.\n\nNo new murmur on examination, no prior TTE. No evidence of intracardiac prosthetic material or pre-existing cardiac abnormality.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24\u201372 hours.\n\nRationale:\nThe patient has MSSA bacteraemia, a high-risk organism for infective endocarditis (IE). Although there are no clinical signs of IE or cardiac abnormality, standard recommendations are for inpatient echocardiography (TTE) in all cases of staphylococcal bacteraemia to assess for endocarditis, regardless of physical findings or absence of prosthetic material.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures, CRP, and relevant examination findings are documented prior to the study. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nInfectious Diseases, Cardiology."
+  },
+  {
+    "case_id": "2992914",
+    "timestamp": "2025-05-18T16:05:45.769302",
+    "clinical_context": "58M with MSSA bacteraemia. Admitted for NoF. No signs of infection on examine. BCs x2 positive. CRP 78. Fevers resolved. No peripheral stigmata of IE. No signs of heart failure.\n\nNo new murmur on examination, no prior TTE. No evidence of intracardiac prosthetic material or pre-existing cardiac abnormality.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24\u201372 hours.\n\nRationale:\nMSSA bacteraemia is a high-risk organism for infective endocarditis, even without signs or symptoms of endocarditis. In the presence of persistent bacteraemia or high-risk organisms, inpatient echocardiography is required to assess for endocarditis. The absence of a murmur or clinical features does not exclude endocarditis in this context, and guideline-based criteria recommend inpatient assessment.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure all relevant investigations (including repeat blood cultures and inflammatory markers) have been reviewed and communicated to the Cardiology team. Recommendations are based on clinical appropriateness criteria but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "7787344",
+    "timestamp": "2025-05-18T16:07:23.844605",
+    "clinical_context": "58M with MSSA bacteraemia. New murmur, clinically in heart failure. positive blood cultures. fevers resolved. no prosthetic material.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24\u201372 hours to assess for infective endocarditis.\n\nRationale:\nThis patient has MSSA bacteraemia, a new murmur, and signs of heart failure. These are high-risk features for infective endocarditis, and an inpatient echocardiogram is mandated to assess for valvular involvement and guide acute management.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure that blood cultures and relevant investigations are available prior to the procedure. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "1565287",
+    "timestamp": "2025-05-18T16:14:15.854779",
+    "clinical_context": "58M with MSSA bacteraemia. New murmur, clinically in heart failure. positive blood cultures. fevers resolved. no prosthetic material.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24\u201372 hours to assess for infective endocarditis.\n\nRationale:\nThis patient has MSSA bacteraemia, a new murmur, clinical heart failure, and positive blood cultures\u2014all of which are high-risk features for infective endocarditis and require urgent inpatient echocardiography. MSSA is a high-risk organism, and inpatient echo is indicated to detect valvular infection, complications, or structural abnormalities.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure all relevant clinical details and investigation results accompany the request. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "3212139",
+    "timestamp": "2025-05-18T16:15:20.982318",
+    "clinical_context": "58M with APO, new murmur and MSSA bacteraemia.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24\u201372 hours to assess for infective endocarditis.\n\nRationale:\nThe patient has acute pulmonary oedema, a new murmur, and MSSA bacteraemia\u2014these are all high-risk features for infective endocarditis and warrant urgent inpatient echocardiography. Early assessment is essential for risk stratification, management, and to assess for cardiac complications.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure all relevant investigations have been performed prior to the echo, including blood cultures and other markers of infection. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology, Infectious Diseases."
+  },
+  {
+    "case_id": "1493721",
+    "timestamp": "2025-05-18T16:17:00.882012",
+    "clinical_context": "58M with APO, new murmur and MSSA bacteraemia.",
+    "clinical_question": "?IE",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24 hours.\n\nRationale:\nThe patient has acute pulmonary oedema (APO), a new murmur, and MSSA bacteraemia, which suggests a high risk for infective endocarditis (IE). This combination, particularly the presence of a new murmur and positive blood cultures with a high-risk organism like MSSA, necessitates an urgent inpatient echocardiogram to assess for endocarditis\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure blood cultures and an ECG are performed prior to the echocardiogram. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "3280027",
+    "timestamp": "2025-05-18T16:17:55.495661",
+    "clinical_context": "58M with mild aortic stenosis, no TTE in last 2 years. ",
+    "clinical_question": "valve status?",
+    "ai_response": "Recommendation:\nOutpatient echocardiogram is indicated every 3\u20135 years for surveillance of mild aortic stenosis.\n\nRationale:\nThe indication for an echocardiogram in cases of mild aortic stenosis is for surveillance to monitor progression. Since the patient has not had a transthoracic echocardiogram (TTE) in the last two years, routine outpatient follow-up is appropriate without any inpatient urgency\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Ensure that ECG is available if required before the echocardiogram. Recommendations are based on clinical appropriateness criteria but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2961392",
+    "timestamp": "2025-05-18T16:34:25.737297",
+    "clinical_context": "78F admitted with urinary infection. Has decompensated heart failure. CXR shows consolidation. CRP 78. Last TTE 2024.\n\nInfection is suspected to be the primary cause of heart failure decompensation, and echo would change management if there is new LVEF. There are no other acute cardiac symptoms or findings like a new murmur, suspected endocarditis, chest pain, arrhythmia, or clinical instability.",
+    "clinical_question": "valve status?",
+    "ai_response": "Recommendation:  \nMore information is required. Please provide evidence that infection and other non-cardiac causes have been adequately excluded as contributors to heart failure decompensation, considering the patient\u2019s age (>75), current infection, and raised CRP. Additionally, specify if there is any new clinical suspicion for cardiac dysfunction despite the recent TTE in 2024.\n\nRationale:  \nFor patients over 75 years old with suspected heart failure, it is necessary to ensure that infection and other non-cardiac causes have been reasonably excluded before recommending inpatient echocardiography. The provided information indicates an active infection with radiological consolidation and elevated CRP, both of which can explain the decompensated heart failure. There is also a recent TTE from 2024, and no new compelling cardiac symptoms or findings have been reported. Additional justification, investigation results, or evidence of unexplained cardiac deterioration are required before recommending an inpatient study.\n\nNext Steps:  \nPlease clarify whether infection has been adequately managed or excluded as the primary driver for decompensated heart failure, and specify if there is any new evidence of cardiac dysfunction despite the recent TTE. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:  \nCardiology (for further advice if unclear or if cardiac findings evolve)."
+  },
+  {
+    "case_id": "1979713",
+    "timestamp": "2025-05-18T16:38:52.149589",
+    "clinical_context": "89F from nursing home admitted with dementia. Fluid overloaded despite diuretics",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nMore information is required. Please provide results of chest X-ray and CRP (or equivalent) to help exclude infection or other non-cardiac causes, as well as relevant examination findings (e.g., presence or absence of murmur, signs of pulmonary oedema, heart failure, or new clinical changes). Please also indicate if a BNP result is available and whether there has been a recent echocardiogram within the last 1\u20132 years.\n\nRationale:\nFor patients over 75 with suspected heart failure or fluid overload, evidence that infection and other non-cardiac causes have been investigated or excluded is essential prior to recommending echocardiography. Details such as chest X-ray and CRP (or equivalent), examination findings, and prior echo history are required for appropriate assessment.\n\nNext Steps:\nPlease provide chest X-ray and CRP results, relevant examination findings (e.g., presence or absence of murmur, pulmonary oedema, or other signs of heart failure), and information about any recent echocardiogram or BNP result if available. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "5298810",
+    "timestamp": "2025-05-18T16:40:07.047167",
+    "clinical_context": "89F from nursing home admitted with dementia. Fluid overloaded despite diuretics. CXR normal. BNP 150. No new murmur, breath sounds normal. No other clinical change. No recent TTE.\n",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nMore information is required. Please provide the CRP result or equivalent evidence to help exclude infection or other non-cardiac causes, as per enhanced vigilance for patients over 75 with fluid overload or suspected heart failure.\n\nRationale:\nFor patients over 75 years old with suspected heart failure or fluid overload, it is necessary to demonstrate that infection or other non-cardiac causes have been excluded, typically by providing CRP (or similar) results, before recommending echocardiography. The BNP is not significantly elevated, and infection must be reasonably excluded according to appropriateness criteria.\n\nNext Steps:\nPlease provide the CRP result (or equivalent) and any other evidence that infection or other non-cardiac causes have been excluded. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2897390",
+    "timestamp": "2025-05-18T16:40:27.509515",
+    "clinical_context": "89F from nursing home admitted with dementia. Fluid overloaded despite diuretics. CXR normal. BNP 150. No new murmur, breath sounds normal. No other clinical change. No recent TTE. CRP 23.",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nMore information is required. Please provide the indication for current hospital admission (the reason for admission or presenting problem) and specify if there are any new or worsening symptoms of heart failure (e.g., orthopnoea, PND, reduced exercise tolerance), or other clinical features suggesting acute decompensation.\n\nRationale:\nFor patients over 75 with possible heart failure, enhanced vigilance is required: a chest X-ray and CRP have been provided, and infection appears unlikely. However, the BNP is not markedly elevated (150) and there is no clear documentation of acute heart failure symptoms beyond fluid overload. The minimum required information includes explicit new or worsening symptoms or signs of heart failure, or acute decompensation, to justify inpatient echocardiography. Additional clarification on the acute clinical scenario is needed.\n\nNext Steps:\nPlease provide further clinical details describing the admission reason and any new or worsening heart failure symptoms or clinical changes. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "1744567",
+    "timestamp": "2025-05-18T16:41:06.562784",
+    "clinical_context": "89F from nursing home admitted with dementia. Admitted because of functional decline. Fluid overloaded despite diuretics. CXR normal. BNP 150. No new murmur, breath sounds normal. No other clinical change. No recent TTE. CRP 23. No other symptoms of heart failure.",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nMore information is required. Please clarify if there are any additional heart failure symptoms (such as orthopnoea, paroxysmal nocturnal dyspnoea, raised JVP, pulmonary oedema, or new cardiovascular findings). If isolated peripheral oedema is the only finding, an inpatient echocardiogram is not indicated unless BNP is significantly elevated or there is another acute justification.\n\nRationale:\nThe only reported feature is fluid overload without other symptoms of heart failure. BNP is mildly elevated but below typical inpatient thresholds. In patients over 75, especially from residential care, enhanced vigilance is required to exclude non-cardiac causes of fluid retention. Without additional clinical features or a higher BNP, acute inpatient echocardiography is generally not warranted.\n\nNext Steps:\nPlease specify if there are additional heart failure symptoms or acute cardiac findings. If only peripheral oedema is present, consider outpatient echocardiogram if required for baseline assessment. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2784402",
+    "timestamp": "2025-05-18T16:41:29.075241",
+    "clinical_context": "89F from nursing home admitted with dementia. Admitted because of functional decline. Fluid overloaded despite diuretics. CXR normal. BNP 150. No new murmur, breath sounds normal. No other clinical change. No recent TTE. CRP 23. No other symptoms of heart failure.",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nEchocardiogram is not indicated during this admission.\n\nRationale:\nThe only reported sign is fluid overload without pulmonary oedema or other symptoms of heart failure. BNP is below the threshold for acute heart failure, chest X-ray is normal, and there is no new murmur or clinical deterioration. Inpatient echocardiography is not indicated in the absence of additional justifying features or acute changes.\n\nNext Steps:\nAn echocardiogram is not indicated during this admission. If you feel it is still clinically required, discuss with the Cardiology team via the hospital switchboard (03 6166 8308). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "1356328",
+    "timestamp": "2025-05-18T16:43:16.628434",
+    "clinical_context": "28M high-speed MVA. Chest trauma. no sternal fracture. Troponin 57. ECG normal.",
+    "clinical_question": "?cardiac trauma",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24 hours to assess for cardiac injury following blunt chest trauma with elevated troponin.\n\nRationale:\nBlunt chest trauma with elevated troponin is a validated indication for inpatient echocardiography to exclude cardiac contusion or other structural injury, even in the absence of ECG changes or sternal fracture. Early assessment is required due to the risk of occult cardiac injury.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure ongoing monitoring, and arrange for further management depending on echo findings. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "8829173",
+    "timestamp": "2025-05-18T16:44:58.312127",
+    "clinical_context": "78F admitted with cellulitis, has concurrent pleural effusions and peripheral oedema. No recent TTE. BNP 560.",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nMore information is required. Please provide results of chest X-ray (CXR) and C-reactive protein (CRP), or equivalent investigations, to help exclude infection or non-cardiac causes before recommending echocardiogram in a patient over 75 with possible heart failure.\n\nRationale:\nFor patients over 75 with suspected heart failure, enhanced vigilance is required. It is necessary to establish that infection or other non-cardiac causes for the pleural effusions and oedema have been reasonably excluded, in addition to providing BNP results. CXR and CRP (or equivalent) are required before proceeding.\n\nNext Steps:\nPlease provide chest X-ray (CXR) and C-reactive protein (CRP) results, or equivalent evidence to help exclude infection and non-cardiac causes, and confirm consideration of these results prior to echocardiography. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "2330552",
+    "timestamp": "2025-05-18T16:45:37.340685",
+    "clinical_context": "78F admitted with cellulitis, has concurrent pleural effusions and peripheral oedema. No recent TTE. BNP 560.\nCXR wet with pleural effusion. CRP 78. BCs negative.",
+    "clinical_question": "?LVEF",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24\u201348 hours to assess left ventricular ejection fraction and investigate potential acute cardiac dysfunction.\n\nRationale:\nThe patient is over 75 years old with acute peripheral oedema, pleural effusions, a \u201cwet\u201d chest X-ray, and elevated BNP (560), suggesting likely decompensated heart failure. Infection is not the primary cause, as blood cultures are negative and CRP is only moderately elevated. No recent TTE is available for comparison. These features satisfy criteria for urgent inpatient echocardiography.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure all relevant clinical information and investigations (ECG, recent labs) are provided with the referral. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
   }
 ]

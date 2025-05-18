@@ -102,13 +102,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Next Steps
                     if (data.sections['Next Steps']) {
-                        nextStepsContent.textContent = data.sections['Next Steps'];
-                        
+                        let nextStepsText = data.sections['Next Steps'];
                         // Check if inpatient is mentioned in the recommendation or next steps
                         const isInpatient = 
                             (data.sections.Recommendation && data.sections.Recommendation.toLowerCase().includes('inpatient')) ||
                             (data.sections['Next Steps'] && data.sections['Next Steps'].toLowerCase().includes('inpatient'));
-                        
+                        // If inpatient, append the case ID instruction
+                        if (isInpatient) {
+                            nextStepsText += '\n\nPlease include the Case ID in your referral, or use the button below to copy the case details.';
+                        }
+                        nextStepsContent.textContent = nextStepsText;
                         // Show/hide inpatient actions accordingly
                         inpatientActions.style.display = isInpatient ? 'flex' : 'none';
                     } else {
@@ -144,8 +147,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle copy context button
     if (copyContextButton) {
         copyContextButton.addEventListener('click', function() {
-            const textToCopy = `Case ID: ${savedCaseId}\n\nClinical Context:\n${savedClinicalContext}\n\nClinical Question:\n${savedClinicalQuestion}`;
-            
+            // Get the final recommendation as shown in the results
+            const recommendationText = recommendationContent.textContent;
+            const textToCopy = `Case ID: ${savedCaseId}\n\nClinical Context:\n${savedClinicalContext}\n\nClinical Question:\n${savedClinicalQuestion}\n\nRecommendation:\n${recommendationText}`;
             // Create a temporary textarea element to copy the text
             const textarea = document.createElement('textarea');
             textarea.value = textToCopy;
@@ -153,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function() {
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
-            
             // Change button text temporarily to indicate success
             const originalText = copyContextButton.textContent;
             copyContextButton.textContent = 'Copied!';
