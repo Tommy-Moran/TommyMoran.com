@@ -576,12 +576,13 @@ def replace_timeframe_with_category(text):
 def standardize_recommendation(original_text):
     import re
     text_lower = original_text.lower()
-    # If inpatient, always replace timeframe with category and standardize
-    if "inpatient" in text_lower:
+    # Only standardize if inpatient is positively indicated
+    if "inpatient" in text_lower and any(phrase in text_lower for phrase in [
+        "is indicated", "is recommended", "should be performed", "should be done", "is warranted"
+    ]):
         # Map timeframe to category
         category = None
-        # Match ranges like 'within 24-72 hours', 'within 24–72 hours', etc.
-        match = re.search(r"(within|in|up to)\s*(\d+)[-–—]?(\d+)?\s*hours?", original_text, re.IGNORECASE)
+        match = re.search(r"(within|in|up to)\s*(\d+)[-–—]?\s*(\d+)?\s*(hours?|hrs?)?", original_text, re.IGNORECASE)
         if match:
             upper = int(match.group(3)) if match.group(3) else int(match.group(2))
             if upper <= 1:
@@ -594,7 +595,6 @@ def standardize_recommendation(original_text):
                 category = "Category 4"
             else:
                 category = "Category 5"
-        # Fallback if no timeframe found
         if not category:
             category = "Category (unspecified)"
         return f"A {category} echocardiogram is recommended as an inpatient."
