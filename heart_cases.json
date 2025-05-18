@@ -89,5 +89,19 @@
     "clinical_context": "58M admitted for fevers of unclear aetiology.",
     "clinical_question": "?cause of fevers",
     "ai_response": "Recommendation:\nMore information is required. Please provide details regarding any signs of endocarditis, such as a new murmur or positive blood cultures, and any specific risk factors for infective endocarditis or other cardiac issues.\n\nRationale:\nAn echocardiogram for fevers of unclear aetiology is not typically indicated unless there are additional risk factors or clinical findings such as a new murmur, positive blood cultures, or risk factors for infective endocarditis\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nPlease provide further clinical details including any suspected cardiac or endocarditis signs, and any relevant investigation results such as blood cultures. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsult Other Teams:\nNone."
+  },
+  {
+    "case_id": "2982198",
+    "timestamp": "2025-05-18T12:02:14.208497",
+    "clinical_context": "58M with a murmur",
+    "clinical_question": "?cause\n",
+    "ai_response": "Recommendation:\nOutpatient echocardiogram is indicated within a few weeks.\n\nRationale:\nThe patient has a new murmur and no other symptoms have been described. As per the guidelines, if a new murmur is present without associated symptoms, an outpatient echocardiogram should be conducted within a few weeks\u30104:4\u2020source\u3011.\n\nNext Steps:\nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Ensure that no other symptoms are present that might elevate the clinical urgency. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "3299526",
+    "timestamp": "2025-05-18T12:54:50.342109",
+    "clinical_context": "58M with a murmur, heart failure",
+    "clinical_question": "?cause",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is indicated within 24 hours.\n\nRationale:\nThe presence of a new murmur and heart failure in this case suggests a need to assess for potential structural heart or valvular pathology. New heart murmurs associated with heart failure symptoms typically warrant prompt inpatient evaluation to determine the underlying cause and guide urgent management\u30104:14\u2020source\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Recommendations are based on clinical appropriateness criteria but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
   }
 ]

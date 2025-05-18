@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let savedClinicalQuestion = '';
     let savedCaseId = '';
     
+    // Backend URL logic
+    const BACKEND_URL =
+        window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8081/HEART/assess"
+            : "https://tommymoran-com-chatbot.onrender.com/HEART/assess";
+    
     // Add event listener to the form submission
     if (clinicalForm) {
         clinicalForm.addEventListener('submit', function(e) {
@@ -46,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingScreen.style.display = 'flex';
             
             // Send request to the backend
-            fetch('https://tommymoran-com-chatbot.onrender.com/HEART/assess', {
+            fetch(BACKEND_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
