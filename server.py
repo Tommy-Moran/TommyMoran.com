@@ -417,6 +417,19 @@ def heart_assess():
                             "Consult Other Teams": ""
                         }
                         
+                    # Replace timeframe with category in Recommendation section
+                    if "Recommendation" in sections and isinstance(sections["Recommendation"], str):
+                        sections["Recommendation"] = standardize_recommendation(sections["Recommendation"])
+                        # Also update the assistant_message if possible
+                        rec_start = assistant_message.find('Recommendation:')
+                        if rec_start != -1:
+                            next_section_match = re.search(r'\n\s*(Rationale|Next Steps|Consider Consulting|Consult Other Teams):', assistant_message[rec_start+14:])
+                            if next_section_match:
+                                rec_end = rec_start + 14 + next_section_match.start()
+                                assistant_message = assistant_message[:rec_start+14] + '\n' + sections["Recommendation"] + assistant_message[rec_end:]
+                            else:
+                                assistant_message = assistant_message[:rec_start+14] + '\n' + sections["Recommendation"]
+                    
                     # Remove any reference links or citations in the format '【...】' or '[...†...]'
                     assistant_message = remove_references(assistant_message)
                     for key in sections:
@@ -525,6 +538,68 @@ def remove_references(text):
     text = re.sub(r'【.*?】', '', text)
     text = re.sub(r'\[.*?†.*?\]', '', text)
     return text.strip()
+
+# Add after remove_references function
+def replace_timeframe_with_category(text):
+    import re
+    # Patterns and their corresponding categories
+    patterns = [
+        (r"(immediate|urgent)", "Category 1 echocardiogram is indicated"),
+        (r"(within|in|up to)\s*(\d+)[-\s]?(\d+)?\s*hours?", None),  # Range handled below
+        (r"(within|in|up to)\s*24\s*hours?", "Category 2 echocardiogram is indicated"),
+        (r"(within|in|up to)\s*36\s*hours?", "Category 3 echocardiogram is indicated"),
+        (r">\s*48\s*hours?|within\s*a\s*few\s*days?", "Category 4 echocardiogram is indicated"),
+        (r">\s*1\s*week|within\s*a\s*few\s*weeks|outpatient", "Category 5 echocardiogram is indicated"),
+    ]
+    # Handle ranges like "within 12-24 hours"
+    def range_replacer(match):
+        lower = int(match.group(2))
+        upper = int(match.group(3)) if match.group(3) else lower
+        if upper <= 1:
+            return "Category 1 echocardiogram is indicated"
+        elif upper <= 24:
+            return "Category 2 echocardiogram is indicated"
+        elif upper <= 36:
+            return "Category 3 echocardiogram is indicated"
+        elif upper <= 168:  # 7 days * 24 hours
+            return "Category 4 echocardiogram is indicated"
+        else:
+            return "Category 5 echocardiogram is indicated"
+    # Replace ranges first
+    text = re.sub(r"(within|in|up to)\s*(\d+)[-\s]?(\d+)?\s*hours?", range_replacer, text, flags=re.IGNORECASE)
+    # Replace other patterns
+    for pattern, category in patterns:
+        if category:
+            text = re.sub(pattern, category, text, flags=re.IGNORECASE)
+    return text
+
+def standardize_recommendation(original_text):
+    import re
+    text_lower = original_text.lower()
+    # If inpatient, always replace timeframe with category and standardize
+    if "inpatient" in text_lower:
+        # Map timeframe to category
+        category = None
+        # Match ranges like 'within 24-72 hours', 'within 24–72 hours', etc.
+        match = re.search(r"(within|in|up to)\s*(\d+)[-–—]?(\d+)?\s*hours?", original_text, re.IGNORECASE)
+        if match:
+            upper = int(match.group(3)) if match.group(3) else int(match.group(2))
+            if upper <= 1:
+                category = "Category 1"
+            elif upper <= 24:
+                category = "Category 2"
+            elif upper <= 36:
+                category = "Category 3"
+            elif upper <= 168:
+                category = "Category 4"
+            else:
+                category = "Category 5"
+        # Fallback if no timeframe found
+        if not category:
+            category = "Category (unspecified)"
+        return f"A {category} echocardiogram is recommended as an inpatient."
+    # Otherwise, use the AI's original recommendation
+    return original_text.strip()
 
 if __name__ == '__main__':
     try:
