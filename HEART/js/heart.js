@@ -21,9 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const clinicalContextTextarea = document.getElementById('clinical-context');
     const clinicalQuestionTextarea = document.getElementById('clinical-question');
     
+    // Patient URN input element
+    const patientUrnInput = document.getElementById('patient-urn');
+    
     // Store clinical context for potential copying later
     let savedClinicalContext = '';
     let savedClinicalQuestion = '';
+    let savedPatientUrn = '';
     let savedCaseId = '';
     
     // Backend URL logic
@@ -40,10 +44,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get values from the form
             savedClinicalContext = clinicalContextTextarea.value;
             savedClinicalQuestion = clinicalQuestionTextarea.value;
+            savedPatientUrn = patientUrnInput ? patientUrnInput.value : '';
             
             // Validate that both fields have content
             if (!savedClinicalContext.trim() || !savedClinicalQuestion.trim()) {
                 alert('Please provide both clinical context and a specific question.');
+                return;
+            }
+            
+            // Validate URN field
+            if (!savedPatientUrn.trim()) {
+                alert('Please provide the patient\'s URN for audit purposes.');
                 return;
             }
             
@@ -59,7 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({
                     clinical_context: savedClinicalContext,
-                    clinical_question: savedClinicalQuestion
+                    clinical_question: savedClinicalQuestion,
+                    patient_urn: savedPatientUrn
                 }),
             })
             .then(response => {
@@ -147,9 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle copy context button
     if (copyContextButton) {
         copyContextButton.addEventListener('click', function() {
-            // Get the final recommendation as shown in the results
+            // Get the final recommendation and rationale as shown in the results
             const recommendationText = recommendationContent.textContent;
-            const textToCopy = `Case ID: ${savedCaseId}\n\nClinical Context:\n${savedClinicalContext}\n\nClinical Question:\n${savedClinicalQuestion}\n\nRecommendation:\n${recommendationText}`;
+            const rationaleText = rationaleContent.textContent;
+            // Compose the text to copy, including URN
+            const textToCopy = `Patient URN: ${savedPatientUrn}\n\nClinical Context:\n${savedClinicalContext}\n\nClinical Question:\n${savedClinicalQuestion}\n\nRecommendation:\n${recommendationText}\n\nRationale:\n${rationaleText}`;
             // Create a temporary textarea element to copy the text
             const textarea = document.createElement('textarea');
             textarea.value = textToCopy;
@@ -170,10 +184,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (editContextButton) {
         editContextButton.textContent = 'Edit Context';
         editContextButton.addEventListener('click', function() {
-            // Save the last context/question to localStorage
+            // Save the last context/question/URN to localStorage
             if (savedClinicalContext && savedClinicalQuestion) {
                 localStorage.setItem('editContext', savedClinicalContext);
                 localStorage.setItem('editQuestion', savedClinicalQuestion);
+                if (savedPatientUrn) {
+                    localStorage.setItem('editUrn', savedPatientUrn);
+                }
             }
             window.location.href = 'context.html';
         });
@@ -183,10 +200,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.endsWith('context.html')) {
         const context = localStorage.getItem('editContext');
         const question = localStorage.getItem('editQuestion');
+        const urn = localStorage.getItem('editUrn');
         if (context && clinicalContextTextarea) clinicalContextTextarea.value = context;
         if (question && clinicalQuestionTextarea) clinicalQuestionTextarea.value = question;
+        if (urn && patientUrnInput) patientUrnInput.value = urn;
         // Clear after loading
         localStorage.removeItem('editContext');
         localStorage.removeItem('editQuestion');
+        localStorage.removeItem('editUrn');
     }
 }); 

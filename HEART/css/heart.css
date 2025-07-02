@@ -558,3 +558,11 @@ footer {
     padding-left: 12px;
     padding-right: 12px;
 } 
+
+.disclaimer-text {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    margin-top: 5px;
+    margin-bottom: 0;
+} 

@@ -71,7 +71,7 @@ def initialize_heart_db():
         logger.info(f"Initialized empty HEART database at {HEART_DB_FILE}")
 
 # Save a HEART case to the database
-def save_heart_case(case_id, clinical_context, clinical_question, ai_response):
+def save_heart_case(case_id, clinical_context, clinical_question, patient_urn, ai_response):
     try:
         # Load existing database
         if os.path.exists(HEART_DB_FILE):
@@ -86,6 +86,7 @@ def save_heart_case(case_id, clinical_context, clinical_question, ai_response):
             'timestamp': datetime.now().isoformat(),
             'clinical_context': clinical_context,
             'clinical_question': clinical_question,
+            'patient_urn': patient_urn,
             'ai_response': ai_response
         })
         
@@ -297,6 +298,7 @@ def heart_assess():
         data = request.json
         clinical_context = data.get('clinical_context', '')
         clinical_question = data.get('clinical_question', '')
+        patient_urn = data.get('patient_urn', '')
         
         # Generate a unique 7-digit case ID
         case_id = str(uuid.uuid4().int)[:7]
@@ -391,7 +393,7 @@ def heart_assess():
                         continue
                     
                     # Save the HEART case to the database
-                    save_heart_case(case_id, clinical_context, clinical_question, assistant_message)
+                    save_heart_case(case_id, clinical_context, clinical_question, patient_urn, assistant_message)
                     
                     # Parse the sections from the response
                     try:
@@ -485,17 +487,25 @@ def heart_help():
 @app.route('/HEART/export-csv', methods=['GET'])
 def export_heart_csv():
     try:
+        # Check for HTTP Basic Authentication
+        auth = request.authorization
+        if not auth or auth.username != 'HEART25' or auth.password != 'HEART25':
+            return jsonify({'error': 'Authentication required'}), 401, {
+                'WWW-Authenticate': 'Basic realm="HEART Data Export"'
+            }
+        
         if not os.path.exists(HEART_DB_FILE):
             return jsonify({'error': 'No data available'}), 404
         with open(HEART_DB_FILE, 'r') as f:
             cases = json.load(f)
         output = StringIO()
         writer = csv.writer(output)
-        writer.writerow(['case_id', 'timestamp', 'clinical_context', 'clinical_question', 'ai_response'])
+        writer.writerow(['case_id', 'timestamp', 'patient_urn', 'clinical_context', 'clinical_question', 'ai_response'])
         for case in cases:
             writer.writerow([
                 case.get('case_id', ''),
                 case.get('timestamp', ''),
+                case.get('patient_urn', ''),
                 case.get('clinical_context', ''),
                 case.get('clinical_question', ''),
                 case.get('ai_response', '')
