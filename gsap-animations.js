@@ -66,10 +66,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ─── 2b. ECG SCROLL-TRIGGERED DRAWING ────────────────────────────────────
-    // Path length estimate for the redesigned ECG with VT+shock+sinus sequence
+    // Draws left-to-right as the user scrolls the ECG into and past view
     const ecgPath = document.querySelector('.ecg-path');
     if (ecgPath) {
-        const pathLength = ecgPath.getTotalLength ? ecgPath.getTotalLength() : 4500;
+        const pathLength = ecgPath.getTotalLength ? ecgPath.getTotalLength() : 5000;
         gsap.set(ecgPath, {
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength,
@@ -79,10 +79,10 @@ document.addEventListener('DOMContentLoaded', function () {
             strokeDashoffset: 0,
             ease: 'none',
             scrollTrigger: {
-                trigger: '.hero',
-                start: 'top 60%',
-                end: 'bottom 20%',
-                scrub: 1.2
+                trigger: '.ecg-container',
+                start: 'top 98%',   // start the moment ECG enters viewport
+                end: 'top -20%',    // finish after it scrolls well past top
+                scrub: 0.8
             }
         });
     }
