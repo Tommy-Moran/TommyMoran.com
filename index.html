@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data:; connect-src 'self' https://tommymoran-com-chatbot.onrender.com; frame-ancestors 'none';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data:; connect-src 'self' https://tommymoran-com-chatbot.onrender.com; frame-ancestors 'none';">
     <title>Thomas Moran | Portfolio</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Scroll progress indicator (grows down the sidebar edge as you scroll) -->
+    <div class="scroll-progress" aria-hidden="true"></div>
     <div class="split-layout">
         <!-- Left Side - Fixed Titles -->
         <div class="left-side" id="sidebar">
@@ -76,6 +78,12 @@
                             <p><i class="fas fa-map-marker-alt"></i> Melbourne/Hobart, Australia</p>
                         </div>
                     </div>
+                </div>
+                <!-- Decorative ECG waveform — two P-QRS-T complexes + flat line -->
+                <div class="ecg-container" aria-hidden="true">
+                    <svg viewBox="0 0 900 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="ecg-path" d="M0,50 L85,50 C94,50 96,43 100,41 C104,39 108,50 112,50 L138,50 L144,53 L152,10 L160,56 L167,50 L192,50 C206,50 209,37 215,35 C221,33 227,50 240,50 L320,50 C329,50 331,43 335,41 C339,39 343,50 347,50 L373,50 L379,53 L387,10 L395,56 L402,50 L427,50 C441,50 444,37 450,35 C456,33 462,50 475,50 L900,50"/>
+                    </svg>
                 </div>
             </section>
 
@@ -728,12 +736,26 @@
 
     <script src="script.js"></script>
 
-    <!-- Chatbot UI -->
-    <div class="chatbot-container">
+    <!-- Floating chat bubble trigger -->
+    <button class="chat-bubble" id="chat-bubble" aria-label="Chat with AI Tommy">
+        <i class="fas fa-comment-medical"></i>
+        <span class="chat-bubble-label">Ask AI Tommy</span>
+    </button>
+
+    <!-- Chat widget panel -->
+    <div class="chatbot-container" id="chatbot-container">
         <div class="chatbot-header">
-            <h3>Ask Me Anything</h3>
-            <button class="chatbot-toggle">
-                <i class="fas fa-chevron-down"></i>
+            <div class="chatbot-header-info">
+                <div class="chatbot-avatar">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div>
+                    <h3>AI Tommy</h3>
+                    <span class="chatbot-status">Online</span>
+                </div>
+            </div>
+            <button class="chatbot-close" id="chatbot-close" aria-label="Close chat">
+                <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="chatbot-body">
@@ -743,12 +765,17 @@
                 </div>
             </div>
             <div class="chat-input">
-                <input type="text" placeholder="Type your message here..." />
-                <button class="send-button">
+                <input type="text" placeholder="Ask me anything..." />
+                <button class="send-button" aria-label="Send message">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
         </div>
     </div>
+
+    <!-- GSAP + ScrollTrigger (now fully free, including commercial use) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="gsap-animations.js"></script>
 </body>
 </html> 

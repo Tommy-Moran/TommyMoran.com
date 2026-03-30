@@ -233,16 +233,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Chatbot functionality
-    const chatbotContainer = document.querySelector('.chatbot-container');
-    const chatbotToggle = document.querySelector('.chatbot-toggle');
+    // Open/close is handled by gsap-animations.js via the bubble and close button.
     const chatInput = document.querySelector('.chat-input input');
     const sendButton = document.querySelector('.send-button');
     const chatMessages = document.querySelector('.chat-messages');
-
-    // Toggle chatbot visibility
-    chatbotToggle.addEventListener('click', function() {
-        chatbotContainer.classList.toggle('collapsed');
-    });
 
     // Handle sending messages
     async function sendMessage() {
@@ -253,12 +247,13 @@ document.addEventListener('DOMContentLoaded', function() {
             chatInput.value = '';
 
             try {
-                // Show loading indicator
+                // Show animated typing indicator
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'message bot loading';
-                const loadingText = document.createElement('p');
-                loadingText.textContent = 'AI Tommy is typing...';
-                loadingDiv.appendChild(loadingText);
+                const dots = document.createElement('div');
+                dots.className = 'typing-dots';
+                for (let i = 0; i < 3; i++) dots.appendChild(document.createElement('span'));
+                loadingDiv.appendChild(dots);
                 chatMessages.appendChild(loadingDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 

@@ -907,3 +907,293 @@ html.smooth-scroll {
         padding-top: 1rem;
     }
 }
+
+/* ============================================================
+   GSAP UI ENHANCEMENTS
+   ============================================================ */
+
+/* ── Scroll progress bar (vertical, right edge of sidebar) ── */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: calc(var(--sidebar-width) - 3px);
+    width: 3px;
+    height: 100vh;
+    background: linear-gradient(to bottom, var(--accent-color), #38bdf8);
+    transform-origin: top center;
+    transform: scaleY(0);
+    z-index: 2001;
+    border-radius: 0 2px 2px 0;
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .scroll-progress { display: none; }
+}
+
+/* ── Section h2 accent line ─────────────────────────────────── */
+section h2 {
+    position: relative;
+    padding-bottom: 0.6rem;
+}
+
+section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 44px;
+    height: 3px;
+    background: var(--accent-color);
+    border-radius: 2px;
+}
+
+/* ── Active nav dot indicator ────────────────────────────────── */
+.vertical-nav > ul > li > a {
+    padding-left: 1.2rem;
+}
+
+.vertical-nav > ul > li > a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.vertical-nav > ul > li > a.active::before,
+.vertical-nav > ul > li > a:hover::before {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+}
+
+/* ── ECG decorative waveform in hero ────────────────────────── */
+.ecg-container {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 0;
+    right: 0;
+    height: 70px;
+    pointer-events: none;
+}
+
+.ecg-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+.ecg-path {
+    stroke: var(--accent-color);
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;         /* GSAP animates this in */
+}
+
+@media (max-width: 768px) {
+    .ecg-container { display: none; }
+}
+
+/* ── Floating chat bubble ────────────────────────────────────── */
+.chat-bubble {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 58px;
+    height: 58px;
+    background: var(--accent-color);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 4px 20px rgba(0, 112, 243, 0.45);
+    color: white;
+    font-size: 1.35rem;
+    user-select: none;
+    transition: box-shadow 0.25s ease;
+}
+
+.chat-bubble:hover {
+    box-shadow: 0 6px 28px rgba(0, 112, 243, 0.62);
+}
+
+.chat-bubble-label {
+    position: absolute;
+    right: 68px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.74rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    padding: 5px 11px;
+    border-radius: 20px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.chat-bubble:hover .chat-bubble-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ── Redesigned chat widget panel ───────────────────────────── */
+/* Override all old chatbot-container styles */
+.chatbot-container {
+    position: fixed;
+    bottom: 102px;
+    right: 28px;
+    width: 340px;
+    max-height: 520px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.16);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Initial hidden state — GSAP handles open/close */
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: bottom right;
+}
+
+/* Remove old collapsed transform */
+.chatbot-container.collapsed {
+    transform: none;
+}
+
+.chatbot-header {
+    background: var(--primary-color);
+    color: white;
+    padding: 13px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 16px 16px 0 0;
+    flex-shrink: 0;
+}
+
+.chatbot-header-info {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.chatbot-avatar {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.chatbot-header h3 {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.chatbot-status {
+    font-size: 0.71rem;
+    opacity: 0.78;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.chatbot-status::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: #4ade80;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.chatbot-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.7;
+    font-size: 0.88rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s, background 0.2s;
+    flex-shrink: 0;
+}
+
+.chatbot-close:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.chatbot-body {
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Remove old toggle button if it somehow persists */
+.chatbot-toggle { display: none; }
+
+/* ── Animated typing dots (replaces plain loading text) ─────── */
+.typing-dots {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    padding: 3px 2px;
+}
+
+.typing-dots span {
+    width: 7px;
+    height: 7px;
+    background: #aaa;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typing-bounce 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: 0s; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Remove old pulse animation on loading (dots handle it now) */
+.message.loading { animation: none; opacity: 1; }
+
+@media (max-width: 768px) {
+    .chat-bubble  { bottom: 18px; right: 18px; width: 52px; height: 52px; font-size: 1.2rem; }
+    .chatbot-container { right: 10px; bottom: 82px; width: calc(100vw - 20px); }
+}
