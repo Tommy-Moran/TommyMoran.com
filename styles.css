@@ -233,19 +233,14 @@ body {
     font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 400;
     cursor: default;
-    transition: color 0.2s ease, letter-spacing 0.25s ease, transform 0.25s ease;
-    display: inline-block;
-}
-
-.titles p:first-child {
-    color: var(--accent-color);
-    font-weight: 600;
+    display: block;
+    transition: color 0.2s ease, letter-spacing 0.25s ease, padding-left 0.25s ease;
 }
 
 .titles p:hover {
     color: var(--accent-color);
     letter-spacing: 0.03em;
-    transform: translateX(4px);
+    padding-left: 6px;
 }
 
 .contact-info {
@@ -559,6 +554,7 @@ footer {
     }
     .titles p {
         display: block;
+        padding-left: 0;
     }
     .container,
     section,
@@ -1017,14 +1013,14 @@ section h2::after {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 120px;
+    height: 160px;
     pointer-events: none;
     overflow: visible;
 }
 
 .ecg-featured {
     bottom: 0;
-    height: 140px;
+    height: 160px;
 }
 
 .ecg-container svg {

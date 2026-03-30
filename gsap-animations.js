@@ -80,9 +80,9 @@ document.addEventListener('DOMContentLoaded', function () {
             ease: 'none',
             scrollTrigger: {
                 trigger: '.ecg-container',
-                start: 'top 98%',   // start the moment ECG enters viewport
-                end: 'top -20%',    // finish after it scrolls well past top
-                scrub: 0.8
+                start: 'top 95%',   // start the moment ECG enters viewport
+                end: 'top 30%',     // complete before it scrolls fully past
+                scrub: 0.6
             }
         });
     }
