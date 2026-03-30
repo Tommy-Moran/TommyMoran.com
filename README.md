@@ -66,9 +66,10 @@ A personal website featuring an interactive AI chatbot and portfolio showcase.
    pip install -r requirements.txt
    ```
 
-4. Create a `.env` file with your OpenAI API key:
+4. Create a `.env` file with your OpenAI credentials:
    ```
    OPENAI_API_KEY=your_api_key_here
+   OPENAI_ASSISTANT_ID=your_assistant_id_here
    ```
 
 5. Run the development server:

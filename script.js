@@ -256,7 +256,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show loading indicator
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'message bot loading';
-                loadingDiv.innerHTML = '<p>AI Tommy is typing...</p>';
+                const loadingText = document.createElement('p');
+                loadingText.textContent = 'AI Tommy is typing...';
+                loadingDiv.appendChild(loadingText);
                 chatMessages.appendChild(loadingDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -310,7 +312,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function addMessage(text, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}`;
-        messageDiv.innerHTML = `<p>${text}</p>`;
+        const p = document.createElement('p');
+        p.textContent = text;
+        messageDiv.appendChild(p);
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
