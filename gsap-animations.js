@@ -17,11 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
         gsap.set('.hero-text h1',                 { opacity: 0, y: 35 });
         gsap.set('.titles p',                     { opacity: 0, y: 20 });
         gsap.set('.contact-info',                 { opacity: 0, y: 15 });
-        gsap.set('.ecg-path', {
-            strokeDasharray: 1200,
-            strokeDashoffset: 1200,
-            opacity: 0
-        });
         gsap.set('.chat-bubble', { opacity: 0, scale: 0.5 });
 
         const loadTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
@@ -50,13 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }, '-=0.38')
             // Contact info
             .to('.contact-info', { opacity: 1, y: 0, duration: 0.42 }, '-=0.22')
-            // ECG line draws from left to right
-            .to('.ecg-path', {
-                strokeDashoffset: 0,
-                opacity: 0.28,
-                duration: 1.9,
-                ease: 'power2.inOut'
-            }, '-=1.3')
             // Chat bubble pops in
             .to('.chat-bubble', {
                 opacity: 1, scale: 1,
@@ -76,6 +64,28 @@ document.addEventListener('DOMContentLoaded', function () {
             scrub: 0.15
         }
     });
+
+    // ─── 2b. ECG SCROLL-TRIGGERED DRAWING ────────────────────────────────────
+    // Path length estimate for the redesigned ECG with VT+shock+sinus sequence
+    const ecgPath = document.querySelector('.ecg-path');
+    if (ecgPath) {
+        const pathLength = ecgPath.getTotalLength ? ecgPath.getTotalLength() : 4500;
+        gsap.set(ecgPath, {
+            strokeDasharray: pathLength,
+            strokeDashoffset: pathLength,
+            opacity: 1
+        });
+        gsap.to(ecgPath, {
+            strokeDashoffset: 0,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top 60%',
+                end: 'bottom 20%',
+                scrub: 1.2
+            }
+        });
+    }
 
     // ─── 3. ABOUT SECTION ────────────────────────────────────────────────────
     gsap.from('.about h2', {
@@ -173,6 +183,23 @@ document.addEventListener('DOMContentLoaded', function () {
             ease: 'none'
         });
     }
+
+    // ─── 10b. PROFILE IMAGE HEARTBEAT PULSE ──────────────────────────────────
+    gsap.to('.profile-image', {
+        boxShadow: '0 0 0 6px rgba(0, 112, 243, 0.5), 0 0 60px rgba(0, 112, 243, 0.4)',
+        duration: 0.18,
+        repeat: -1,
+        repeatDelay: 0.82,
+        yoyo: false,
+        ease: 'power2.out',
+        onRepeat: function() {
+            gsap.to('.profile-image', {
+                boxShadow: '0 0 0 4px rgba(0, 112, 243, 0.3), 0 0 30px rgba(0, 112, 243, 0.15)',
+                duration: 0.4,
+                ease: 'power2.out'
+            });
+        }
+    });
 
     // ─── 11. FOOTER ──────────────────────────────────────────────────────────
     gsap.from('footer', {

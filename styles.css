@@ -37,8 +37,11 @@ body {
     color: var(--secondary-color);
     padding: 2rem;
     position: fixed;
-    height: 100vh;
+    top: 0;
+    bottom: 0;
+    height: 100%;
     overflow-y: auto;
+    z-index: 100;
 }
 
 .logo {
@@ -188,6 +191,12 @@ body {
     height: 300px;
     border-radius: 50%;
     overflow: hidden;
+    box-shadow: 0 0 0 4px rgba(0, 112, 243, 0.3), 0 0 30px rgba(0, 112, 243, 0.15);
+    transition: box-shadow 0.3s ease;
+}
+
+.profile-image:hover {
+    box-shadow: 0 0 0 4px rgba(0, 112, 243, 0.6), 0 0 50px rgba(0, 112, 243, 0.3);
 }
 
 .profile-image img {
@@ -406,7 +415,10 @@ footer {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    html, body {
+    html {
+        overflow-y: scroll;
+    }
+    body {
         overflow-x: hidden;
     }
     .left-side {
@@ -495,15 +507,6 @@ footer {
     }
     .split-layout {
         flex-direction: column;
-    }
-    .left-side {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-    .right-side {
-        margin-left: 0;
-        width: 100%;
     }
     .hero-content {
         flex-direction: column;
@@ -949,53 +952,35 @@ section h2::after {
     border-radius: 2px;
 }
 
-/* ── Active nav dot indicator ────────────────────────────────── */
-.vertical-nav > ul > li > a {
-    padding-left: 1.2rem;
-}
-
-.vertical-nav > ul > li > a::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    background: var(--accent-color);
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.vertical-nav > ul > li > a.active::before,
-.vertical-nav > ul > li > a:hover::before {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
-}
 
 /* ── ECG decorative waveform in hero ────────────────────────── */
 .ecg-container {
     position: absolute;
-    bottom: 2.5rem;
+    bottom: 0;
     left: 0;
     right: 0;
-    height: 70px;
+    height: 120px;
     pointer-events: none;
+    overflow: visible;
+}
+
+.ecg-featured {
+    bottom: 0;
+    height: 140px;
 }
 
 .ecg-container svg {
     width: 100%;
     height: 100%;
+    overflow: visible;
 }
 
 .ecg-path {
-    stroke: var(--accent-color);
-    stroke-width: 2;
+    stroke: #00d4ff;
+    stroke-width: 2.5;
     fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0;         /* GSAP animates this in */
+    opacity: 0;
+    filter: drop-shadow(0 0 4px #00d4ff) drop-shadow(0 0 10px rgba(0, 212, 255, 0.4));
 }
 
 @media (max-width: 768px) {
