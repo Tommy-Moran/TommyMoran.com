@@ -9,7 +9,7 @@
   "goal_states": {
     "conference-presentation": {
       "status": "complete",
-      "completed_date": "2026-03-30",
+      "completed_date": "2026-03-20",
       "notes": "Presented original cardiology research at a national conference.",
       "evidence": [
         {
@@ -21,7 +21,14 @@
   },
   "timeline_events": [
     {
-      "date": "2026-06-01",
+      "date": "2026-03-25",
+      "label": "USMLE Step 1",
+      "description": "Sat USMLE Step 1",
+      "type": "event",
+      "goal_id": "ecfmg-certification"
+    },
+    {
+      "date": "2026-07-12",
       "label": "Half Marathon",
       "description": "Albert Park, Melbourne",
       "type": "event",
@@ -31,7 +38,13 @@
   "recent_videos": [],
   "updates": [
     {
-      "date": "2026-03-30",
+      "date": "2026-03-25",
+      "goal_id": "ecfmg-certification",
+      "text": "Sat USMLE Step 1. Result pending.",
+      "evidence_url": null
+    },
+    {
+      "date": "2026-03-20",
       "goal_id": "conference-presentation",
       "text": "Presented original cardiology research at a national conference. Goal 9 of 11 — confirmed PASS.",
       "evidence_url": "https://www.tiktok.com/@t-minus-400"

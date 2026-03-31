@@ -41,7 +41,7 @@ const GOAL_DEFS = [
     title:         'Half-Marathon PR',
     category:      'athletic',
     icon:          'fa-person-running',
-    description:   'Albert Park Half Marathon, June 2026 — beat 5:11/km baseline',
+    description:   'Albert Park Half Marathon, July 2026 — beat 5:11/km baseline',
     pass_criteria: 'Official finish time under 5:11 min/km'
   },
   {
@@ -112,7 +112,7 @@ const DEFAULT_DYNAMIC = {
   last_updated:    null,
   financial:       { debt_total_start: null, debt_remaining: null, savings: null, note: '' },
   goal_states:     {},
-  timeline_events: [{ date: '2026-06-01', label: 'Half Marathon', description: 'Albert Park, Melbourne', type: 'event' }],
+  timeline_events: [{ date: '2026-07-12', label: 'Half Marathon', description: 'Albert Park, Melbourne', type: 'event' }],
   updates:         []
 };
 
