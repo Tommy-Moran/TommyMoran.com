@@ -1,0 +1,39 @@
+{
+  "last_updated": "2026-03-30",
+  "financial": {
+    "debt_total_start": null,
+    "debt_remaining": null,
+    "savings": null,
+    "note": "Financial breakdown and live barometer launching soon. Follow @t-minus-400 for the first update."
+  },
+  "goal_states": {
+    "conference-presentation": {
+      "status": "complete",
+      "completed_date": "2026-03-30",
+      "notes": "Presented original cardiology research at a national conference.",
+      "evidence": [
+        {
+          "url": "https://www.tiktok.com/@t-minus-400",
+          "label": "See TikTok post"
+        }
+      ]
+    }
+  },
+  "timeline_events": [
+    {
+      "date": "2026-06-01",
+      "label": "Half Marathon",
+      "description": "Albert Park, Melbourne",
+      "type": "event",
+      "goal_id": "half-marathon-pr"
+    }
+  ],
+  "updates": [
+    {
+      "date": "2026-03-30",
+      "goal_id": "conference-presentation",
+      "text": "Presented original cardiology research at a national conference. Goal 9 of 11 — confirmed PASS.",
+      "evidence_url": "https://www.tiktok.com/@t-minus-400"
+    }
+  ]
+}

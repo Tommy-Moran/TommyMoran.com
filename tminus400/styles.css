@@ -884,6 +884,16 @@ section {
 }
 .update-evidence-link:hover { opacity: 0.75; }
 
+.last-updated-badge {
+  text-align: center;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 1.5rem;
+}
+
 .no-updates {
   font-size: 0.72rem;
   color: var(--text-3);
