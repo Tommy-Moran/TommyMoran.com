@@ -130,11 +130,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   DYNAMIC = await fetchDynamic();
   GOALS   = mergeGoals(GOAL_DEFS, DYNAMIC.goal_states);
 
+  renderStats();
+  renderTimeline();
+  initTimelineDrag();
+  renderVideos();
+  initVideosDrag();
   renderGoals();
   initCategoryTabs();
   initScrollAnimations();
-  renderTimeline();
-  initTimelineDrag();
   renderFinancial();
   renderUpdates();
   renderLastUpdated();
@@ -554,6 +557,142 @@ function renderLastUpdated() {
   if (!el || !DYNAMIC.last_updated) return;
   el.textContent = 'Last synced ' + formatDate(DYNAMIC.last_updated);
   el.style.display = 'block';
+}
+
+/* ============================================================
+   STATS BAR
+   ============================================================ */
+function renderStats() {
+  const el = document.getElementById('stats-bar');
+  if (!el) return;
+
+  const complete   = GOALS.filter(g => g.status === 'complete').length;
+  const inProgress = GOALS.filter(g => g.status === 'in-progress').length;
+
+  const now         = new Date();
+  const startDate   = new Date('2026-02-22T00:00:00');
+  const daysElapsed = Math.max(0, Math.floor((now - startDate) / 86400000));
+
+  // Next upcoming milestone date
+  const upcomingEvents = (DYNAMIC.timeline_events || [])
+    .map(e => ({ ...e, dateObj: new Date(e.date + 'T00:00:00') }))
+    .filter(e => e.dateObj > now)
+    .sort((a, b) => a.dateObj - b.dateObj);
+
+  const nextEvent     = upcomingEvents[0];
+  const daysToNext    = nextEvent ? Math.ceil((nextEvent.dateObj - now) / 86400000) : null;
+  const nextLabel     = nextEvent ? nextEvent.label : 'Day 0';
+
+  el.innerHTML = `
+    <div class="stat-item">
+      <div class="stat-value" style="color:var(--complete)">${complete}<span style="font-size:0.7em;color:var(--text-3)">/11</span></div>
+      <div class="stat-label">Goals Complete</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">${inProgress}</div>
+      <div class="stat-label">In Progress</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">${daysElapsed}</div>
+      <div class="stat-label">Days Elapsed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" style="color:var(--athletic)">${daysToNext !== null ? daysToNext : '—'}</div>
+      <div class="stat-label">Days to ${nextLabel}</div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   TIKTOK VIDEOS
+   ============================================================ */
+function renderVideos() {
+  const track = document.getElementById('videos-track');
+  if (!track) return;
+  track.innerHTML = '';
+
+  const videos = DYNAMIC.recent_videos || [];
+
+  if (!videos.length) {
+    track.innerHTML = `
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon"><i class="fab fa-tiktok"></i></div>
+        <div class="video-placeholder-text">Daily posts from the journey</div>
+        <a href="${SOCIAL.tiktok}" target="_blank" rel="noopener noreferrer" class="video-cta">
+          Follow @t-minus-400
+        </a>
+      </div>
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon"><i class="fab fa-instagram"></i></div>
+        <div class="video-placeholder-text">Stories &amp; reels every day</div>
+        <a href="${SOCIAL.instagram}" target="_blank" rel="noopener noreferrer" class="video-cta">
+          Follow on Instagram
+        </a>
+      </div>
+    `;
+    return;
+  }
+
+  videos.forEach(video => {
+    const goal   = GOALS.find(g => g.id === video.goal_id);
+    const videoId = video.url.split('/video/')[1]?.split('?')[0];
+    if (!videoId) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'video-item';
+    wrap.innerHTML = `
+      <div class="video-goal-tag" style="color:var(--${goal ? goal.category : 'professional'})">
+        ${goal ? goal.title : ''}
+      </div>
+      <blockquote class="tiktok-embed"
+        cite="${video.url}"
+        data-video-id="${videoId}"
+        style="max-width:325px;min-width:325px">
+        <section>
+          <a target="_blank" href="https://www.tiktok.com/@t-minus-400">@t-minus-400</a>
+        </section>
+      </blockquote>
+    `;
+    track.appendChild(wrap);
+  });
+
+  loadTikTokEmbed();
+}
+
+function loadTikTokEmbed() {
+  const existing = document.querySelector('script[src*="tiktok.com/embed.js"]');
+  if (existing) existing.remove();
+  const s    = document.createElement('script');
+  s.src      = 'https://www.tiktok.com/embed.js';
+  s.async    = true;
+  document.body.appendChild(s);
+}
+
+function initVideosDrag() {
+  const outer = document.getElementById('videos-outer');
+  if (!outer) return;
+
+  let isDown = false, startX, scrollLeft;
+
+  outer.addEventListener('mousedown', e => {
+    isDown = true; startX = e.pageX - outer.offsetLeft; scrollLeft = outer.scrollLeft;
+    outer.classList.add('dragging');
+  });
+  outer.addEventListener('mouseleave', () => { isDown = false; outer.classList.remove('dragging'); });
+  outer.addEventListener('mouseup',    () => { isDown = false; outer.classList.remove('dragging'); });
+  outer.addEventListener('mousemove',  e => {
+    if (!isDown) return;
+    e.preventDefault();
+    outer.scrollLeft = scrollLeft - (e.pageX - outer.offsetLeft - startX) * 1.4;
+  });
+
+  let touchStartX, touchScroll;
+  outer.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].pageX - outer.offsetLeft; touchScroll = outer.scrollLeft;
+  }, { passive: true });
+  outer.addEventListener('touchmove', e => {
+    outer.scrollLeft = touchScroll - (e.touches[0].pageX - outer.offsetLeft - touchStartX) * 1.4;
+  }, { passive: true });
 }
 
 /* ============================================================
