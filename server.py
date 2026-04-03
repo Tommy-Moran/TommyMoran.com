@@ -134,10 +134,7 @@ try:
         logger.error("OPENAI_API_KEY environment variable is not set")
         raise ValueError("OPENAI_API_KEY environment variable is not set")
 
-    assistant_id = os.getenv('OPENAI_ASSISTANT_ID')
-    if not assistant_id:
-        logger.error("OPENAI_ASSISTANT_ID environment variable is not set")
-        raise ValueError("OPENAI_ASSISTANT_ID environment variable is not set")
+    assistant_id = os.getenv('OPENAI_ASSISTANT_ID', 'asst_W3VfOMmKvt07w6WIR6yGpI9x')
 
     # Create an event hook to add the v2 header
     def add_v2_header(request):
