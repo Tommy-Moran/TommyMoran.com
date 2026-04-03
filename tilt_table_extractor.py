@@ -129,7 +129,7 @@ def _ocr_checkboxes(pdf_bytes):
         logger.warning("pdf2image not installed — checkbox OCR unavailable, using [REVIEW] placeholders")
         return {}
 
-    DPI = 300
+    DPI = 120
     SCALE = DPI / 72.0           # PDF points → image pixels
     DARK_THRESHOLD = 160         # pixel value below this counts as "dark"
     MARKED_RATIO   = 0.15        # fraction of dark pixels that implies a mark
