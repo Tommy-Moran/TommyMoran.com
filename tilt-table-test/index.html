@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tilt Table Test Report Generator</title>
+    <link rel="stylesheet" href="css/tilt.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tilt Table Test Report Generator</h1>
+            <p class="subtitle">Upload a REDCap PDF to generate a formatted HealthTrack report</p>
+        </header>
+
+        <div class="disclaimer-box">
+            <strong>Clinical tool — not a substitute for clinical judgement.</strong>
+            All data is processed locally on the server. No patient information is sent to external services.
+            Review all <span style="color:#c0620a;font-weight:600;">[REVIEW: …]</span> placeholders before finalising the report.
+        </div>
+
+        <!-- Upload Card -->
+        <div class="card" id="upload-card">
+            <h2>Upload REDCap PDF</h2>
+
+            <div class="upload-zone" id="upload-zone">
+                <input type="file" id="pdf-input" accept="application/pdf">
+                <div class="upload-icon">📄</div>
+                <p><strong>Click to select</strong> or drag and drop a PDF here</p>
+                <p>Accepts REDCap tilt table test export PDFs only</p>
+                <div class="file-name" id="file-name"></div>
+            </div>
+
+            <div class="error-box" id="error-box"></div>
+
+            <button class="btn-primary" id="process-btn" disabled>Generate Report</button>
+        </div>
+
+        <div class="spinner" id="spinner">Processing PDF…</div>
+
+        <!-- Results -->
+        <div id="results-section">
+            <div class="card">
+                <h2>Generated HealthTrack Report</h2>
+
+                <div class="review-notice" id="review-notice"></div>
+
+                <div class="report-output" id="report-output"></div>
+
+                <button class="btn-copy" id="copy-btn">
+                    <span id="copy-icon">📋</span>
+                    <span id="copy-label">Copy Report to Clipboard</span>
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            Internal clinical utility &mdash; not linked from main navigation
+        </footer>
+    </div>
+
+    <script>
+        const uploadZone = document.getElementById('upload-zone');
+        const pdfInput  = document.getElementById('pdf-input');
+        const fileNameEl = document.getElementById('file-name');
+        const processBtn = document.getElementById('process-btn');
+        const spinner   = document.getElementById('spinner');
+        const errorBox  = document.getElementById('error-box');
+        const resultsSection = document.getElementById('results-section');
+        const reportOutput   = document.getElementById('report-output');
+        const copyBtn   = document.getElementById('copy-btn');
+        const copyLabel = document.getElementById('copy-label');
+        const copyIcon  = document.getElementById('copy-icon');
+        const reviewNotice = document.getElementById('review-notice');
+
+        let selectedFile = null;
+
+        // Drag-and-drop
+        uploadZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadZone.classList.add('drag-over');
+        });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+        uploadZone.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type === 'application/pdf') handleFile(file);
+            else showError('Please drop a PDF file.');
+        });
+
+        pdfInput.addEventListener('change', () => {
+            if (pdfInput.files[0]) handleFile(pdfInput.files[0]);
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            fileNameEl.textContent = file.name;
+            fileNameEl.style.display = 'block';
+            processBtn.disabled = false;
+            hideError();
+        }
+
+        processBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            // Reset
+            hideError();
+            resultsSection.classList.remove('visible');
+            spinner.classList.add('visible');
+            processBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('pdf', selectedFile);
+
+            try {
+                const resp = await fetch('/tilt-table-test/process', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok || data.error) {
+                    showError(data.error || 'An error occurred processing the PDF.');
+                    return;
+                }
+
+                renderReport(data.report, data.review_count);
+            } catch (err) {
+                showError('Network error — please check the server is running.');
+            } finally {
+                spinner.classList.remove('visible');
+                processBtn.disabled = false;
+            }
+        });
+
+        function renderReport(reportText, reviewCount) {
+            // Highlight [REVIEW: ...] markers
+            const highlighted = reportText.replace(
+                /\[REVIEW:[^\]]+\]/g,
+                match => `<span class="review-marker">${escapeHtml(match)}</span>`
+            );
+            reportOutput.innerHTML = highlighted;
+
+            if (reviewCount > 0) {
+                reviewNotice.textContent =
+                    `⚠ ${reviewCount} field${reviewCount > 1 ? 's' : ''} could not be confidently extracted and need manual review (highlighted in yellow).`;
+                reviewNotice.classList.add('visible');
+            } else {
+                reviewNotice.classList.remove('visible');
+            }
+
+            resultsSection.classList.add('visible');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        copyBtn.addEventListener('click', () => {
+            // Get plain text (strip HTML)
+            const text = reportOutput.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                copyLabel.textContent = 'Copied!';
+                copyIcon.textContent = '✅';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    copyLabel.textContent = 'Copy Report to Clipboard';
+                    copyIcon.textContent = '📋';
+                    copyBtn.classList.remove('copied');
+                }, 2500);
+            });
+        });
+
+        function showError(msg) {
+            errorBox.textContent = msg;
+            errorBox.classList.add('visible');
+        }
+
+        function hideError() {
+            errorBox.classList.remove('visible');
+            errorBox.textContent = '';
+        }
+    </script>
+</body>
+</html>

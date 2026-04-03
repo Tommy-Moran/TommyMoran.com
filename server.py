@@ -12,6 +12,7 @@ from datetime import datetime
 import csv
 from io import StringIO
 import re
+from tilt_table_extractor import process_pdf
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -610,6 +611,49 @@ def standardize_recommendation(original_text):
         return f"A {category} echocardiogram is recommended as an inpatient."
     # Otherwise, use the AI's original recommendation
     return original_text.strip()
+
+
+# ─────────────────────────────────────────────────────────────
+# Tilt Table Test Report Generator routes
+# ─────────────────────────────────────────────────────────────
+
+@app.route('/tilt-table-test')
+def tilt_table_redirect():
+    return redirect('/tilt-table-test/')
+
+@app.route('/tilt-table-test/')
+def tilt_table_index():
+    return send_from_directory('tilt-table-test', 'index.html')
+
+@app.route('/tilt-table-test/<path:path>')
+def tilt_table_static(path):
+    return send_from_directory('tilt-table-test', path)
+
+@app.route('/tilt-table-test/process', methods=['POST'])
+def tilt_table_process():
+    logger.info("Tilt table PDF process endpoint accessed")
+    if 'pdf' not in request.files:
+        return jsonify({'error': 'No PDF file uploaded.'}), 400
+
+    pdf_file = request.files['pdf']
+    if not pdf_file.filename.lower().endswith('.pdf'):
+        return jsonify({'error': 'Uploaded file must be a PDF.'}), 400
+
+    try:
+        pdf_bytes = pdf_file.read()
+        if len(pdf_bytes) == 0:
+            return jsonify({'error': 'Uploaded PDF is empty.'}), 400
+
+        report_text, review_count = process_pdf(pdf_bytes)
+        return jsonify({'report': report_text, 'review_count': review_count})
+
+    except ValueError as e:
+        logger.error("Tilt table PDF processing error: %s", str(e))
+        return jsonify({'error': str(e)}), 422
+    except Exception as e:
+        logger.error("Unexpected error in tilt table processing: %s", str(e))
+        return jsonify({'error': 'An unexpected error occurred while processing the PDF.'}), 500
+
 
 if __name__ == '__main__':
     try:
