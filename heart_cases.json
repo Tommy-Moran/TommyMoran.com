@@ -460,5 +460,61 @@
     "clinical_context": "78F admitted with cellulitis, has concurrent pleural effusions and peripheral oedema. No recent TTE. BNP 560.\nCXR wet with pleural effusion. CRP 78. BCs negative.",
     "clinical_question": "?LVEF",
     "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24\u201348 hours to assess left ventricular ejection fraction and investigate potential acute cardiac dysfunction.\n\nRationale:\nThe patient is over 75 years old with acute peripheral oedema, pleural effusions, a \u201cwet\u201d chest X-ray, and elevated BNP (560), suggesting likely decompensated heart failure. Infection is not the primary cause, as blood cultures are negative and CRP is only moderately elevated. No recent TTE is available for comparison. These features satisfy criteria for urgent inpatient echocardiography.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure all relevant clinical information and investigations (ECG, recent labs) are provided with the referral. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "3185255",
+    "timestamp": "2025-07-02T18:46:08.582469",
+    "clinical_context": "79M with heart failure, critically unwell in ICU. ",
+    "clinical_question": "? LVEF",
+    "patient_urn": "2020201",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 1\u20132 hours.\n\nRationale:\nThe patient is critically unwell in the ICU with heart failure, which suggests a scenario of acute heart failure with hypotension or shock. This condition requires urgent assessment to rule out the cause of shock, such as cardiac dysfunction or other complications\u30104:0\u2020source\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form immediately. Ensure clinical examination, ECG, chest X-ray, and relevant blood tests (e.g., lactate, troponin) are performed prior to the echo. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "2630183",
+    "timestamp": "2025-07-02T18:49:04.206799",
+    "clinical_context": "79M with heart failure, critically unwell in ICU. He had an echo yesterday already though.",
+    "clinical_question": "? LVEF",
+    "patient_urn": "2020201",
+    "ai_response": "Recommendation:\nAn inpatient echocardiogram is not indicated at this time.\n\nRationale:\nThe patient is critically unwell in the ICU with heart failure and had an echocardiogram performed yesterday. According to the Echo Inappropriateness Criteria, a repeat echocardiogram within a short timeframe without a significant change in clinical status or new findings is generally not indicated .\n\nNext Steps:\nAn echocardiogram is not indicated during this admission. If you feel it is still clinically required, discuss with the Cardiology team via the hospital switchboard (03 6166 8308). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "1545611",
+    "timestamp": "2025-07-02T19:06:36.893613",
+    "clinical_context": "65M with chest pain and shortness of breath following recent MI",
+    "clinical_question": "What is the current LVEF and is there any wall motion abnormality?",
+    "patient_urn": "TEST123456",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 12\u201324 hours.\n\nRationale:\nThe patient presents with chest pain and shortness of breath following a recent myocardial infarction (MI), which are acute cardiovascular symptoms. An echocardiogram is required to assess for wall motion abnormalities and evaluate left ventricular ejection fraction (LVEF) to determine any complications post-MI\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure that relevant investigations such as ECG, troponin levels, and any additional cardiac imaging are performed prior to the echocardiogram. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "3131382",
+    "timestamp": "2025-07-03T11:29:16.908713",
+    "clinical_context": "57F with MSSA bacteramia and a new murmur",
+    "clinical_question": "?IE",
+    "patient_urn": "2020202",
+    "ai_response": "Recommendation:\nInpatient echocardiogram is indicated within 24 hours.\n\nRationale:\nThe patient has MSSA bacteraemia and a new murmur, which are high-risk features for infective endocarditis. In such cases, an inpatient echocardiogram is indicated to assess for vegetations or valvular destruction\u30104:1\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete and submit the RHH Inpatient Echo Request Form. Ensure that relevant investigations, such as blood cultures, are performed prior to the echocardiogram. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nCardiology."
+  },
+  {
+    "case_id": "5427431",
+    "timestamp": "2025-07-03T11:31:57.674639",
+    "clinical_context": "78F with heart failure. Had an echo yesterday. Has the LVEF changed?",
+    "clinical_question": "?Change in lvef",
+    "patient_urn": "2020202",
+    "ai_response": "Recommendation:\nEchocardiogram is not indicated. The patient had an echocardiogram yesterday, and there is no new clinical change or deterioration that warrants another immediate scan.\n\nRationale:\nAccording to the inappropriateness criteria, a repeat echocardiogram within days without a change in clinical status or new cardiovascular symptoms is not indicated\u30104:2\u2020source\u3011. The patient had an echocardiogram yesterday, and there is no indication of a new clinical change that would necessitate another echocardiogram.\n\nNext Steps:\nAn echocardiogram is not indicated during this admission. If you feel it is still clinically required, discuss with the Cardiology team via the hospital switchboard (03 6166 8308). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "1684381",
+    "timestamp": "2025-07-03T11:47:28.485222",
+    "clinical_context": "86F with shortness of breath",
+    "clinical_question": "? LV function",
+    "patient_urn": "2020202",
+    "ai_response": "Recommendation:\nMore information is required. Please provide the reason for admission, relevant examination findings (e.g., presence of murmur, signs of heart failure), and results of investigations (e.g., ECG, CXR, BNP, troponin).\n\nRationale:\nThe clinical context lacks sufficient detail to determine the appropriateness of an echocardiogram. Key information such as the admission diagnosis, examination findings, and relevant investigations are necessary to assess the need for evaluating left ventricular function.\n\nNext Steps:\nPlease provide further clinical details including the admission diagnosis, examination findings (e.g., murmur, oedema, JVP), and results of investigations (ECG, chest X-ray, BNP, troponin). Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
+  },
+  {
+    "case_id": "1354176",
+    "timestamp": "2025-07-03T11:53:35.205768",
+    "clinical_context": "86F with moderate aortic stenosis",
+    "clinical_question": "?surveillance scan",
+    "patient_urn": "2020202",
+    "ai_response": "Recommendation:\nOutpatient echocardiogram is indicated within 1\u20132 years for surveillance of moderate aortic stenosis.\n\nRationale:\nFor moderate aortic stenosis, routine surveillance echocardiography is recommended every 1\u20132 years to monitor for progression of the disease\u30104:0\u2020RHH_Echo_Indications.txt\u3011.\n\nNext Steps:\nComplete the paper echo request form and submit it to Cardiology Reception, Level 2. Outpatient echo should be performed within 1\u20132 years. Recommendations are based on clinical appropriateness criteria, but should be discussed with the Cardiology team if there are any queries.\n\nConsider Consulting:\nNone."
   }
 ]

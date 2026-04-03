@@ -139,10 +139,12 @@
         });
 
         function renderReport(reportText, reviewCount) {
-            // Highlight [REVIEW: ...] markers
-            const highlighted = reportText.replace(
+            // Escape all HTML first so <HMS-Patient_FirstName> renders as text,
+            // then replace the already-safe [REVIEW: ...] tokens with styled spans.
+            const safe = escapeHtml(reportText);
+            const highlighted = safe.replace(
                 /\[REVIEW:[^\]]+\]/g,
-                match => `<span class="review-marker">${escapeHtml(match)}</span>`
+                match => `<span class="review-marker">${match}</span>`
             );
             reportOutput.innerHTML = highlighted;
 
