@@ -1,0 +1,331 @@
+/* Tilt Table Test Report Generator - CSS */
+
+:root {
+    --primary: #1e5288;
+    --primary-light: #3f72af;
+    --primary-dark: #0a2a4a;
+    --secondary: #6db0e3;
+    --success: #4a934a;
+    --warning: #d9534f;
+    --review: #e67e22;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --gray-light: #e9ecef;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --transition: all 0.25s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    background-color: #f0f4f8;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+}
+
+/* ===== Header ===== */
+header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+header h1 {
+    color: var(--primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+}
+
+header p.subtitle {
+    color: var(--gray);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+/* ===== Disclaimer ===== */
+.disclaimer-box {
+    background: #dbeafe;
+    border-left: 4px solid var(--primary);
+    border-radius: var(--border-radius);
+    padding: 14px 18px;
+    margin-bottom: 28px;
+    font-size: 0.82rem;
+    color: var(--primary-dark);
+    line-height: 1.5;
+}
+
+.disclaimer-box strong {
+    font-weight: 600;
+}
+
+/* ===== Upload Card ===== */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    padding: 32px;
+    margin-bottom: 28px;
+}
+
+.card h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== Upload Zone ===== */
+.upload-zone {
+    border: 2px dashed #b0c8e8;
+    border-radius: 10px;
+    padding: 36px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: #f7fbff;
+    position: relative;
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+    border-color: var(--primary);
+    background: #eaf2fc;
+}
+
+.upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.upload-icon {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: var(--secondary);
+}
+
+.upload-zone p {
+    color: var(--gray);
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+}
+
+.upload-zone p strong {
+    color: var(--primary);
+}
+
+.file-name {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--primary);
+    font-weight: 500;
+    display: none;
+}
+
+/* ===== Process Button ===== */
+.btn-primary {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px 20px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.3px;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--primary-dark);
+}
+
+.btn-primary:disabled {
+    background: #9db8d2;
+    cursor: not-allowed;
+}
+
+/* ===== Spinner ===== */
+.spinner {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.spinner.visible {
+    display: block;
+}
+
+.spinner::before {
+    content: '';
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border: 3px solid #b0c8e8;
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== Error ===== */
+.error-box {
+    background: #fde8e8;
+    border-left: 4px solid var(--warning);
+    border-radius: var(--border-radius);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    color: #7b1c1c;
+    display: none;
+}
+
+.error-box.visible {
+    display: block;
+}
+
+/* ===== Results Section ===== */
+#results-section {
+    display: none;
+}
+
+#results-section.visible {
+    display: block;
+}
+
+/* ===== Extracted Data Summary ===== */
+.extracted-data {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-bottom: 8px;
+}
+
+.review-badge {
+    display: inline-block;
+    background: #fef3e2;
+    color: var(--review);
+    border: 1px solid #f5c97a;
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+/* ===== Report Output ===== */
+.report-output {
+    font-family: 'Georgia', serif;
+    font-size: 0.92rem;
+    line-height: 1.85;
+    color: var(--dark);
+    white-space: pre-wrap;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 24px;
+    min-height: 180px;
+}
+
+.report-output .review-marker {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 3px;
+    padding: 0 4px;
+    color: #856404;
+    font-family: monospace;
+    font-size: 0.85em;
+}
+
+/* ===== Section labels inside report ===== */
+.report-section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--primary);
+    margin-top: 18px;
+    margin-bottom: 2px;
+    display: block;
+}
+
+/* ===== Copy Button ===== */
+.btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px 20px;
+    background: var(--success);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-copy:hover {
+    background: #3a7a3a;
+}
+
+.btn-copy.copied {
+    background: #6c757d;
+}
+
+/* ===== Review count notice ===== */
+.review-notice {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: var(--border-radius);
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    color: #7a5a00;
+    margin-bottom: 14px;
+    display: none;
+}
+
+.review-notice.visible {
+    display: block;
+}
+
+/* ===== Footer ===== */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.75rem;
+    color: #aaa;
+}

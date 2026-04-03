@@ -133,6 +133,12 @@ export class EchoApp {
         const mainElement = document.querySelector('.app-main');
         mainElement.innerHTML = '';
         
+        // Add info box with AI info sentence for mobile hiding
+        const infoBox = document.createElement('div');
+        infoBox.className = 'info-box';
+        infoBox.innerHTML = '<span class="ai-info-hide-mobile">This tool uses a custom AI model trained on cardiology guidelines and validated criteria to assess inpatient echocardiogram requests.<br></span><strong>Do not</strong> include patient-identifiable details such as names, date of birth, URNs, or addresses.';
+        mainElement.appendChild(infoBox);
+
         const form = createElement('form', { className: 'echo-form' });
         
         // Patient Type Selection
