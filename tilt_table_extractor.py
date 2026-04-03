@@ -934,7 +934,7 @@ def build_report(fields):
     stop_min  = fields.get("phase2_stop_minute")
 
     # Describe when the test was terminated (if it ended before 10 min)
-    stop_str = f" The test was terminated at {stop_min} minutes." if (stop_min and stop_min < 10) else ""
+    stop_str = f" The test was terminated at {stop_min} {'minute' if stop_min == 1 else 'minutes'}." if (stop_min and stop_min < 10) else ""
 
     if p2_result == _RESULT_NOT_REACHED:
         p2_text = tally(
