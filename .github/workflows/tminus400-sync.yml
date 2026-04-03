@@ -1,0 +1,35 @@
+name: T-Minus 400 Social Sync
+
+on:
+  schedule:
+    - cron: '0 13 * * *'   # midnight AEDT (UTC+11)
+  workflow_dispatch:         # allow manual trigger from GitHub UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install anthropic requests
+
+      - name: Run social sync
+        run: python .github/scripts/sync_tminus400.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tminus400/goals-data.json
+          git diff --cached --quiet || git commit -m "tminus400: auto-sync $(date -u +%Y-%m-%d)"
+          git push

@@ -28,6 +28,12 @@ import {
     scrollToTop
 } from './utils.js';
 
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = String(str == null ? '' : str);
+    return div.innerHTML;
+}
+
 export class EchoApp {
     constructor() {
         this.formData = {
@@ -508,7 +514,7 @@ export class EchoApp {
                 // Populate the indicated screen for appropriate requests
                 const indicatedContentElement = document.getElementById('indicatedContent');
                 if (indicatedContentElement) {
-                    const reasonsListHTML = reasons.map(reason => `<li>${reason}</li>`).join('');
+                    const reasonsListHTML = reasons.map(reason => `<li>${escapeHtml(reason)}</li>`).join('');
                     indicatedContentElement.innerHTML = `<ul>${reasonsListHTML}</ul>`;
                 }
                 
@@ -516,8 +522,8 @@ export class EchoApp {
                 const timeframeElement = document.getElementById('indicatedTimeframe');
                 if (timeframeElement) {
                     timeframeElement.innerHTML = `
-                        <p><strong>Recommended Timeframe:</strong> ${timeInterval || 'Based on clinical urgency'}</p>
-                        <p><strong>Patient Type:</strong> This is recommended as an <strong>${patientType}</strong> test.</p>
+                        <p><strong>Recommended Timeframe:</strong> ${escapeHtml(timeInterval || 'Based on clinical urgency')}</p>
+                        <p><strong>Patient Type:</strong> This is recommended as an <strong>${escapeHtml(patientType)}</strong> test.</p>
                     `;
                     
                     // Get the raw timeInterval value before formatting by removing labels
@@ -613,7 +619,7 @@ export class EchoApp {
                 // Populate the not indicated screen for inappropriate requests
                 const notIndicatedContentElement = document.getElementById('notIndicatedContent');
                 if (notIndicatedContentElement) {
-                    const reasonsListHTML = reasons.map(reason => `<li>${reason}</li>`).join('');
+                    const reasonsListHTML = reasons.map(reason => `<li>${escapeHtml(reason)}</li>`).join('');
                     notIndicatedContentElement.innerHTML = `<ul>${reasonsListHTML}</ul>`;
                 }
                 
@@ -627,7 +633,7 @@ export class EchoApp {
                         alternativeTestsElement.innerHTML = `
                             <p>Please complete the following tests before requesting an echocardiogram:</p>
                             <ul>
-                                ${missingTests.split(', ').map(test => `<li>${test}</li>`).join('')}
+                                ${missingTests.split(', ').map(test => `<li>${escapeHtml(test)}</li>`).join('')}
                             </ul>
                         `;
                     } else {
@@ -698,8 +704,8 @@ export class EchoApp {
             const timeframeContent = document.createElement('div');
             timeframeContent.classList.add('info-box');
             timeframeContent.innerHTML = `
-                <p><strong>Recommended Timeframe:</strong> ${timeInterval || 'Based on clinical urgency'}</p>
-                <p><strong>Patient Type:</strong> This is recommended as an <strong>${patientType}</strong> test.</p>
+                <p><strong>Recommended Timeframe:</strong> ${escapeHtml(timeInterval || 'Based on clinical urgency')}</p>
+                <p><strong>Patient Type:</strong> This is recommended as an <strong>${escapeHtml(patientType)}</strong> test.</p>
             `;
             
             // Get the raw timeInterval value before formatting
@@ -735,7 +741,7 @@ export class EchoApp {
             const billingContent = document.createElement('div');
             billingContent.classList.add('info-box');
             billingContent.innerHTML = `
-                <p><strong>Medicare Item Number:</strong> ${billingCode || 'N/A'}</p>
+                <p><strong>Medicare Item Number:</strong> ${escapeHtml(billingCode || 'N/A')}</p>
             `;
             billingDiv.appendChild(billingContent);
             resultDiv.appendChild(billingDiv);
@@ -799,7 +805,7 @@ export class EchoApp {
                 alternativeTestsContent.innerHTML = `
                     <p>Please complete the following tests before requesting an echocardiogram:</p>
                     <ul>
-                        ${missingTests.split(', ').map(test => `<li>${test}</li>`).join('')}
+                        ${missingTests.split(', ').map(test => `<li>${escapeHtml(test)}</li>`).join('')}
                     </ul>
                 `;
             } else {

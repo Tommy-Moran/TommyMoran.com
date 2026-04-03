@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - claude/gsap-ui-improvements
   workflow_dispatch:
 
 permissions:

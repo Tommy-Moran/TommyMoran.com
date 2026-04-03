@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-Minus 400 — Thomas Moran</title>
+  <meta name="description" content="400-day binary execution project. 11 goals. 1 deadline. Pass or Fail on Day 0.">
+  <meta property="og:title" content="T-Minus 400">
+  <meta property="og:description" content="400 days. 11 goals. Binary execution. No excuses.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Particle constellation background -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Back to portfolio -->
+  <a href="/" class="back-link">
+    <i class="fas fa-arrow-left"></i>
+    <span>Thomas Moran</span>
+  </a>
+
+  <!-- ================================================================
+       HERO
+  ================================================================ -->
+  <section id="hero">
+    <div class="hero-brand" data-text="T-MINUS 400">T-MINUS 400</div>
+
+    <div class="countdown-wrap">
+      <div class="countdown-number" id="days-remaining">400</div>
+      <div class="countdown-label">Days Remaining</div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-labels">
+        <span>Day <span class="progress-day-label" id="day-number">0</span> of 400</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progress-bar"></div>
+      </div>
+      <div class="progress-dates">
+        <span>22 Feb 2026</span>
+        <span>29 Mar 2027</span>
+      </div>
+    </div>
+
+    <div class="social-links">
+      <a href="https://www.instagram.com/t-minus-400" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fab fa-instagram"></i> @t-minus-400
+      </a>
+      <a href="https://www.tiktok.com/@t-minus-400" target="_blank" rel="noopener noreferrer" class="social-link">
+        <i class="fab fa-tiktok"></i> @t-minus-400
+      </a>
+    </div>
+
+    <div class="hero-tagline">Binary execution. No excuses.</div>
+
+    <div class="scroll-hint">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       STATS BAR
+  ================================================================ -->
+  <section id="stats">
+    <div class="stats-bar" id="stats-bar">
+      <!-- Injected by script.js -->
+    </div>
+  </section>
+
+  <!-- ================================================================
+       TIMELINE
+  ================================================================ -->
+  <section id="timeline">
+    <div class="section-header">
+      <h2>Project Timeline</h2>
+      <div class="section-divider"></div>
+      <p>Drag or swipe to explore</p>
+    </div>
+    <div class="timeline-outer" id="timeline-outer">
+      <div class="timeline-track" id="timeline-track">
+        <!-- Injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       TIKTOK VIDEOS
+  ================================================================ -->
+  <section id="videos">
+    <div class="section-header">
+      <h2>Latest Posts</h2>
+      <div class="section-divider"></div>
+      <p>Updated daily from @t-minus-400</p>
+    </div>
+    <div class="videos-outer" id="videos-outer">
+      <div class="videos-track" id="videos-track">
+        <!-- Injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       GOALS
+  ================================================================ -->
+  <section id="goals">
+    <div class="section-header">
+      <h2>The 11 Goals</h2>
+      <div class="section-divider"></div>
+      <p>Pass or Fail on Day 0. No partial credit.</p>
+    </div>
+
+    <div class="category-tabs">
+      <button class="tab active" data-filter="all">All <span>11</span></button>
+      <button class="tab" data-filter="creative">Creative <span>3</span></button>
+      <button class="tab" data-filter="athletic">Athletic <span>3</span></button>
+      <button class="tab" data-filter="professional">Professional <span>4</span></button>
+      <button class="tab" data-filter="financial">Financial <span>1</span></button>
+    </div>
+
+    <div class="goals-grid" id="goals-grid">
+      <!-- Injected by script.js -->
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FINANCIAL BAROMETER
+  ================================================================ -->
+  <section id="financial">
+    <div class="section-header">
+      <h2>Net Zero Target</h2>
+      <div class="section-divider"></div>
+      <p>Goal 11 — Financial independence from student debt</p>
+    </div>
+
+    <div class="financial-meter-container">
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 200 120" aria-hidden="true">
+          <path class="gauge-bg-arc"
+            d="M 20 100 A 80 80 0 0 1 180 100"
+            fill="none" stroke="#1a1a1a" stroke-width="12" stroke-linecap="round"/>
+          <path id="gauge-fill-arc" class="gauge-fill-arc"
+            d="M 20 100 A 80 80 0 0 1 180 100"
+            fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        </svg>
+        <div class="gauge-center-text">
+          <div id="gauge-value" class="gauge-value">
+            <span class="gauge-coming-soon">Details<br>Coming Soon</span>
+          </div>
+        </div>
+      </div>
+      <p class="financial-note" id="financial-note">
+        Financial breakdown and live barometer launching soon.<br>
+        Follow <a href="https://www.instagram.com/t-minus-400" target="_blank" rel="noopener noreferrer">@t-minus-400</a> for the first update.
+      </p>
+      <div class="financial-goal-text">
+        <span class="financial-equation">(Savings − Debt) ≥ $0</span>
+        <span class="financial-equation-label">Target by Day 0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       UPDATES
+  ================================================================ -->
+  <section id="updates">
+    <div class="section-header">
+      <h2>Recent Updates</h2>
+      <div class="section-divider"></div>
+      <p>Latest progress across all 11 goals</p>
+    </div>
+    <div id="last-updated" class="last-updated-badge" style="display:none"></div>
+    <div class="updates-list" id="updates-list">
+      <!-- Injected by script.js -->
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOOTER
+  ================================================================ -->
+  <footer>
+    <div class="footer-brand">T−400</div>
+    <p class="footer-tagline">400 Days. Binary execution. No excuses.</p>
+    <div class="footer-links">
+      <a href="/">Thomas Moran</a>
+      <span>·</span>
+      <a href="https://www.instagram.com/t-minus-400" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+      <span>·</span>
+      <a href="https://www.tiktok.com/@t-minus-400" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-tiktok"></i> TikTok
+      </a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -233,16 +233,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Chatbot functionality
-    const chatbotContainer = document.querySelector('.chatbot-container');
-    const chatbotToggle = document.querySelector('.chatbot-toggle');
+    // Open/close is handled by gsap-animations.js via the bubble and close button.
     const chatInput = document.querySelector('.chat-input input');
     const sendButton = document.querySelector('.send-button');
     const chatMessages = document.querySelector('.chat-messages');
-
-    // Toggle chatbot visibility
-    chatbotToggle.addEventListener('click', function() {
-        chatbotContainer.classList.toggle('collapsed');
-    });
 
     // Handle sending messages
     async function sendMessage() {
@@ -253,10 +247,13 @@ document.addEventListener('DOMContentLoaded', function() {
             chatInput.value = '';
 
             try {
-                // Show loading indicator
+                // Show animated typing indicator
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'message bot loading';
-                loadingDiv.innerHTML = '<p>AI Tommy is typing...</p>';
+                const dots = document.createElement('div');
+                dots.className = 'typing-dots';
+                for (let i = 0; i < 3; i++) dots.appendChild(document.createElement('span'));
+                loadingDiv.appendChild(dots);
                 chatMessages.appendChild(loadingDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -310,7 +307,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function addMessage(text, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}`;
-        messageDiv.innerHTML = `<p>${text}</p>`;
+        const p = document.createElement('p');
+        p.textContent = text;
+        messageDiv.appendChild(p);
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }

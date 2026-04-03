@@ -177,12 +177,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show loading indicator
                 const loadingDiv = document.createElement('div');
                 loadingDiv.className = 'message bot loading';
-                loadingDiv.innerHTML = '<p>AI Tommy is typing...</p>';
+                const loadingText = document.createElement('p');
+                loadingText.textContent = 'AI Tommy is typing...';
+                loadingDiv.appendChild(loadingText);
                 chatMessages.appendChild(loadingDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
+                // Determine the API URL based on the environment
+                const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:8081/chat'
+                    : 'https://tommymoran-com-chatbot.onrender.com/chat';
+
                 // Call the backend API
-                const response = await fetch('http://127.0.0.1:5000/chat', {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -226,7 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function addMessage(text, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}`;
-        messageDiv.innerHTML = `<p>${text}</p>`;
+        const p = document.createElement('p');
+        p.textContent = text;
+        messageDiv.appendChild(p);
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
