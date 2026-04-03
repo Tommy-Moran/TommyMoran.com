@@ -65,6 +65,23 @@ CORS(app, resources={
         "methods": ["POST", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": False
+    },
+    r"/tilt-table-test/process": {
+        "origins": [
+            "https://tommymoran.com",
+            "https://tommymoran-com-chatbot.onrender.com",
+            "http://localhost:8000",
+            "http://127.0.0.1:8000",
+            "http://localhost:8080",
+            "http://127.0.0.1:8080",
+            "http://localhost:8081",
+            "http://127.0.0.1:8081",
+            "http://localhost:8082",
+            "http://127.0.0.1:8082"
+        ],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"],
+        "supports_credentials": False
     }
 })
 
