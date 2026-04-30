@@ -1,7 +1,7 @@
 """
 tilt_table_extractor.py
 Server-side extraction of clinical data from REDCap tilt table test PDFs,
-and generation of the HealthTrack bracket-notation report.
+and generation of the HealthTrack flowing-narrative report.
 
 No external APIs used — all processing is local.
 
@@ -14,8 +14,17 @@ REDCap PDF format notes (from real PDF analysis):
   for pixel darkness. A marked checkbox has significantly more dark pixels.
 - Text fields (MRN, demographics, duration, frequency etc.) use consistent
   label text that we can match with targeted regexes.
-- Tilt results are calculated from the BP/HR numeric table rather than
-  trying to read the radio button selection.
+- For checkbox groups whose option labels collide (e.g. yes/no questions,
+  Page 7 result fields with shared "Normal/POTS/..." labels), each field
+  defines an `anchor` phrase that scopes the OCR search to a sub-region
+  of the page words.
+
+Output format: a flowing narrative under three headings:
+  Summary — multi-paragraph human-readable text covering every captured field
+  Conclusion — one sentence per the Page 7 result fields
+  Recommendation — diagnosis-specific clinical recommendation
+
+Any field that cannot be confidently extracted is rendered as [undetermined].
 """
 
 import re
@@ -25,14 +34,32 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 # ─────────────────────────────────────────────────────────────
-# Helpers
+# Standard placeholder
 # ─────────────────────────────────────────────────────────────
+
+_UNDETERMINED = "[undetermined]"
+
+
+def _undetermined():
+    return _UNDETERMINED
+
+
+def _has(val):
+    """True if val is a real (non-undetermined, non-None, non-empty) value."""
+    if val is None:
+        return False
+    s = str(val).strip()
+    if not s:
+        return False
+    return s != _UNDETERMINED
+
 
 def _field(text, *patterns, label="field"):
     """
     Try each regex pattern in order; return first non-empty match group(1),
-    or a [REVIEW: label] placeholder on failure.
+    or [undetermined] on failure.
     """
     for pat in patterns:
         m = re.search(pat, text, re.IGNORECASE | re.DOTALL)
@@ -40,39 +67,80 @@ def _field(text, *patterns, label="field"):
             val = m.group(1).strip()
             if val and val.lower() not in ("", "n/a", "none", "unknown", "______"):
                 return val
-    return f"[REVIEW: {label}]"
-
-
-def _review(label):
-    return f"[REVIEW: {label}]"
-
-
-def _review_list(label, options):
-    """Return a review placeholder that includes the available options."""
-    opts = " / ".join(options)
-    return f"[REVIEW: {label} — options: {opts}]"
+    return _UNDETERMINED
 
 
 # ─────────────────────────────────────────────────────────────
 # Checkbox OCR detection (pdf2image + PIL pixel analysis)
 # ─────────────────────────────────────────────────────────────
 
-# Checkbox fields: option labels MUST match the exact first-word(s) printed in the REDCap PDF.
-# display_map (optional): maps matched label → human-readable string used in the report.
+# Each entry defines a checkbox group:
+#   options       — exact label text(s) printed in the REDCap PDF
+#   multi         — True for multi-select, False for radio
+#   display_map   — optional: matched label → human-readable value in the report
+#   anchor        — optional: phrase that must appear before the option labels
+#                   (used to scope when option labels are reused elsewhere on the page)
+#   stop_anchor   — optional: phrase that bounds the search range from above
 _CHECKBOX_FIELDS = {
+    # ── Page 2: Presentation history ─────────────────────────
+    "no_warning_syncope": {
+        "anchor": "No warning syncope",
+        "stop_anchor": "Known initiating life event",
+        "options": ["Frequent", "Rare", "Never"],
+        "multi": False,
+    },
+    "initiating_life_event": {
+        "anchor": "Known initiating life event",
+        "stop_anchor": "If YES, was it a medical",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "event_was_medical": {
+        "anchor": "If YES, was it a medical illness",
+        "stop_anchor": "If YES, was it surgical",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "event_was_surgical": {
+        "anchor": "If YES, was it surgical",
+        "stop_anchor": "If YES, was it an emotional",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "event_was_emotional": {
+        "anchor": "If YES, was it an emotional",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+
+    # ── Page 3: Activity & triggers ──────────────────────────
     "posture": {
-        # REDCap label: "Usual Posture at time of symptoms?"
+        "anchor": "Usual Posture",
+        "stop_anchor": "Does change in posture",
         "options": ["Standing", "Sitting", "Lying down", "No association with posture"],
         "display_map": {
-            "Standing": "standing posture",
-            "Sitting": "sitting posture",
-            "Lying down": "lying position",
+            "Standing": "standing",
+            "Sitting": "sitting",
+            "Lying down": "lying down",
             "No association with posture": "no consistent posture",
         },
         "multi": False,
     },
+    "posture_change_provokes": {
+        "anchor": "change in posture from lying",
+        "stop_anchor": "Are symptoms better lying",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "better_lying_down": {
+        "anchor": "Are symptoms better lying down",
+        "stop_anchor": "Describe any Symptom Triggers",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
     "triggers": {
-        # REDCap label: "Describe any Symptom Triggers"
+        "anchor": "Describe any Symptom Triggers",
+        "stop_anchor": "Describe associated symptoms",
         "options": [
             "Needle or blood test", "Acute pain or injury", "Emotional Stress",
             "Known Dehydration", "Febrile illness", "Hot environment",
@@ -81,7 +149,8 @@ _CHECKBOX_FIELDS = {
         "multi": True,
     },
     "symptoms": {
-        # REDCap label: "Describe associated symptoms"
+        "anchor": "Describe associated symptoms",
+        "stop_anchor": "syncope during exercise",
         "options": [
             "Nausea", "Vomiting", "Sweating", "Visual changes/disturbances",
             "Pallor/paleness", "Seizure activity", "Urinary Incontinence",
@@ -89,56 +158,264 @@ _CHECKBOX_FIELDS = {
         ],
         "multi": True,
     },
+    "syncope_during_exercise": {
+        "anchor": "syncope during exercise",
+        "stop_anchor": "syncope after exercise",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "syncope_after_exercise": {
+        "anchor": "syncope after exercise",
+        "stop_anchor": "correlation with the menstrual",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "menstrual_correlation": {
+        "anchor": "correlation with the menstrual",
+        "stop_anchor": "you experience palpitations",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "palpitations": {
+        "anchor": "you experience palpitations",
+        "stop_anchor": "If Yes, were they",
+        "options": ["No", "Yes"],
+        "multi": False,
+    },
+    "palpitation_type": {
+        "anchor": "If Yes, were they",
+        "stop_anchor": "Anything else you have observed",
+        "options": ["fast", "slow", "stronger", "irregular"],
+        "multi": True,
+    },
+
+    # ── Page 4: Other medical history ────────────────────────
+    "family_hx_cardiac": {
+        # Q30 — anchor on Q30's first option (unique on page)
+        "anchor": "Sudden Cardiac Death",
+        "stop_anchor": "Have you been diagnosed",
+        "options": [
+            "Sudden Cardiac Death", "Cardiomyopathy",
+            "Family members with cardiac devices", "Other",
+        ],
+        "multi": True,
+    },
     "conditions": {
-        # REDCap: associated conditions across multiple sections
+        # Q31 + Q32 + Q35 collapsed into one comorbidities group
+        "anchor": "Have you been diagnosed",
+        "stop_anchor": "formal diagnosis of",
         "options": [
             "Chronic fatigue", "Brain Fogging", "Joint Hyper-mobility",
             "Fibromyalgia or other pain syndrome", "Frequent headaches or migraine",
             "MCAS - mast cell activation syndrome",
             "High blood pressure", "Asthma", "Diabetes",
             "Coronary heart disease", "Valvular heart disease",
-            "Anxiety", "Depression", "ADHD", "Autism", "Other mental health",
         ],
         "multi": True,
     },
+    "gi_diagnosis": {
+        # Q33
+        "anchor": "formal diagnosis of",
+        "stop_anchor": "suffer from the following",
+        "options": ["Oesophageal Dysmotility", "Gastroperesis/early satiety", "IBS"],
+        "multi": True,
+    },
+    "gi_symptoms": {
+        # Q34
+        "anchor": "suffer from the following",
+        "stop_anchor": "diagnosis of Anxiety",
+        "options": [
+            "Constipation only", "Diarrhoea only",
+            "Alternating constipation and diarrhoea",
+            "Bloating", "Abdominal pain/cramping",
+        ],
+        "multi": True,
+    },
+    "mental_health": {
+        # Q35 — separated out from conditions
+        "anchor": "diagnosis of Anxiety",
+        "stop_anchor": "Negative chronotropes",
+        "options": [
+            "Anxiety", "Depression",
+            "ADHD - Attention deficit hyperactivity disorder",
+            "Autism", "Other mental health",
+        ],
+        "multi": True,
+    },
+    "negative_chronotropes": {
+        # Q36
+        "anchor": "Negative chronotropes",
+        "stop_anchor": "Anti-depressant",
+        "options": ["No", "Beta blocker", "Ivabradine"],
+        "multi": True,
+    },
+    "antidepressants": {
+        # Q37
+        "anchor": "Anti-depressant",
+        "stop_anchor": "Fludrocortisone",
+        "options": ["SSRI", "Tricyclic", "SNRI"],
+        "multi": True,
+    },
+    "fludrocortisone_status": {
+        # Q38
+        "anchor": "Fludrocortisone",
+        "stop_anchor": "Midodrine",
+        "options": ["Current", "Discontinued", "Never taken"],
+        "multi": False,
+    },
+    "midodrine_status": {
+        # Q39 — last on page so no stop_anchor needed
+        "anchor": "Midodrine",
+        "options": ["Current", "Discontinued", "Never taken"],
+        "multi": False,
+    },
+
+    # ── Page 6: Investigations ───────────────────────────────
     "investigations": {
-        # REDCap: prior investigations section (pg 6)
         "options": [
             "ECG", "Holter Monitor", "ECHO", "Stress Test", "Loop recorder",
             "EP study", "Coronary Angiogram", "CT or MRI Brain", "EEG", "Carotid Doppler",
         ],
         "multi": True,
     },
+
+    # ── Page 7: Final results ────────────────────────────────
+    "test_type": {
+        "anchor": "Type of test",
+        "stop_anchor": "Control Results",
+        "options": ["Isuprenaline", "Isoprenaline", "GTN", "Passive only"],
+        "multi": False,
+    },
+    "control_result_raw": {
+        "anchor": "Control Results",
+        "stop_anchor": "Phase 2 results",
+        "options": [
+            "Normal", "POTS", "Postural Hypotension",
+            "Vasovagal syncope", "Vasovagal presyncope", "Mixed",
+        ],
+        "multi": False,
+    },
+    "phase2_result_raw": {
+        "anchor": "Phase 2 results",
+        "stop_anchor": "Symptom Correlation",
+        "options": [
+            "Normal", "POTS", "Postural Hypotension",
+            "Vasovagal syncope", "Vasovagal presyncope", "Mixed",
+        ],
+        "multi": False,
+    },
+    "symptom_correlation": {
+        "anchor": "Symptom Correlation",
+        "stop_anchor": "Results Conclusion",
+        "options": [
+            "Symptoms correlate with baseline",
+            "Symptoms that are different to baseline",
+            "No symptoms",
+        ],
+        "multi": False,
+    },
 }
+
+
+def _build_word_text(words):
+    """Return (joined_text, char_to_word_idx_map) for a list of pdfplumber words."""
+    parts = []
+    char_to_word = {}
+    pos = 0
+    for i, w in enumerate(words):
+        if i > 0:
+            parts.append(" ")
+            pos += 1
+        text = w["text"]
+        for c in range(len(text)):
+            char_to_word[pos + c] = i
+        parts.append(text)
+        pos += len(text)
+    return "".join(parts), char_to_word
+
+
+def _find_anchor_word_index(words, phrase):
+    """
+    Find first word index where the anchor phrase begins.
+    Phrase is matched as a regex against the joined word text;
+    whitespace and hyphens between phrase tokens are tolerated.
+    """
+    tokens = re.findall(r"[A-Za-z0-9]+", phrase)
+    if not tokens:
+        return None
+    pat = r"\b" + r"[\s\-]+".join(re.escape(t) for t in tokens) + r"\b"
+
+    text, char_to_word = _build_word_text(words)
+    m = re.search(pat, text, re.IGNORECASE)
+    if not m:
+        return None
+    return char_to_word.get(m.start())
+
+
+def _find_option_position(words, option_text, start_idx=0, end_idx=None):
+    """
+    Locate an option label within a slice of the page word list.
+    Returns (x0, top, bottom) of the first matching word, or None.
+
+    Matching: strip trailing blanks/underscores, take the first two tokens of
+    length ≥ 2. The first token must equal a normalised word; if a second
+    token exists, it must appear within the next four words (loose proximity).
+    """
+    if end_idx is None:
+        end_idx = len(words)
+
+    clean = re.sub(r"[\s_]+$", "", option_text).strip().lower()
+    raw_tokens = [t for t in clean.split() if len(t) >= 2][:2]
+    if not raw_tokens:
+        return None
+
+    # Normalize tokens (strip non-alphanumerics for comparison)
+    tokens = [re.sub(r"[^a-z0-9]", "", t) for t in raw_tokens]
+
+    for i in range(start_idx, end_idx):
+        wt = re.sub(r"[^a-z0-9]", "", words[i]["text"].lower())
+        if wt == tokens[0]:
+            if len(tokens) > 1:
+                nearby = []
+                for k in range(i + 1, min(i + 5, end_idx)):
+                    nt = re.sub(r"[^a-z0-9]", "", words[k]["text"].lower())
+                    if nt:
+                        nearby.append(nt)
+                if tokens[1] not in nearby:
+                    continue
+            return (words[i]["x0"], words[i]["top"], words[i]["bottom"])
+
+    return None
 
 
 def _ocr_checkboxes(pdf_bytes):
     """
-    Render each PDF page as an image (300 DPI) and determine checkbox state by
-    pixel-darkness analysis of the small region immediately left of each option label.
+    Render each PDF page (120 DPI to fit Render Starter memory budget) and
+    determine checkbox state by pixel-darkness analysis of the small region
+    immediately left of each option label.
 
-    An unchecked REDCap box shows only a thin border outline (very few dark pixels).
-    A checked box contains a filled mark or ✓ (significantly more dark pixels).
+    An unchecked REDCap box shows only a thin border outline (very few dark
+    pixels). A checked box contains a filled mark (significantly more dark
+    pixels).
 
-    Returns dict mapping field_name → formatted string value, or None for fields
-    where the options couldn't be located on any page (falls back to [REVIEW]).
+    Returns dict mapping field_name → formatted string value, or None for
+    fields where the options couldn't be located on any page.
     """
     try:
         from pdf2image import convert_from_bytes
     except ImportError:
-        logger.warning("pdf2image not installed — checkbox OCR unavailable, using [REVIEW] placeholders")
+        logger.warning("pdf2image not installed — checkbox OCR unavailable")
         return {}
 
     DPI = 120
     SCALE = DPI / 72.0           # PDF points → image pixels
     DARK_THRESHOLD = 160         # pixel value below this counts as "dark"
-    MARKED_RATIO   = 0.15        # fraction of dark pixels that implies a mark
+    MARKED_RATIO = 0.18          # fraction of dark pixels that implies a mark
 
-    found_checked  = {f: [] for f in _CHECKBOX_FIELDS}
-    found_on_page  = {f: set() for f in _CHECKBOX_FIELDS}
+    found_checked = {f: [] for f in _CHECKBOX_FIELDS}
+    found_on_page = {f: set() for f in _CHECKBOX_FIELDS}
 
-    # Poppler may not be on the server's PATH (e.g. homebrew install on macOS).
-    # Try common locations so the server process can find pdftoppm.
+    # Poppler may not be on the server's PATH (homebrew / Render image variations).
     import shutil
     poppler_path = None
     for candidate in ["/opt/homebrew/bin", "/usr/local/bin", "/usr/bin"]:
@@ -149,7 +426,7 @@ def _ocr_checkboxes(pdf_bytes):
     try:
         images = convert_from_bytes(pdf_bytes, dpi=DPI, poppler_path=poppler_path)
     except Exception as e:
-        logger.warning("pdf2image conversion failed: %s — using [REVIEW] placeholders", e)
+        logger.warning("pdf2image conversion failed: %s", e)
         return {}
 
     with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
@@ -157,8 +434,23 @@ def _ocr_checkboxes(pdf_bytes):
             words = page.extract_words(x_tolerance=5, y_tolerance=5)
 
             for field_name, cfg in _CHECKBOX_FIELDS.items():
+                # Determine search range using anchor + optional stop_anchor
+                start_idx = 0
+                end_idx = len(words)
+
+                if cfg.get("anchor"):
+                    ai = _find_anchor_word_index(words, cfg["anchor"])
+                    if ai is None:
+                        continue  # anchor not on this page, skip field
+                    start_idx = ai
+                    if cfg.get("stop_anchor"):
+                        sub_words = words[start_idx + 1:]
+                        si = _find_anchor_word_index(sub_words, cfg["stop_anchor"])
+                        if si is not None:
+                            end_idx = start_idx + 1 + si
+
                 for option in cfg["options"]:
-                    pos = _find_option_position(words, option)
+                    pos = _find_option_position(words, option, start_idx=start_idx, end_idx=end_idx)
                     if pos is None:
                         continue
 
@@ -166,11 +458,17 @@ def _ocr_checkboxes(pdf_bytes):
                     found_on_page[field_name].add(option)
 
                     # Checkbox sits immediately left of the label text.
-                    # Typical REDCap checkbox: ~12pt square, gap ~2pt before text.
-                    cb_x0 = max(0.0, x0 - 16)
-                    cb_x1 = max(0.0, x0 - 2)
-                    cb_y0 = max(0.0, y0)
-                    cb_y1 = min(page.height, y1)
+                    # REDCap checkbox: ~9pt square, ~2-3pt gap before text.
+                    # We crop the INNER region of the box (skipping its 1px border)
+                    # so that empty boxes don't read as "marked" purely from their
+                    # outline — at 120 DPI a full crop is otherwise dominated by
+                    # border ink (~17%, just under the marked threshold).
+                    y_h = max(1.0, y1 - y0)
+                    y_mid = (y0 + y1) / 2.0
+                    cb_x0 = max(0.0, x0 - 13)
+                    cb_x1 = max(0.0, x0 - 5)
+                    cb_y0 = max(0.0, y_mid - y_h * 0.30)
+                    cb_y1 = min(page.height, y_mid + y_h * 0.30)
 
                     px0, px1 = int(cb_x0 * SCALE), int(cb_x1 * SCALE)
                     py0, py1 = int(cb_y0 * SCALE), int(cb_y1 * SCALE)
@@ -189,12 +487,11 @@ def _ocr_checkboxes(pdf_bytes):
                         if option not in found_checked[field_name]:
                             found_checked[field_name].append(option)
 
-    # Build result strings, applying display_map if defined
+    # Build result strings
     results = {}
     for field_name, cfg in _CHECKBOX_FIELDS.items():
         if not found_on_page[field_name]:
-            # No options found on any page — cannot determine; caller will use [REVIEW]
-            results[field_name] = None
+            results[field_name] = None  # caller will use [undetermined]
             continue
 
         display_map = cfg.get("display_map", {})
@@ -208,32 +505,6 @@ def _ocr_checkboxes(pdf_bytes):
             results[field_name] = _join_and(selected)
 
     return results
-
-
-def _find_option_position(words, option_text):
-    """
-    Locate an option label in a page's word list.
-    Returns (x0, top, bottom) of the first matching word, or None.
-
-    Matching strategy: strip trailing blanks/underscores, take first two tokens
-    of length ≥ 2 (captures short labels like "ECG", "EP", "No" while filtering
-    single-char noise). Require the first token to match and, if a second exists,
-    verify it appears within the next four words.
-    """
-    clean = re.sub(r"[\s_]+$", "", option_text).strip().lower()
-    tokens = [t for t in clean.split() if len(t) >= 2][:2]
-    if not tokens:
-        return None
-
-    for i, word in enumerate(words):
-        if word["text"].lower() == tokens[0]:
-            if len(tokens) > 1:
-                nearby = [w["text"].lower() for w in words[i + 1: i + 5]]
-                if tokens[1] not in nearby:
-                    continue
-            return (word["x0"], word["top"], word["bottom"])
-
-    return None
 
 
 # ─────────────────────────────────────────────────────────────
@@ -258,17 +529,15 @@ def extract_text_from_pdf(pdf_bytes):
 def extract_fields(text, ocr_results=None):
     """
     Parse REDCap PDF text into a structured dict of clinical fields.
-    Any unconfident field is a [REVIEW: ...] string.
+    Any unconfident field is the [undetermined] string.
 
-    ocr_results: optional dict from _ocr_checkboxes() — when present, its values
-                 replace the [REVIEW] placeholders for checkbox fields.
+    ocr_results: optional dict from _ocr_checkboxes(); its values replace the
+                 [undetermined] placeholder for checkbox fields when present.
     """
     d = {}
+    ocr = ocr_results or {}
 
     # ── Patient demographics ──────────────────────────────────
-
-    # REDCap exports "Last Name Barclay" — no first name in the PDF.
-    # HealthTrack substitutes <HMS-Patient_FirstName> itself; we leave it as-is.
     d["first_name"] = "<HMS-Patient_FirstName>"
 
     d["mrn"] = _field(
@@ -313,194 +582,248 @@ def extract_fields(text, ocr_results=None):
         label="weight"
     )
 
-    # ── Syncope & presyncope duration ─────────────────────────
-    # REDCap label: "Symptom onset (how many w,m,y ago?)  5 Years  5 Years"
-    # Columns: [sync_num] [sync_unit] [pre_num] [pre_unit]
-    # Either pair may be "______ ______" when that history type is absent.
-    _DUR_VAL  = r"(______|\d+(?:\.\d+)?)"
+    d["bmi"] = _field(
+        text,
+        r"\bBMI\s+([\d.]+)",
+        label="BMI"
+    )
+
+    # ── Symptom onset ─────────────────────────────────────────
+    _DUR_VAL = r"(______|\d+(?:\.\d+)?)"
     _DUR_UNIT = r"(______|Years?|Months?|Weeks?|Days?)"
     onset_m = re.search(
         r"Symptom\s+onset\s+\([^)]+\)\s+" + _DUR_VAL + r"\s+" + _DUR_UNIT
         + r"(?:\s+" + _DUR_VAL + r"\s+" + _DUR_UNIT + r")?",
         text, re.IGNORECASE
     )
+    d["duration_number"] = None
+    d["duration_unit"] = None
+    d["presyncope_duration_number"] = None
+    d["presyncope_duration_unit"] = None
     if onset_m:
         sn, su = onset_m.group(1), onset_m.group(2)
         pn, pu = onset_m.group(3), onset_m.group(4)
         if sn and sn != "______" and su and su != "______":
             d["duration_number"] = sn
-            d["duration_unit"]   = _normalise_unit(su.lower())
-        else:
-            d["duration_number"] = _review("syncope_duration_number")
-            d["duration_unit"]   = _review("syncope_duration_unit")
+            d["duration_unit"] = _normalise_unit(su.lower())
         if pn and pn != "______" and pu and pu != "______":
             d["presyncope_duration_number"] = pn
-            d["presyncope_duration_unit"]   = _normalise_unit(pu.lower())
-    else:
-        d["duration_number"] = _review("syncope_duration_number")
-        d["duration_unit"]   = _review("syncope_duration_unit")
+            d["presyncope_duration_unit"] = _normalise_unit(pu.lower())
 
-    # ── Syncope & presyncope frequency ───────────────────────
-    # REDCap label: "Frequency of events (how many per w/m/y?)  10 Month  7 Week"
-    # Columns: [sync_count] [sync_unit] [pre_count] [pre_unit]
-    # Either pair may be "______ ______"; count may be a range like "2-3".
+    # ── Frequency ─────────────────────────────────────────────
     _FREQ_COUNT = r"(______|\d+(?:-\d+)?)"
-    _FREQ_UNIT  = r"(______|Month|Week|Day|Year)"
+    _FREQ_UNIT = r"(______|Month|Week|Day|Year)"
     freq_m = re.search(
         r"Frequency\s+of\s+events\s+\([^)]+\)\s+" + _FREQ_COUNT + r"\s+" + _FREQ_UNIT
         + r"(?:\s+" + _FREQ_COUNT + r"\s+" + _FREQ_UNIT + r")?",
         text, re.IGNORECASE
     )
+    d["frequency"] = None
+    d["presyncope_frequency"] = None
     if freq_m:
         sc, su = freq_m.group(1), freq_m.group(2)
         pc, pu = freq_m.group(3), freq_m.group(4)
         if sc and sc != "______" and su and su != "______":
             d["frequency"] = _unit_to_frequency(su, sc)
-        else:
-            d["frequency"] = _review("syncope_frequency")
         if pc and pc != "______" and pu and pu != "______":
             d["presyncope_frequency"] = _unit_to_frequency(pu, pc)
-        else:
-            # Fall back to syncope frequency if presyncope not separately recorded
-            d["presyncope_frequency"] = d["frequency"]
-    else:
-        # Fallback: look for plain frequency words
-        freq_raw = _field(
-            text,
-            r"Frequency[:\s]+(daily|weekly|monthly|infrequently|occasionally|rarely)",
-            label="syncope_frequency"
-        ).lower()
-        freq_map = {
-            "daily": "daily", "weekly": "weekly", "monthly": "monthly",
-            "infrequently": "infrequently", "occasionally": "infrequently",
-            "rarely": "infrequently"
-        }
-        d["frequency"] = freq_map.get(freq_raw, freq_raw)
-        d["presyncope_frequency"] = d["frequency"]
 
     # ── Episode counts ────────────────────────────────────────
-    # REDCap label: "Number of episodes in the last month?  10  30"
-    # First column = syncope, second = presyncope.
-    # Either column may be blank ("______") if the patient has no history of that type.
     ep_m = re.search(
         r"Number\s+of\s+episodes\s+in\s+the\s+last\s+month\??\s+(______|\d+)(?:\s+(______|\d+))?",
         text, re.IGNORECASE
     )
+    d["syncope_episodes_last_month"] = None
+    d["presyncope_episodes_last_month"] = None
     if ep_m:
-        raw_sync  = ep_m.group(1)
-        raw_pre   = ep_m.group(2) if ep_m.group(2) else None
-        sync_ep   = raw_sync  if (raw_sync  and raw_sync  != "______") else None
-        pre_ep    = raw_pre   if (raw_pre   and raw_pre   != "______") else None
-        # Store each separately so the report can label them correctly
-        d["syncope_episodes_last_month"]    = sync_ep
-        d["presyncope_episodes_last_month"] = pre_ep
-    else:
-        d["syncope_episodes_last_month"]    = None
-        d["presyncope_episodes_last_month"] = None
+        s = ep_m.group(1)
+        p = ep_m.group(2) if ep_m.group(2) else None
+        if s and s != "______":
+            d["syncope_episodes_last_month"] = s
+        if p and p != "______":
+            d["presyncope_episodes_last_month"] = p
 
     # ── Most recent date ──────────────────────────────────────
-    # REDCap label: "Date of most recent episode?  18/3/26" (value far right, same line)
     d["most_recent_date"] = _field(
         text,
         r"Date\s+of\s+most\s+recent\s+episode\??\s+([\d]{1,2}[/\-\.]\d{1,2}[/\-\.]\d{2,4})",
         r"Most\s+[Rr]ecent[:\s]+([\d/\-\.]+(?:\s+\d{4})?)",
-        r"Last\s+[Ee]pisode[:\s]+([\d/\-\.]+)",
         label="most_recent_episode_date"
     )
 
-    # ── Checkbox fields (posture / triggers / symptoms / conditions / investigations) ──
-    # Detected via image OCR in _ocr_checkboxes(); ocr_results passed in from process_pdf.
-    # Fall back to [REVIEW] placeholders if OCR wasn't run or couldn't locate the options.
-    # Pull options from the single source of truth in _CHECKBOX_FIELDS
-    def _ocr_or_review(field_name, label):
-        if ocr_results and ocr_results.get(field_name) is not None:
-            return ocr_results[field_name]
-        return _review_list(label, _CHECKBOX_FIELDS[field_name]["options"])
-
-    d["posture"]      = _ocr_or_review("posture",      "posture")
-    d["triggers"]     = _ocr_or_review("triggers",     "triggers")
-    d["symptoms"]     = _ocr_or_review("symptoms",     "symptoms")
-    d["conditions"]   = _ocr_or_review("conditions",   "conditions")
-
-    # ── Family history ────────────────────────────────────────
-    # REDCap label: "Family history of hypotension/fainting/POTS? No"
-    # or "Yes  [detail]".  In the flattened PDF, REDCap prints all options;
-    # "No" appears first if it is selected, "Yes ___" if yes is selected.
-    # We look for a filled detail after "Yes" to confirm a positive answer.
-    fh_yes_m = re.search(
-        r"Family\s+history\s+of\s+hypotension[^?\n]*\?[^\n]*Yes\s+([\w][\w\s,/\-]{2,}?)(?:\n|Family|\d{2}/)",
+    # ── Initiating life event free text ───────────────────────
+    ile_m = re.search(
+        r"Known\s+initiating\s+life\s+event\?[^\n]*\n?[^\n]*Yes\s+([\w][^\n]{2,80}?)(?:\n|If\s+YES)",
         text, re.IGNORECASE
+    )
+    d["initiating_event_detail"] = ile_m.group(1).strip() if ile_m else None
+
+    # ── Menstrual correlation free text ───────────────────────
+    mc_m = re.search(
+        r"correlation\s+with\s+the\s+menstrual\s+cycle\?[^\n]*\n?[^\n]*Yes\s+([\w][^\n]{2,80}?)(?:\n|Do\s+you)",
+        text, re.IGNORECASE
+    )
+    if mc_m:
+        candidate = mc_m.group(1).strip()
+        if candidate and "_" not in candidate and not candidate.startswith("__"):
+            d["menstrual_detail"] = candidate
+        else:
+            d["menstrual_detail"] = None
+    else:
+        d["menstrual_detail"] = None
+
+    # ── Other observations free text (page 3 final question) ─
+    # The label runs across two lines and is followed by underscores; if
+    # any user-supplied text is present it appears between the underscores
+    # and the page footer. Reject anything matching the REDCap footer pattern.
+    obs_m = re.search(
+        r"Anything\s+else\s+you\s+have\s+observed[^\n]*?(?:\n[^\n]*?)?_+\s*([^\n_][^\n]{2,200}?)(?:\n|$)",
+        text, re.IGNORECASE
+    )
+    if obs_m:
+        candidate = obs_m.group(1).strip()
+        if (
+            candidate
+            and "projectredcap" not in candidate.lower()
+            and not re.match(r"^\d{1,2}/\d{1,2}/\d{2,4}", candidate)
+            and "_" not in candidate[:30]
+        ):
+            d["other_observations"] = candidate
+        else:
+            d["other_observations"] = None
+    else:
+        d["other_observations"] = None
+
+    # ── Family history Q29 (free text after Yes) ─────────────
+    # The detail may appear on the same line as the question, OR on a following
+    # line (REDCap wraps "Yes <detail>" beneath "No" when the answer is yes).
+    fh_yes_m = re.search(
+        r"Family\s+history\s+of\s+hypotension[^?]*\?\s*"
+        r"(?:No\s*)?"
+        r"Yes\s+([^\n]+?)(?:\n\s*30\)|\n\s*Family\s+history\s+of\.\.\.|\n)",
+        text, re.IGNORECASE | re.DOTALL
     )
     if fh_yes_m:
         detail = fh_yes_m.group(1).strip()
-        if detail and "_" not in detail:
-            d["family_history"] = f"remarkable for {detail} with hypotension/fainting"
+        if detail and "_" not in detail and detail.lower() not in ("", "n/a"):
+            d["family_history"] = f"remarkable for {detail}"
         else:
-            # "Yes ______" means blank — treat as unremarkable
             d["family_history"] = "unremarkable"
-    elif re.search(r"Family\s+history\s+of\s+hypotension[^?\n]*\?\s*No\b", text, re.IGNORECASE):
+    elif re.search(r"Family\s+history\s+of\s+hypotension[^?]*\?\s*No\s*\n", text, re.IGNORECASE):
         d["family_history"] = "unremarkable"
     else:
-        d["family_history"] = _review("family_history")
+        d["family_history"] = None
 
-    d["investigations"] = _ocr_or_review("investigations", "prior_investigations")
-
-    # ── Tilt test drug ────────────────────────────────────────
-    # REDCap label: "Type of test  Isuprenaline / GTN / Passive only"
-    # NOTE: Isuprenaline is the spelling used in this REDCap instance.
-    drug_raw = _field(
-        text,
-        r"Type\s+of\s+test\s+(Isuprenaline|Isoprenaline|GTN|Passive\s+only)",
-        r"(?:Drug|Agent|Medication\s+used)[:\s]+(Isuprenaline|Isoprenaline|GTN|glyceryl|isoproterenol|Passive)",
-        label="tilt_drug"
+    # ── Other medications free text (Q40) ─────────────────────
+    om_m = re.search(
+        r"List\s+any\s+other\s+relevant\s+medications\s+([^\n]+?)(?:\n|$)",
+        text, re.IGNORECASE
     )
-    if re.search(r"isuprenaline|isoprenaline|isoproterenol", drug_raw, re.I):
-        d["tilt_drug"] = "Isoprenaline"
-    elif re.search(r"gtn|glyceryl", drug_raw, re.I):
-        d["tilt_drug"] = "GTN"
-    elif re.search(r"passive", drug_raw, re.I):
-        d["tilt_drug"] = None  # No drug — passive tilt only
+    if om_m:
+        val = om_m.group(1).strip()
+        if val and not val.startswith("_") and val.lower() not in ("none", "n/a", "nil"):
+            d["other_medications"] = val
+        else:
+            d["other_medications"] = None
     else:
-        d["tilt_drug"] = drug_raw  # [REVIEW]
+        d["other_medications"] = None
 
-    # ── BP/HR table extraction ────────────────────────────────
-    d["baseline_hr"]  = _extract_numeric(text, r"Baseline\s+Heart\s+Rate\s+(\d+)")
-    # BP may be recorded as "120/80" (full) or just "120" (systolic only).
-    # Blank recovery values are stored as None — reported as "not recorded" in the template.
-    d["baseline_bp"]  = _field(
+    # ── Investigation free-text comments (page 6) ────────────
+    inv_comm_m = re.search(
+        r"Additional\s+comments\s*\n?\s*([^\n_][^\n]{2,200}?)(?:\n|$)",
+        text, re.IGNORECASE
+    )
+    d["investigation_comments"] = inv_comm_m.group(1).strip() if inv_comm_m else None
+
+    # ── Page 7 free text fields ───────────────────────────────
+    d["baseline_rhythm"] = _field(
         text,
-        r"Baseline\s+Blood\s+Pressure\s+(\d+/\d+)",   # full SBP/DBP
-        r"Baseline\s+Blood\s+Pressure\s+(\d{2,3})\b",  # systolic only
+        r"Baseline\s+Rhythm\s+([^\n]+?)\s+Recovery\s+Blood",
+        r"Baseline\s+Rhythm\s+([^\n]+)",
+        label="baseline_rhythm"
+    )
+    if d["baseline_rhythm"] == _UNDETERMINED:
+        d["baseline_rhythm"] = None
+    elif d["baseline_rhythm"].startswith("_"):
+        d["baseline_rhythm"] = None
+
+    # Results Conclusion is a free-text box. In a blank PDF it shows only
+    # underscores, then "Results table" heading. We capture only NON-underscore
+    # NON-heading content. Reject if candidate is "Results table" or starts
+    # with whitespace/underscores only.
+    rc_m = re.search(
+        r"Results\s+Conclusion\s*\n_+\s*\n([^\n]+)",
+        text, re.IGNORECASE
+    )
+    if rc_m:
+        cand = rc_m.group(1).strip()
+        if (
+            cand
+            and not cand.lower().startswith("results table")
+            and not cand.startswith("_")
+            and "projectredcap" not in cand.lower()
+        ):
+            d["results_conclusion"] = cand
+        else:
+            d["results_conclusion"] = None
+    else:
+        d["results_conclusion"] = None
+
+    # ── OCR-derived fields ────────────────────────────────────
+    # Each OCR field name in d takes precedence; None means [undetermined]
+    for k in (
+        "no_warning_syncope", "initiating_life_event",
+        "event_was_medical", "event_was_surgical", "event_was_emotional",
+        "posture", "posture_change_provokes", "better_lying_down",
+        "triggers", "symptoms",
+        "syncope_during_exercise", "syncope_after_exercise",
+        "menstrual_correlation", "palpitations", "palpitation_type",
+        "family_hx_cardiac",
+        "conditions", "gi_diagnosis", "gi_symptoms", "mental_health",
+        "negative_chronotropes", "antidepressants",
+        "fludrocortisone_status", "midodrine_status",
+        "investigations",
+        "test_type", "control_result_raw", "phase2_result_raw",
+        "symptom_correlation",
+    ):
+        d[k] = ocr.get(k)
+
+    # ── Tilt drug — derive from OCR test_type ─────────────────
+    tt = (d.get("test_type") or "").lower()
+    if "isuprenaline" in tt or "isoprenaline" in tt:
+        d["tilt_drug"] = "Isoprenaline"
+    elif "gtn" in tt:
+        d["tilt_drug"] = "GTN"
+    elif "passive" in tt:
+        d["tilt_drug"] = None  # passive only — no drug
+    else:
+        d["tilt_drug"] = "__unknown__"  # marker for downstream
+
+    # ── BP/HR table ───────────────────────────────────────────
+    d["baseline_hr"] = _extract_numeric(text, r"Baseline\s+Heart\s+Rate\s+(\d+)")
+    d["baseline_bp"] = _field(
+        text,
+        r"Baseline\s+Blood\s+Pressure\s+(\d+/\d+)",
+        r"Baseline\s+Blood\s+Pressure\s+(\d{2,3})\b",
         label="baseline_BP"
     )
-    d["recovery_hr"]  = _extract_numeric(text, r"Recovery\s+Heart\s+Rate\s+(\d+)")
-    # Recovery BP/HR may be blank if the form was not completed (test terminated early etc.)
+    if d["baseline_bp"] == _UNDETERMINED:
+        d["baseline_bp"] = None
+
+    d["recovery_hr"] = _extract_numeric(text, r"Recovery\s+Heart\s+Rate\s+(\d+)")
     rec_bp_raw = re.search(r"Recovery\s+Blood\s+Pressure\s+([\d/]+)", text, re.I)
     d["recovery_bp"] = rec_bp_raw.group(1) if rec_bp_raw else None
 
+    d["control_readings"] = _extract_phase_readings(text, "Control")
+    d["phase2_readings"] = _extract_phase_readings(text, "Phase 2")
 
-    d["control_readings"]  = _extract_phase_readings(text, "Control")
-    d["phase2_readings"]   = _extract_phase_readings(text, "Phase 2")
-
-    # ── Clinician symptom notes ───────────────────────────────
-    # Clinician notes: lines like "Fighting to stay awake. No dizziness.  Control 10 minute 100 97"
-    # Exclude "Any symptoms?" lines (the row header) and lines starting with "Phase".
-    # REDCap sometimes overlaps the footer timestamp with the note on the last data page,
-    # producing corrupted text — we still scan for clinical keywords in that garbled line.
-    # Control notes: "Fighting to stay awake. No dizziness.  Control 10 minute 100 97"
-    # Use [ \t]+ (not \s+) before "Control" so we don't cross line boundaries.
+    # ── Clinician notes ───────────────────────────────────────
     ctrl_note_m = re.search(
         r"^(?!Any\s+symptoms)(?!Phase)([A-Z][^\n]{9,120}?)[ \t]+Control[ \t]+\d+[ \t]+minute\b",
         text, re.IGNORECASE | re.MULTILINE
     )
     d["control_notes"] = ctrl_note_m.group(1).strip() if ctrl_note_m else ""
 
-    # Phase 2 note: clinician text on its own line between "Any symptoms?" row and the next
-    # timepoint row.  The REDCap footer timestamp (dd/mm/yyyy h:mmpm) is sometimes overlaid
-    # character-by-character into this line, garbling the start.  Capture the whole line then
-    # strip any token that contains a digit (those are from the overlaid date/time) and remove
-    # the projectredcap.org footer.  The clinically meaningful text (e.g. "no loc", rhythm note)
-    # is typically at the end of the line and survives the strip.
     p2_note_m = re.search(
         r"Any\s+symptoms\?[^\n]*\n([^\n]+)\n\s*Phase\s+2\s+10\s+minute",
         text, re.IGNORECASE
@@ -508,25 +831,23 @@ def extract_fields(text, ocr_results=None):
     if p2_note_m:
         raw_note = p2_note_m.group(1)
         raw_note = re.sub(r"\s*projectredcap\.org\s*", " ", raw_note)
-        # Strip tokens containing digits (overlaid date/time characters)
         clean_tokens = [t for t in raw_note.split() if not re.search(r"\d", t)]
         d["phase2_notes"] = " ".join(clean_tokens).strip()
     else:
         d["phase2_notes"] = ""
 
     # ── Phase 2 stop minute ───────────────────────────────────
-    # Find the last Phase 2 minute row that has actual BP/HR values (not blanks).
     last_p2_min = None
     for pm in re.finditer(r"Phase\s+2\s+(\d+)\s+minute\s+(\d{2,3})\s+(\d{2,3})", text, re.I):
         last_p2_min = int(pm.group(1))
     d["phase2_stop_minute"] = last_p2_min
 
-    # ── Tilt results — calculated from numeric data ───────────
-    d["control_result"]   = _calculate_control_result(d)
+    # ── Calculated tilt results (used as fallback narrative) ──
+    d["control_result_calc"] = _calculate_control_result(d)
     d["control_tolerance"] = _infer_tolerance(text, "control", d)
     d["control_symptom_severity"] = _infer_severity(text, "control")
 
-    d["phase2_result"]    = _calculate_phase2_result(d)
+    d["phase2_result_calc"] = _calculate_phase2_result(d)
     d["phase2_tolerance"] = _infer_tolerance(text, "phase 2", d)
 
     return d
@@ -537,23 +858,16 @@ def extract_fields(text, ocr_results=None):
 # ─────────────────────────────────────────────────────────────
 
 def _normalise_unit(raw):
-    """'years' / 'year' / 'Years' → 'years' etc."""
-    r = raw.lower().rstrip("s") + "s"  # pluralise
+    r = raw.lower().rstrip("s") + "s"
     if r in ("years", "months", "weeks", "days"):
         return r
     return raw
 
 
 def _unit_to_frequency(unit_str, count_str=None):
-    """
-    Convert a REDCap frequency value to a human-readable string.
-    '1', 'Week'   → 'weekly'
-    '2-3', 'Week' → '2-3 times per week'
-    '10', 'Month' → '10 times per month'
-    """
     mapping = {
         "month": "monthly", "week": "weekly",
-        "day":   "daily",   "year": "yearly"
+        "day": "daily", "year": "yearly"
     }
     unit_lower = unit_str.lower()
     word = mapping.get(unit_lower, "infrequently")
@@ -569,7 +883,6 @@ def _unit_to_frequency(unit_str, count_str=None):
 # ─────────────────────────────────────────────────────────────
 
 def _extract_numeric(text, pattern):
-    """Return int from first matching group, or None."""
     m = re.search(pattern, text, re.IGNORECASE)
     try:
         return int(m.group(1)) if m else None
@@ -578,21 +891,11 @@ def _extract_numeric(text, pattern):
 
 
 def _extract_phase_readings(text, phase_label):
-    """
-    Extract (systolic_bp, hr) tuples from the results table for a given phase.
-    Returns list of (systolic: int, hr: int) or empty list.
-
-    REDCap format:
-      Control tilting   Control tilting  105  82
-      Control 1 minute  100  98
-      ...
-      Phase 2 Phase 2 Baseline   90  122
-      Phase 2 tilting   70  130
-    """
+    """Extract (systolic_bp, hr) tuples from results table for a given phase."""
     if phase_label.lower() == "control":
         block_pat = (
-            r"Control\s+Tilting.*?"          # start at "Control Tilting"
-            r"(?=Phase\s+2|Phase\s+Stage|$)" # end before Phase 2 or end of text
+            r"Control\s+Tilting.*?"
+            r"(?=Phase\s+2|Phase\s+Stage|$)"
         )
     else:
         block_pat = (
@@ -603,12 +906,9 @@ def _extract_phase_readings(text, phase_label):
     bm = re.search(block_pat, text, re.DOTALL | re.IGNORECASE)
     block = bm.group(0) if bm else ""
 
-    # Each data row: "... NNN  NNN" where first is systolic, second HR
-    # Rows may be: "Control 1 minute  100  98" or "Phase 2 tilting  70  130"
     readings = []
     for m in re.finditer(r"(\d{2,3})\s+(\d{2,3})\s*$", block, re.MULTILINE):
         sbp, hr = int(m.group(1)), int(m.group(2))
-        # Sanity check (plausible vital signs)
         if 40 <= sbp <= 250 and 20 <= hr <= 250:
             readings.append((sbp, hr))
 
@@ -616,104 +916,80 @@ def _extract_phase_readings(text, phase_label):
 
 
 # ─────────────────────────────────────────────────────────────
-# Tilt result calculation from numeric data
+# Tilt result calculation from numeric data (fallback for narrative)
 # ─────────────────────────────────────────────────────────────
 
+_RESULT_POTS = "POTS"
+_RESULT_VVS = "Vasovagal"
+_RESULT_OI = "Orthostatic intolerance"
+_RESULT_OH = "Postural hypotension"
+_RESULT_NORMAL = "Normal"
+_RESULT_NOT_REACHED = "not_reached"
+
+
 def _calculate_control_result(d):
-    """
-    Apply POTS / orthostatic intolerance / vasovagal / normal criteria
-    to the control phase BP/HR readings.
-    """
+    """Apply criteria to control phase BP/HR readings — returns short label."""
     readings = d.get("control_readings", [])
     baseline_hr = d.get("baseline_hr")
     age = _safe_int(d.get("age"))
 
     if not readings or baseline_hr is None:
-        return _review("control_tilt_result")
+        return None
 
     max_hr = max(hr for _, hr in readings)
     hr_rise = max_hr - baseline_hr
 
-    # POTS criteria: sustained HR rise ≥30bpm (≥40bpm aged 12–19)
     pots_threshold = 40 if (age and 12 <= age <= 19) else 30
     if hr_rise >= pots_threshold:
-        return (
-            "positive for a POTS response with an increase in heart rate of "
-            ">30bpm (or >40bpm in those aged 12-19)"
-        )
+        return _RESULT_POTS
 
-    # Orthostatic intolerance: sustained HR rise ≥20bpm without meeting POTS
     if hr_rise >= 20:
-        return (
-            "positive for orthostatic intolerance with a sustained increase "
-            "in HR without meeting POTS criteria"
-        )
+        return _RESULT_OI
 
-    # Vasovagal in control: systolic BP drop >20mmHg from baseline
     baseline_sbp = _extract_systolic(d.get("baseline_bp"))
     if baseline_sbp:
         min_sbp = min(sbp for sbp, _ in readings)
         sbp_drop = baseline_sbp - min_sbp
         min_hr = min(hr for _, hr in readings)
         if sbp_drop > 20 or min_hr < 50:
-            return (
-                "positive for a vasovagal response with a drop in systolic "
-                "BP >20mmHg and/or HR <50bpm"
-            )
+            return _RESULT_VVS
 
-    return "normal"
+    return _RESULT_NORMAL
 
 
 def _calculate_phase2_result(d):
-    """
-    Apply criteria to phase 2 readings.
-    Phase 2 baseline BP is the reference point.
-    """
     readings = d.get("phase2_readings", [])
     if not readings:
         return _RESULT_NOT_REACHED
 
-    baseline_sbp = readings[0][0] if readings else None  # First reading = phase 2 baseline
-    baseline_hr  = readings[0][1] if readings else None
+    baseline_sbp = readings[0][0] if readings else None
+    baseline_hr = readings[0][1] if readings else None
     age = _safe_int(d.get("age"))
 
     if len(readings) < 2:
-        return _review("phase2_tilt_result")
+        return None
 
     subsequent = readings[1:]
-    max_hr  = max(hr for _, hr in subsequent)
+    max_hr = max(hr for _, hr in subsequent)
     min_sbp = min(sbp for sbp, _ in subsequent)
-    min_hr  = min(hr for _, hr in subsequent)
+    min_hr = min(hr for _, hr in subsequent)
     hr_rise = max_hr - baseline_hr if baseline_hr else 0
     sbp_drop = baseline_sbp - min_sbp if baseline_sbp else 0
 
-    # Vasovagal: BP drop >20mmHg and/or HR <50bpm
     if sbp_drop > 20 or min_hr < 50:
-        return (
-            "positive for a vasovagal response with a drop in systolic "
-            "BP >20mmHg and/or HR <50bpm"
-        )
+        return _RESULT_VVS
 
-    # POTS
     pots_threshold = 40 if (age and 12 <= age <= 19) else 30
     if hr_rise >= pots_threshold:
-        return (
-            "positive for a POTS response with an increase in heart rate of "
-            ">30bpm (or >40bpm in those aged 12-19)"
-        )
+        return _RESULT_POTS
 
-    # Orthostatic intolerance
     if hr_rise >= 20:
-        return (
-            "positive for orthostatic intolerance with a sustained increase "
-            "in HR without meeting POTS criteria"
-        )
+        return _RESULT_OI
 
-    return "normal"
+    return _RESULT_NORMAL
 
 
 def _infer_tolerance(text, phase, d):
-    """Infer patient experience from clinician notes and numeric data."""
     if phase == "control":
         notes = d.get("control_notes", "")
         section_pat = r"Any\s+symptoms\?(.{0,200}?)(?:Phase\s+2|Phase\s+Stage|$)"
@@ -724,23 +1000,20 @@ def _infer_tolerance(text, phase, d):
     sm = re.search(section_pat, text, re.DOTALL | re.IGNORECASE)
     section = (sm.group(1) if sm else "") + " " + (notes or "")
 
-    # Check clinician notes for explicit denial of syncope first
     no_loc = bool(re.search(r"\bno\s+loc\b|\bno\s+loss\s+of\s+consciousness\b|\bdid\s+not\s+(?:lose|faint)\b", section, re.I))
 
     syncope_words = r"\b(?:synco(?:pe|ped)|lost\s+consciousness|(?<!no\s)loc\b)\b"
-    presync_words = r"\b(?:presyncope|pre-syncope|near.syncope|very\s+pale|pale|dizz|light.?head|near\s+faint|almost\s+faint)\b"
+    presync_words = r"\b(?:presyncope|pre-syncope|near.syncope|very\s+pale|pale|dizz|light.?head|near\s+faint|almost\s+faint|vision\s+loss)\b"
 
     had_syncope = bool(re.search(syncope_words, section, re.I)) and not no_loc
     had_presync = bool(re.search(presync_words, section, re.I))
 
-    # For phase 2, also infer from BP/HR data
     if phase == "phase 2":
         readings = d.get("phase2_readings", [])
         if len(readings) >= 2:
             subsequent = readings[1:]
             min_sbp = min(sbp for sbp, _ in subsequent)
-            min_hr  = min(hr for _, hr in subsequent)
-            # If no_loc confirmed, significant BP drop still implies presyncope
+            min_hr = min(hr for _, hr in subsequent)
             if not no_loc and (min_sbp < 55 or min_hr < 40):
                 had_syncope = True
             elif min_sbp < 75:
@@ -757,7 +1030,6 @@ def _infer_tolerance(text, phase, d):
 
 
 def _infer_severity(text, phase):
-    """Infer symptom severity from clinician notes."""
     if phase == "control":
         section_pat = r"Any\s+symptoms\?(.{0,300}?)(?:Phase\s+2|Phase\s+Stage|$)"
     else:
@@ -772,9 +1044,9 @@ def _infer_severity(text, phase):
         return "moderate"
     if re.search(r"\bmild\b|\bminimal\b", section, re.I):
         return "mild"
-    if re.search(r"\bno\s+(?:symptom|complaint|dizzin)\b|\bwell\b|\basymptomatic\b", section, re.I):
+    if re.search(r"\bno\s+(?:symptom|complaint|dizzin)\b|\bnil\s+symptoms\b|\bwell\b|\basymptomatic\b", section, re.I):
         return "no"
-    return "mild"  # default if notes present but severity not specified
+    return "mild"
 
 
 # ─────────────────────────────────────────────────────────────
@@ -782,7 +1054,6 @@ def _infer_severity(text, phase):
 # ─────────────────────────────────────────────────────────────
 
 def _extract_systolic(bp_str):
-    """'95/50' → 95   or   '95' → 95  (systolic-only recording)"""
     if not bp_str:
         return None
     m = re.match(r"(\d+)", str(bp_str))
@@ -796,12 +1067,8 @@ def _safe_int(val):
         return None
 
 
-# ─────────────────────────────────────────────────────────────
-# HealthTrack report template builder
-# ─────────────────────────────────────────────────────────────
-
 def _join_and(items):
-    items = [str(i) for i in items]
+    items = [str(i) for i in items if i]
     if not items:
         return ""
     if len(items) == 1:
@@ -809,223 +1076,641 @@ def _join_and(items):
     return ", ".join(items[:-1]) + " and " + items[-1]
 
 
+def _val(v):
+    """Render a field value for inline narrative use; [undetermined] if missing."""
+    if v is None:
+        return _UNDETERMINED
+    s = str(v).strip()
+    if not s:
+        return _UNDETERMINED
+    return s
+
+
+def _trim_trailing_period(s):
+    """Strip a trailing period so callers can safely append one of their own."""
+    if not s:
+        return s
+    return s.rstrip().rstrip(".").rstrip()
+
+
+def _yn(v):
+    """Map Yes/No selection (or None) to lowercase 'yes'/'no'/[undetermined]."""
+    if not _has(v):
+        return _UNDETERMINED
+    s = str(v).strip().lower()
+    if s in ("yes", "y"):
+        return "yes"
+    if s in ("no", "n"):
+        return "no"
+    return _UNDETERMINED
+
+
+# ─────────────────────────────────────────────────────────────
+# Narrative composers — each returns one or more sentences
+# ─────────────────────────────────────────────────────────────
+
+def _compose_demographics(f):
+    age = _val(f.get("age"))
+    sex = _val(f.get("sex"))
+    height = _val(f.get("height"))
+    weight = _val(f.get("weight"))
+    bmi = _val(f.get("bmi"))
+    sex_str = sex.lower() if _has(sex) else _UNDETERMINED
+    return (
+        f"{age}-year-old {sex_str}. "
+        f"Height {height} cm, weight {weight} kg, BMI {bmi}."
+    )
+
+
+def _compose_history(f):
+    parts = []
+    fn = f.get("first_name", "<HMS-Patient_FirstName>")
+
+    dur_n, dur_u = f.get("duration_number"), f.get("duration_unit")
+    pre_dur_n, pre_dur_u = f.get("presyncope_duration_number"), f.get("presyncope_duration_unit")
+    freq = f.get("frequency")
+    pre_freq = f.get("presyncope_frequency")
+
+    if _has(dur_n) and _has(dur_u):
+        s = f"{fn} reports a {dur_n}-{dur_u.rstrip('s')} history of syncope"
+        if _has(freq):
+            s += f", occurring {freq}"
+        s += "."
+        parts.append(s)
+    else:
+        parts.append(f"No syncope history was reported.")
+
+    if _has(pre_dur_n) and _has(pre_dur_u):
+        s = f"Presyncope symptoms have been present for {pre_dur_n} {pre_dur_u}"
+        if _has(pre_freq):
+            s += f", occurring {pre_freq}"
+        s += "."
+        parts.append(s)
+    elif _has(pre_freq):
+        parts.append(f"Presyncope symptoms occur {pre_freq}.")
+    else:
+        parts.append("No presyncope history was reported.")
+
+    sync_ep = f.get("syncope_episodes_last_month")
+    pre_ep = f.get("presyncope_episodes_last_month")
+    recent = f.get("most_recent_date")
+
+    if _has(sync_ep) and _has(pre_ep):
+        ep_clause = f"There have been {sync_ep} syncope and {pre_ep} presyncope episodes in the last month"
+    elif _has(sync_ep):
+        ep_clause = f"There have been {sync_ep} syncope episodes in the last month"
+    elif _has(pre_ep):
+        ep_clause = f"There have been {pre_ep} presyncope episodes in the last month"
+    else:
+        ep_clause = f"Episode count over the last month was not recorded ({_UNDETERMINED})"
+
+    if _has(recent):
+        ep_clause += f", with the most recent episode on {recent}."
+    else:
+        ep_clause += f"; date of the most recent episode is {_UNDETERMINED}."
+    parts.append(ep_clause)
+
+    # Warning before syncope
+    nws = f.get("no_warning_syncope")
+    if _has(nws):
+        nws_l = str(nws).lower()
+        if nws_l == "never":
+            parts.append("Warning symptoms are reported before every event.")
+        elif nws_l == "rare":
+            parts.append("Episodes without warning are reported as rare.")
+        elif nws_l == "frequent":
+            parts.append("Episodes without warning are reported as frequent.")
+        else:
+            parts.append(f"Frequency of episodes without warning: {nws}.")
+    else:
+        parts.append(f"Frequency of episodes without warning is {_UNDETERMINED}.")
+
+    # Initiating event
+    ile = f.get("initiating_life_event")
+    detail = f.get("initiating_event_detail")
+    if _yn(ile) == "yes":
+        if _has(detail):
+            parts.append(f"A known initiating life event was reported: {_trim_trailing_period(detail)}.")
+        else:
+            parts.append("A known initiating life event was reported (no further detail).")
+        # Sub-categorisation
+        sub = []
+        if _yn(f.get("event_was_medical")) == "yes":
+            sub.append("medical illness")
+        if _yn(f.get("event_was_surgical")) == "yes":
+            sub.append("surgical or trauma")
+        if _yn(f.get("event_was_emotional")) == "yes":
+            sub.append("emotional trauma")
+        if sub:
+            parts.append(f"The event was characterised as: {_join_and(sub)}.")
+    elif _yn(ile) == "no":
+        parts.append("No known initiating life event was reported.")
+    else:
+        parts.append(f"Initiating life event status: {_UNDETERMINED}.")
+
+    return " ".join(parts)
+
+
+def _compose_postural(f):
+    parts = []
+    posture = f.get("posture")
+    if _has(posture):
+        parts.append(f"Symptoms typically occur with {posture}.")
+    else:
+        parts.append(f"Usual posture at symptom onset: {_UNDETERMINED}.")
+
+    pcp = _yn(f.get("posture_change_provokes"))
+    bld = _yn(f.get("better_lying_down"))
+
+    if pcp == "yes":
+        parts.append("Postural change from lying or sitting to standing provokes symptoms.")
+    elif pcp == "no":
+        parts.append("Postural change from lying or sitting to standing does not provoke symptoms.")
+    else:
+        parts.append(f"Whether postural change provokes symptoms is {_UNDETERMINED}.")
+
+    if bld == "yes":
+        parts.append("Symptoms improve when lying down.")
+    elif bld == "no":
+        parts.append("Symptoms are not reported to improve when lying down.")
+    else:
+        parts.append(f"Whether lying down improves symptoms is {_UNDETERMINED}.")
+
+    return " ".join(parts)
+
+
+def _compose_triggers_features(f):
+    parts = []
+    triggers = f.get("triggers")
+    if _has(triggers) and triggers != "none reported":
+        parts.append(f"Reported symptom triggers include {triggers}.")
+    elif triggers == "none reported":
+        parts.append("No specific symptom triggers were reported.")
+    else:
+        parts.append(f"Symptom triggers: {_UNDETERMINED}.")
+
+    symptoms = f.get("symptoms")
+    if _has(symptoms) and symptoms != "none reported":
+        parts.append(f"Associated symptoms include {symptoms}.")
+    elif symptoms == "none reported":
+        parts.append("No specific associated symptoms were reported.")
+    else:
+        parts.append(f"Associated symptoms: {_UNDETERMINED}.")
+
+    sde = _yn(f.get("syncope_during_exercise"))
+    sae = _yn(f.get("syncope_after_exercise"))
+    ex_parts = []
+    if sde == "yes":
+        ex_parts.append("syncope during exercise is reported")
+    elif sde == "no":
+        ex_parts.append("no syncope during exercise")
+    else:
+        ex_parts.append(f"syncope during exercise: {_UNDETERMINED}")
+
+    if sae == "yes":
+        ex_parts.append("syncope after exercise is reported")
+    elif sae == "no":
+        ex_parts.append("no syncope after exercise")
+    else:
+        ex_parts.append(f"syncope after exercise: {_UNDETERMINED}")
+    parts.append("Exercise-related symptoms: " + "; ".join(ex_parts) + ".")
+
+    mc = _yn(f.get("menstrual_correlation"))
+    md = f.get("menstrual_detail")
+    if mc == "yes":
+        if _has(md):
+            parts.append(f"A correlation with the menstrual cycle was observed: {_trim_trailing_period(md)}.")
+        else:
+            parts.append("A correlation with the menstrual cycle was observed.")
+    elif mc == "no":
+        parts.append("No correlation with the menstrual cycle was reported.")
+    else:
+        parts.append(f"Menstrual cycle correlation: {_UNDETERMINED}.")
+
+    palp = _yn(f.get("palpitations"))
+    palp_type = f.get("palpitation_type")
+    if palp == "yes":
+        if _has(palp_type) and palp_type != "none reported":
+            parts.append(f"Palpitations are reported, described as {palp_type}.")
+        else:
+            parts.append("Palpitations are reported.")
+    elif palp == "no":
+        parts.append("No palpitations are reported.")
+    else:
+        parts.append(f"Palpitations: {_UNDETERMINED}.")
+
+    obs = f.get("other_observations")
+    if _has(obs):
+        parts.append(f"Other observations noted: {_trim_trailing_period(obs)}.")
+
+    return " ".join(parts)
+
+
+def _compose_conditions(f):
+    parts = []
+    cond = f.get("conditions")
+    if _has(cond) and cond != "none reported":
+        parts.append(f"Comorbid conditions reported: {cond}.")
+    elif cond == "none reported":
+        parts.append("No comorbid conditions were reported.")
+    else:
+        parts.append(f"Comorbid conditions: {_UNDETERMINED}.")
+
+    gi_dx = f.get("gi_diagnosis")
+    gi_sx = f.get("gi_symptoms")
+    gi_clauses = []
+    if _has(gi_dx) and gi_dx != "none reported":
+        gi_clauses.append(f"a diagnosis of {gi_dx}")
+    elif gi_dx == "none reported":
+        gi_clauses.append("no formal GI diagnosis")
+    else:
+        gi_clauses.append(f"GI diagnosis: {_UNDETERMINED}")
+
+    if _has(gi_sx) and gi_sx != "none reported":
+        gi_clauses.append(f"GI symptoms of {gi_sx}")
+    elif gi_sx == "none reported":
+        gi_clauses.append("no GI symptoms reported")
+    else:
+        gi_clauses.append(f"GI symptoms: {_UNDETERMINED}")
+    parts.append("Gastrointestinal: " + "; ".join(gi_clauses) + ".")
+
+    mh = f.get("mental_health")
+    if _has(mh) and mh != "none reported":
+        parts.append(f"Mental health diagnoses: {mh}.")
+    elif mh == "none reported":
+        parts.append("No mental health diagnoses were reported.")
+    else:
+        parts.append(f"Mental health diagnoses: {_UNDETERMINED}.")
+
+    return " ".join(parts)
+
+
+def _compose_family_hx(f):
+    parts = []
+    fh = f.get("family_history")
+    if _has(fh):
+        parts.append(f"Family history of hypotension/fainting/POTS is {fh}.")
+    else:
+        parts.append(f"Family history of hypotension/fainting/POTS: {_UNDETERMINED}.")
+
+    fhc = f.get("family_hx_cardiac")
+    if _has(fhc) and fhc != "none reported":
+        parts.append(f"Family history of cardiac conditions includes {fhc}.")
+    elif fhc == "none reported":
+        parts.append("No family history of sudden cardiac death, cardiomyopathy, or cardiac devices was reported.")
+    else:
+        parts.append(f"Family history of cardiac conditions: {_UNDETERMINED}.")
+
+    return " ".join(parts)
+
+
+def _compose_medications(f):
+    nc = f.get("negative_chronotropes")
+    ad = f.get("antidepressants")
+    fl = f.get("fludrocortisone_status")
+    md = f.get("midodrine_status")
+    om = f.get("other_medications")
+
+    parts = []
+
+    # Negative chronotropes
+    if _has(nc):
+        if nc.lower().startswith("no") and "beta" not in nc.lower() and "ivabradine" not in nc.lower():
+            parts.append("not currently on negative chronotropes")
+        else:
+            parts.append(f"on {nc}")
+    else:
+        parts.append(f"negative chronotropes: {_UNDETERMINED}")
+
+    # Antidepressants
+    if _has(ad):
+        if ad == "none reported":
+            parts.append("no antidepressant therapy")
+        else:
+            parts.append(f"on {ad}")
+    else:
+        parts.append(f"antidepressant therapy: {_UNDETERMINED}")
+
+    # Fludrocortisone
+    if _has(fl):
+        fl_l = fl.lower()
+        if "current" in fl_l:
+            parts.append("currently taking fludrocortisone")
+        elif "discontinued" in fl_l:
+            parts.append("previously prescribed fludrocortisone, now discontinued")
+        elif "never" in fl_l:
+            parts.append("has never taken fludrocortisone")
+        else:
+            parts.append(f"fludrocortisone status: {fl}")
+    else:
+        parts.append(f"fludrocortisone status: {_UNDETERMINED}")
+
+    # Midodrine
+    if _has(md):
+        md_l = md.lower()
+        if "current" in md_l:
+            parts.append("currently taking midodrine")
+        elif "discontinued" in md_l:
+            parts.append("previously prescribed midodrine, now discontinued")
+        elif "never" in md_l:
+            parts.append("has never taken midodrine")
+        else:
+            parts.append(f"midodrine status: {md}")
+    else:
+        parts.append(f"midodrine status: {_UNDETERMINED}")
+
+    sentence = "Medications: " + "; ".join(parts) + "."
+
+    if _has(om):
+        sentence += f" Other relevant medications: {_trim_trailing_period(om)}."
+    else:
+        # Q40 was blank — note explicitly
+        sentence += " No other relevant medications were listed."
+
+    return sentence
+
+
+def _compose_investigations(f):
+    inv = f.get("investigations")
+    comm = f.get("investigation_comments")
+    parts = []
+    if _has(inv) and inv != "none reported":
+        parts.append(f"Prior investigations include {inv}.")
+    elif inv == "none reported":
+        parts.append("No prior investigations were recorded.")
+    else:
+        parts.append(f"Prior investigations: {_UNDETERMINED}.")
+    if _has(comm):
+        parts.append(f"Additional investigation notes: {_trim_trailing_period(comm)}.")
+    return " ".join(parts)
+
+
+def _compose_test(f):
+    parts = []
+    fn = f.get("first_name", "<HMS-Patient_FirstName>")
+
+    # Test type
+    drug = f.get("tilt_drug")
+    test_type = f.get("test_type")
+    if drug == "Isoprenaline":
+        test_str = "an isoprenaline-provoked tilt table test"
+    elif drug == "GTN":
+        test_str = "a GTN-provoked tilt table test"
+    elif drug is None and _has(test_type) and "passive" in test_type.lower():
+        test_str = "a passive tilt table test (no pharmacological provocation)"
+    else:
+        test_str = f"a tilt table test ({_UNDETERMINED} provocation)"
+    parts.append(f"{fn} underwent {test_str}.")
+
+    # Baseline vitals
+    bp = f.get("baseline_bp") or _UNDETERMINED
+    hr = f.get("baseline_hr")
+    hr_str = str(hr) if hr is not None else _UNDETERMINED
+    rhythm = f.get("baseline_rhythm")
+    rhythm_str = f", baseline rhythm {rhythm}" if _has(rhythm) else ""
+    parts.append(f"Baseline observations were BP {bp} mmHg, HR {hr_str} bpm{rhythm_str}.")
+
+    # Control phase
+    ctrl_calc = f.get("control_result_calc")
+    ctrl_tol = f.get("control_tolerance")
+    ctrl_sev = f.get("control_symptom_severity") or "mild"
+    ctrl_notes = f.get("control_notes", "")
+    if ctrl_calc == _RESULT_POTS:
+        ctrl_desc = "an HR rise meeting POTS criteria (≥30 bpm, or ≥40 bpm aged 12–19)"
+    elif ctrl_calc == _RESULT_OI:
+        ctrl_desc = "a sustained HR rise of ≥20 bpm without meeting POTS criteria"
+    elif ctrl_calc == _RESULT_VVS:
+        ctrl_desc = "a fall in systolic BP of >20 mmHg and/or HR <50 bpm"
+    elif ctrl_calc == _RESULT_NORMAL:
+        ctrl_desc = "no significant haemodynamic change"
+    else:
+        ctrl_desc = _UNDETERMINED
+    sev_phrase = f"{ctrl_sev} symptoms" if ctrl_sev != "no" else "no symptoms"
+    parts.append(f"During the control phase, {ctrl_desc} was observed; {fn} {ctrl_tol or _UNDETERMINED} with {sev_phrase}.")
+    if ctrl_notes and not ctrl_notes.startswith("[REVIEW") and not ctrl_notes.startswith(_UNDETERMINED):
+        note_clean = ctrl_notes.rstrip()
+        if not note_clean.endswith((".", "!", "?")):
+            note_clean += "."
+        parts.append(f"Control phase clinician note: {note_clean}")
+
+    # Phase 2
+    p2_calc = f.get("phase2_result_calc")
+    p2_tol = f.get("phase2_tolerance")
+    p2_notes = f.get("phase2_notes", "")
+    stop_min = f.get("phase2_stop_minute")
+    stop_str = ""
+    if stop_min and stop_min < 10:
+        stop_str = f" The phase 2 protocol was terminated at {stop_min} {'minute' if stop_min == 1 else 'minutes'}."
+    if p2_calc == _RESULT_NOT_REACHED:
+        parts.append("Phase 2 pharmacological provocation was not administered." + stop_str)
+    elif drug is None and (_has(test_type) and "passive" in test_type.lower()):
+        parts.append(f"No pharmacological provocation was administered (passive tilt only); {fn} {p2_tol or _UNDETERMINED}." + stop_str)
+    else:
+        if p2_calc == _RESULT_POTS:
+            p2_desc = "an HR rise meeting POTS criteria"
+        elif p2_calc == _RESULT_OI:
+            p2_desc = "a sustained HR rise of ≥20 bpm without meeting POTS criteria"
+        elif p2_calc == _RESULT_VVS:
+            p2_desc = "a fall in systolic BP of >20 mmHg and/or HR <50 bpm"
+        elif p2_calc == _RESULT_NORMAL:
+            p2_desc = "no significant haemodynamic change"
+        else:
+            p2_desc = _UNDETERMINED
+        drug_str = drug if drug else "the provocation agent"
+        parts.append(f"Following administration of {drug_str}, {p2_desc} was observed; {fn} {p2_tol or _UNDETERMINED}." + stop_str)
+    if p2_notes and not p2_notes.startswith("[REVIEW") and not p2_notes.startswith(_UNDETERMINED):
+        note_clean = p2_notes.rstrip()
+        if not note_clean.endswith((".", "!", "?")):
+            note_clean += "."
+        parts.append(f"Phase 2 clinician note: {note_clean}")
+
+    # Recovery vitals
+    rec_bp = f.get("recovery_bp")
+    rec_hr = f.get("recovery_hr")
+    rec_bp_str = rec_bp if rec_bp else "not recorded"
+    rec_hr_str = str(rec_hr) if rec_hr is not None else "not recorded"
+    parts.append(f"Recovery observations were BP {rec_bp_str} mmHg, HR {rec_hr_str} bpm.")
+
+    # Symptom correlation
+    sc = f.get("symptom_correlation")
+    if _has(sc):
+        sc_l = sc.lower()
+        if "correlate" in sc_l and "different" not in sc_l:
+            parts.append("Symptoms experienced during the test correlated with the patient's baseline symptoms.")
+        elif "different" in sc_l:
+            parts.append("Symptoms experienced during the test were different to the patient's baseline symptoms.")
+        elif "no symptom" in sc_l:
+            parts.append("No symptoms were experienced during the test.")
+        else:
+            parts.append(f"Symptom correlation with baseline: {sc}.")
+    else:
+        parts.append(f"Symptom correlation with baseline: {_UNDETERMINED}.")
+
+    # Free-text results conclusion
+    rc = f.get("results_conclusion")
+    if _has(rc):
+        parts.append(f"Clinician's results conclusion: {_trim_trailing_period(rc)}.")
+
+    return " ".join(parts)
+
+
+# ─────────────────────────────────────────────────────────────
+# Conclusion + Recommendation
+# ─────────────────────────────────────────────────────────────
+
+def _normalise_result_label(raw):
+    """
+    Map a raw Page 7 selection (e.g. "Vasovagal syncope") to a canonical key
+    used by conclusion/recommendation logic. Returns None if undetermined.
+    """
+    if not _has(raw):
+        return None
+    s = str(raw).strip().lower()
+    if "pots" in s:
+        return "POTS"
+    if "postural hypotension" in s or "orthostatic hypotension" in s:
+        return "OH"
+    if "vasovagal syncope" in s:
+        return "VVS"
+    if "vasovagal presyncope" in s:
+        return "VVP"
+    if "mixed" in s:
+        return "MIXED"
+    if "normal" in s:
+        return "NORMAL"
+    return None
+
+
+def _compose_conclusion(f):
+    """
+    Build a one-sentence conclusion based on Page 7 result fields.
+    Falls back to calculated results if Page 7 fields are undetermined.
+    Returns (conclusion_sentence, diagnosis_key) where diagnosis_key drives
+    the recommendation choice.
+    """
+    ctrl_raw = f.get("control_result_raw")
+    p2_raw = f.get("phase2_result_raw")
+
+    ctrl_key = _normalise_result_label(ctrl_raw)
+    p2_key = _normalise_result_label(p2_raw)
+
+    # Fallback: use calculated result labels when Page 7 fields are missing
+    if ctrl_key is None:
+        cc = f.get("control_result_calc")
+        if cc == _RESULT_POTS:
+            ctrl_key = "POTS"
+        elif cc == _RESULT_VVS:
+            ctrl_key = "VVS"
+        elif cc == _RESULT_OI:
+            ctrl_key = "OH"  # OI grouped with OH for recommendation purposes
+        elif cc == _RESULT_NORMAL:
+            ctrl_key = "NORMAL"
+
+    if p2_key is None:
+        pc = f.get("phase2_result_calc")
+        if pc == _RESULT_POTS:
+            p2_key = "POTS"
+        elif pc == _RESULT_VVS:
+            p2_key = "VVS"
+        elif pc == _RESULT_OI:
+            p2_key = "OH"
+        elif pc == _RESULT_NORMAL:
+            p2_key = "NORMAL"
+        elif pc == _RESULT_NOT_REACHED:
+            p2_key = "NOT_REACHED"
+
+    # Decide overall diagnosis. Positive findings take priority over normal.
+    priority = ["POTS", "OH", "VVS", "VVP", "MIXED"]
+    keys_present = [k for k in (ctrl_key, p2_key) if k in priority]
+    if keys_present:
+        # Pick the highest-priority positive finding
+        diagnosis = next(k for k in priority if k in keys_present)
+    elif ctrl_key == "NORMAL" and p2_key in ("NORMAL", "NOT_REACHED", None):
+        diagnosis = "NORMAL"
+    elif ctrl_key in ("NORMAL", None) and p2_key == "NORMAL":
+        diagnosis = "NORMAL"
+    else:
+        diagnosis = "UNDETERMINED"
+
+    sentence_map = {
+        "POTS": "Conclusion: Positive study for POTS.",
+        "OH": "Conclusion: Positive study for orthostatic hypotension.",
+        "VVS": "Conclusion: Positive study for vasovagal syncope.",
+        "VVP": "Conclusion: Positive study for vasovagal presyncope.",
+        "MIXED": "Conclusion: Positive study for mixed response.",
+        "NORMAL": "Conclusion: Negative study.",
+        "UNDETERMINED": f"Conclusion: {_UNDETERMINED}.",
+    }
+    return sentence_map[diagnosis], diagnosis
+
+
+def _compose_recommendation(diagnosis):
+    rec_map = {
+        "POTS": (
+            "Recommendation: Increase fluid intake, target 3L per day. Regular exercise. "
+            "Consider addition of fludrocortisone, midodrine, ivabradine."
+        ),
+        "OH": (
+            "Recommendation: Increase fluid intake, target 3L per day. Regular exercise. "
+            "Consider addition of fludrocortisone, midodrine, ivabradine."
+        ),
+        "VVS": (
+            "Recommendation: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
+            "Increase fluid and salt intake. Consider midodrine if symptoms persist despite "
+            "conservative measures."
+        ),
+        "VVP": (
+            "Recommendation: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
+            "Increase fluid and salt intake. Consider midodrine if symptoms persist despite "
+            "conservative measures."
+        ),
+        "MIXED": (
+            "Recommendation: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
+            "Increase fluid and salt intake. Consider midodrine if symptoms persist despite "
+            "conservative measures."
+        ),
+        "NORMAL": "Recommendation: No specific intervention indicated based on this study.",
+        "UNDETERMINED": f"Recommendation: {_UNDETERMINED} — to be completed by clinician.",
+    }
+    return rec_map.get(diagnosis, rec_map["UNDETERMINED"])
+
+
+# ─────────────────────────────────────────────────────────────
+# Report builder
+# ─────────────────────────────────────────────────────────────
+
 def build_report(fields):
     """
-    Populate the HealthTrack template from extracted fields.
-    Returns (report_text: str, review_count: int).
+    Populate the HealthTrack report from extracted fields.
+    Output is one flowing narrative under 'Summary', then 'Conclusion'
+    and 'Recommendation' single-line headings.
+    Returns (report_text: str, undetermined_count: int).
     """
-    lines = []
-    review_count = 0
+    summary_blocks = [
+        _compose_demographics(fields),
+        _compose_history(fields),
+        _compose_postural(fields),
+        _compose_triggers_features(fields),
+        _compose_conditions(fields),
+        _compose_family_hx(fields),
+        _compose_medications(fields),
+        _compose_investigations(fields),
+        _compose_test(fields),
+    ]
+    summary_text = "\n\n".join(b.strip() for b in summary_blocks if b and b.strip())
 
-    def add(label, text):
-        lines.append(f"[{label.upper()}]\n{text}\n")
+    conclusion_sentence, diagnosis_key = _compose_conclusion(fields)
+    recommendation_sentence = _compose_recommendation(diagnosis_key)
 
-    def tally(text):
-        nonlocal review_count
-        review_count += len(re.findall(r"\[REVIEW:", text))
-        return text
-
-    fn = fields.get("first_name", "<HMS-Patient_FirstName>")
-
-    # ── Summary ───────────────────────────────────────────────
-    dur_num      = fields.get("duration_number")
-    dur_unit     = fields.get("duration_unit")
-    pre_dur_num  = fields.get("presyncope_duration_number")
-    pre_dur_unit = fields.get("presyncope_duration_unit")
-    freq         = fields.get("frequency",             _review("syncope_frequency"))
-    pre_freq     = fields.get("presyncope_frequency",  _review("presyncope_frequency"))
-    recent       = fields.get("most_recent_date",      _review("most_recent_date"))
-
-    def _has(val):
-        return val and not str(val).startswith("[REVIEW")
-
-    # Episode count: label according to which type(s) have episodes recorded
-    sync_ep = fields.get("syncope_episodes_last_month")
-    pre_ep  = fields.get("presyncope_episodes_last_month")
-    if sync_ep and pre_ep:
-        ep_clause = f"{sync_ep} syncope and {pre_ep} presyncope episodes in the last month"
-    elif sync_ep:
-        ep_clause = f"{sync_ep} syncope episodes in the last month"
-    elif pre_ep:
-        ep_clause = f"{pre_ep} presyncope episodes in the last month"
-    else:
-        ep_clause = f"{_review('episodes_last_month')} episodes in the last month"
-
-    # Build summary sentences; explicitly record when a history type is absent
-    summary_parts = []
-
-    if _has(dur_num) and _has(dur_unit):
-        sync_line = f"Syncope symptoms for {dur_num} {dur_unit}"
-        sync_line += f", occurring {freq}." if _has(freq) else "."
-        summary_parts.append(sync_line)
-    elif _has(freq):
-        summary_parts.append(f"Syncope symptoms occurring {freq}.")
-    else:
-        summary_parts.append("No syncope history was reported.")
-
-    if _has(pre_dur_num) and _has(pre_dur_unit):
-        pre_line = f"Presyncope symptoms for {pre_dur_num} {pre_dur_unit}"
-        pre_line += f", occurring {pre_freq}." if _has(pre_freq) else "."
-        summary_parts.append(pre_line)
-    elif _has(pre_freq):
-        summary_parts.append(f"Presyncope symptoms occurring {pre_freq}.")
-    else:
-        summary_parts.append("No presyncope history was reported.")
-
-    summary_parts.append(f"{ep_clause}, most recently {recent}.")
-
-    summary = tally(" ".join(summary_parts))
-    add("Summary", summary)
-
-    # ── Posture ───────────────────────────────────────────────
-    add("Posture", tally(
-        f"Symptoms typically occur in the {fields.get('posture', _review('posture'))}."
-    ))
-
-    # ── Triggers ─────────────────────────────────────────────
-    add("Triggers", tally(fields.get("triggers", _review("triggers"))))
-
-    # ── Associated features ───────────────────────────────────
-    add("Associated Features", tally(fields.get("symptoms", _review("symptoms"))))
-
-    # ── Associated conditions ─────────────────────────────────
-    add("Associated Conditions", tally(fields.get("conditions", _review("conditions"))))
-
-    # ── Family history ────────────────────────────────────────
-    fh = fields.get("family_history", _review("family_history"))
-    add("Family History", tally(f"Family history {fh}."))
-
-    # ── Investigations ────────────────────────────────────────
-    add("Investigations", tally(
-        f"Prior investigations: {fields.get('investigations', _review('prior_investigations'))}."
-    ))
-
-    # ── Baseline vital signs ──────────────────────────────────
-    baseline_hr = fields.get("baseline_hr")
-    baseline_bp = fields.get("baseline_bp", _review("baseline_BP"))
-    recovery_hr = fields.get("recovery_hr")
-    recovery_bp = fields.get("recovery_bp")
-    vitals_text = (
-        f"Baseline BP {baseline_bp}, HR {baseline_hr if baseline_hr else _review('baseline_HR')} bpm. "
-        f"Recovery BP {recovery_bp if recovery_bp else 'not recorded'}, "
-        f"HR {recovery_hr if recovery_hr else 'not recorded'} bpm."
+    full_report = (
+        "Summary\n"
+        f"{summary_text}\n\n"
+        f"{conclusion_sentence}\n\n"
+        f"{recommendation_sentence}"
     )
-    add("Baseline Vital Signs", tally(vitals_text))
 
-    # ── Control phase result ──────────────────────────────────
-    ctrl_result   = fields.get("control_result",   _review("control_tilt_result"))
-    ctrl_tol      = fields.get("control_tolerance", _review("control_tolerance"))
-    ctrl_severity = fields.get("control_symptom_severity", "mild")
-    ctrl_notes    = fields.get("control_notes", "")
-
-    ctrl_text = tally(
-        f"The tilt table test demonstrated {ctrl_result} during the control phase. "
-        f"{fn} {ctrl_tol} with {ctrl_severity} symptoms."
-    )
-    if ctrl_notes and not ctrl_notes.startswith("[REVIEW"):
-        ctrl_text += f" Clinician notes: {ctrl_notes}"
-    add("Baseline Tilt Results (Control Phase)", ctrl_text)
-
-    # ── Phase 2 result ────────────────────────────────────────
-    drug      = fields.get("tilt_drug", _review("tilt_drug"))
-    p2_result = fields.get("phase2_result", _RESULT_NOT_REACHED)
-    p2_tol    = fields.get("phase2_tolerance", _review("phase2_tolerance"))
-    p2_notes  = fields.get("phase2_notes", "")
-    stop_min  = fields.get("phase2_stop_minute")
-
-    # Describe when the test was terminated (if it ended before 10 min)
-    stop_str = f" The test was terminated at {stop_min} {'minute' if stop_min == 1 else 'minutes'}." if (stop_min and stop_min < 10) else ""
-
-    if p2_result == _RESULT_NOT_REACHED:
-        p2_text = tally(
-            "Phase 2 pharmacological provocation was not administered as the test "
-            f"was terminated during the control phase.{stop_str}"
-        )
-    elif drug is None:
-        p2_text = tally(
-            f"No pharmacological provocation was administered (passive tilt only). "
-            f"{fn} {p2_tol}.{stop_str}"
-        )
-    else:
-        p2_text = tally(
-            f"Following administration of {drug}, {p2_result} was observed. "
-            f"{fn} {p2_tol}.{stop_str}"
-        )
-    if p2_notes and not p2_notes.startswith("[REVIEW"):
-        p2_text += f" Clinician notes: {p2_notes}"
-    add("Phase 2 Tilt Results", p2_text)
-
-    # ── Conclusions ───────────────────────────────────────────
-    conclusion = _generate_conclusion(
-        ctrl_result, p2_result, fields.get("tilt_drug")
-    )
-    add("Conclusions", tally(conclusion))
-
-    # ── Recommendations ───────────────────────────────────────
-    # For any positive result, use the standard management pathway.
-    ctrl_normal = ctrl_result == _RESULT_NORMAL
-    p2_normal   = p2_result in (_RESULT_NORMAL, _RESULT_NOT_REACHED) or fields.get("tilt_drug") is None
-    if not (ctrl_normal and p2_normal):
-        rec_text = (
-            "Blood pressure support with fluid intake of 3 litres per day and high salt diet. "
-            "Modified exercise program for postural retraining. "
-            "Consider low dose fludrocortisone if symptoms persist despite optimisation of "
-            "conservative measures."
-        )
-    else:
-        rec_text = "[RECOMMENDATIONS — to be completed by clinician]"
-    add("Recommendations", tally(rec_text))
-
-    full_report = "\n".join(lines)
-    return full_report, review_count
-
-
-_RESULT_POTS        = "positive for a POTS response"
-_RESULT_VVS         = "positive for a vasovagal response"
-_RESULT_OI          = "positive for orthostatic intolerance"
-_RESULT_NORMAL      = "normal"
-_RESULT_NOT_REACHED = "not_reached"   # Phase 2 never administered
-
-
-def _generate_conclusion(ctrl, p2, drug):
-    ctrl_normal = ctrl == _RESULT_NORMAL
-    p2_normal   = p2 in (_RESULT_NORMAL, _RESULT_NOT_REACHED) or drug is None
-
-    if ctrl_normal and p2_normal:
-        return (
-            "The tilt table test was negative, with no evidence of orthostatic intolerance, "
-            "POTS, or vasovagal syncope provoked during either the control or pharmacological "
-            "phase. These findings do not exclude a clinical diagnosis of syncope."
-        )
-
-    # POTS in either phase
-    has_pots = ctrl.startswith(_RESULT_POTS) or p2.startswith(_RESULT_POTS)
-    if has_pots:
-        phase = "control" if ctrl.startswith(_RESULT_POTS) else "pharmacological"
-        return (
-            f"The tilt table test demonstrated a positive POTS response during the {phase} phase. "
-            "This is consistent with postural orthostatic tachycardia syndrome and warrants "
-            "further evaluation and management."
-        )
-
-    # Vasovagal in either phase
-    has_vvs = ctrl.startswith(_RESULT_VVS) or p2.startswith(_RESULT_VVS)
-    if has_vvs:
-        phase = "control" if ctrl.startswith(_RESULT_VVS) else "pharmacological"
-        return (
-            f"The tilt table test demonstrated a positive vasovagal response during the {phase} phase. "
-            "This is consistent with neurally-mediated syncope."
-        )
-
-    # Orthostatic intolerance
-    has_oi = ctrl.startswith(_RESULT_OI) or p2.startswith(_RESULT_OI)
-    if has_oi:
-        return (
-            "The tilt table test demonstrated orthostatic intolerance without meeting full "
-            "POTS criteria. Clinical correlation and further evaluation are recommended."
-        )
-
-    return _review("clinical_conclusion")
+    undetermined_count = len(re.findall(re.escape(_UNDETERMINED), full_report))
+    return full_report, undetermined_count
 
 
 # ─────────────────────────────────────────────────────────────
@@ -1034,7 +1719,7 @@ def _generate_conclusion(ctrl, p2, drug):
 
 def process_pdf(pdf_bytes):
     """
-    Main entry point. Takes raw PDF bytes, returns (report_text, review_count).
+    Main entry point. Takes raw PDF bytes, returns (report_text, undetermined_count).
     """
     try:
         text = extract_text_from_pdf(pdf_bytes)
@@ -1043,11 +1728,9 @@ def process_pdf(pdf_bytes):
         logger.error("PDF extraction failed: %s", e)
         raise ValueError(f"Could not read PDF: {e}")
 
-    # Detect checkbox selections via image analysis (pdf2image + PIL).
-    # Gracefully degrades to [REVIEW] placeholders if dependencies are absent.
     ocr_results = _ocr_checkboxes(pdf_bytes)
     logger.debug("Checkbox OCR results: %s", ocr_results)
 
     fields = extract_fields(text, ocr_results)
-    report, review_count = build_report(fields)
-    return report, review_count
+    report, undetermined_count = build_report(fields)
+    return report, undetermined_count

@@ -19,7 +19,7 @@
         <div class="disclaimer-box">
             <strong>Clinical tool — not a substitute for clinical judgement.</strong>
             All data is processed locally on the server. No patient information is sent to external services.
-            Review all <span style="color:#c0620a;font-weight:600;">[REVIEW: …]</span> placeholders before finalising the report.
+            Review all <span style="color:#c0620a;font-weight:600;">[undetermined]</span> placeholders before finalising the report.
         </div>
 
         <!-- Upload Card -->
@@ -144,10 +144,10 @@
 
         function renderReport(reportText, reviewCount) {
             // Escape all HTML first so <HMS-Patient_FirstName> renders as text,
-            // then replace the already-safe [REVIEW: ...] tokens with styled spans.
+            // then replace the already-safe [undetermined] tokens with styled spans.
             const safe = escapeHtml(reportText);
             const highlighted = safe.replace(
-                /\[REVIEW:[^\]]+\]/g,
+                /\[undetermined\]/g,
                 match => `<span class="review-marker">${match}</span>`
             );
             reportOutput.innerHTML = highlighted;
