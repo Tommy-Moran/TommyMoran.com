@@ -1170,20 +1170,20 @@ def _compose_history(f):
         ep_clause += f"; date of the most recent episode is {_UNDETERMINED}."
     parts.append(ep_clause)
 
-    # Warning before syncope
+    # Warning before syncope — frame as high-risk feature presence/absence
     nws = f.get("no_warning_syncope")
     if _has(nws):
         nws_l = str(nws).lower()
         if nws_l == "never":
-            parts.append("Warning symptoms are reported before every event.")
+            parts.append("No high-risk syncope features: episodes are always preceded by warning symptoms.")
         elif nws_l == "rare":
-            parts.append("Episodes without warning are reported as rare.")
+            parts.append("Episodes occasionally occur without prior warning.")
         elif nws_l == "frequent":
-            parts.append("Episodes without warning are reported as frequent.")
+            parts.append("High-risk syncope features present: episodes frequently occur without prior warning.")
         else:
             parts.append(f"Frequency of episodes without warning: {nws}.")
     else:
-        parts.append(f"Frequency of episodes without warning is {_UNDETERMINED}.")
+        parts.append(f"Presence of high-risk syncope features (episodes without warning): {_UNDETERMINED}.")
 
     # Initiating event
     ile = f.get("initiating_life_event")
@@ -1239,7 +1239,8 @@ def _compose_postural(f):
     return " ".join(parts)
 
 
-def _compose_triggers_features(f):
+def _compose_triggers(f):
+    """Triggers + exercise syncope + menstrual correlation."""
     parts = []
     triggers = f.get("triggers")
     if _has(triggers) and triggers != "none reported":
@@ -1249,31 +1250,19 @@ def _compose_triggers_features(f):
     else:
         parts.append(f"Symptom triggers: {_UNDETERMINED}.")
 
-    symptoms = f.get("symptoms")
-    if _has(symptoms) and symptoms != "none reported":
-        parts.append(f"Associated symptoms include {symptoms}.")
-    elif symptoms == "none reported":
-        parts.append("No specific associated symptoms were reported.")
-    else:
-        parts.append(f"Associated symptoms: {_UNDETERMINED}.")
-
     sde = _yn(f.get("syncope_during_exercise"))
     sae = _yn(f.get("syncope_after_exercise"))
-    ex_parts = []
-    if sde == "yes":
-        ex_parts.append("syncope during exercise is reported")
-    elif sde == "no":
-        ex_parts.append("no syncope during exercise")
+    if sde == "no" and sae == "no":
+        parts.append("No exercise-related syncope was reported.")
+    elif sde == "yes" or sae == "yes":
+        ex_parts = []
+        if sde == "yes":
+            ex_parts.append("during exercise")
+        if sae == "yes":
+            ex_parts.append("after exercise")
+        parts.append(f"Exercise-related syncope was reported {_join_and(ex_parts)}.")
     else:
-        ex_parts.append(f"syncope during exercise: {_UNDETERMINED}")
-
-    if sae == "yes":
-        ex_parts.append("syncope after exercise is reported")
-    elif sae == "no":
-        ex_parts.append("no syncope after exercise")
-    else:
-        ex_parts.append(f"syncope after exercise: {_UNDETERMINED}")
-    parts.append("Exercise-related symptoms: " + "; ".join(ex_parts) + ".")
+        parts.append(f"Exercise-related syncope: {_UNDETERMINED}.")
 
     mc = _yn(f.get("menstrual_correlation"))
     md = f.get("menstrual_detail")
@@ -1287,147 +1276,157 @@ def _compose_triggers_features(f):
     else:
         parts.append(f"Menstrual cycle correlation: {_UNDETERMINED}.")
 
-    palp = _yn(f.get("palpitations"))
-    palp_type = f.get("palpitation_type")
-    if palp == "yes":
-        if _has(palp_type) and palp_type != "none reported":
-            parts.append(f"Palpitations are reported, described as {palp_type}.")
-        else:
-            parts.append("Palpitations are reported.")
-    elif palp == "no":
-        parts.append("No palpitations are reported.")
-    else:
-        parts.append(f"Palpitations: {_UNDETERMINED}.")
-
     obs = f.get("other_observations")
     if _has(obs):
-        parts.append(f"Other observations noted: {_trim_trailing_period(obs)}.")
+        parts.append(f"Other observations: {_trim_trailing_period(obs)}.")
 
     return " ".join(parts)
 
 
-def _compose_conditions(f):
+def _compose_symptoms(f):
+    """Associated symptoms + palpitations."""
     parts = []
+    symptoms = f.get("symptoms")
+    palp = _yn(f.get("palpitations"))
+    palp_type = f.get("palpitation_type")
+
+    if _has(symptoms) and symptoms != "none reported":
+        sym_str = symptoms
+    elif symptoms == "none reported":
+        sym_str = None
+    else:
+        sym_str = None
+
+    if palp == "yes":
+        if _has(palp_type) and palp_type != "none reported":
+            palp_str = f"palpitations ({palp_type})"
+        else:
+            palp_str = "palpitations"
+    elif palp == "no":
+        palp_str = None
+    else:
+        palp_str = None
+
+    # Build sentence(s) — keep OCR-formatted symptom string intact, append palpitations cleanly
+    if sym_str and palp_str:
+        parts.append(f"Associated symptoms include {sym_str}, and {palp_str}.")
+    elif sym_str:
+        parts.append(f"Associated symptoms include {sym_str}.")
+    elif palp_str:
+        parts.append(f"Associated symptoms: {palp_str} reported.")
+    elif symptoms == "none reported" and palp == "no":
+        parts.append("No associated symptoms or palpitations were reported.")
+    else:
+        parts.append(f"Associated symptoms: {_UNDETERMINED}.")
+
+    return " ".join(parts)
+
+
+def _compose_medical_history(f):
+    """Comorbidities, GI, mental health, and family history grouped together."""
+    parts = []
+
+    # Comorbid conditions (Q31 + Q32)
     cond = f.get("conditions")
     if _has(cond) and cond != "none reported":
-        parts.append(f"Comorbid conditions reported: {cond}.")
+        parts.append(f"Comorbid conditions include {cond}.")
     elif cond == "none reported":
         parts.append("No comorbid conditions were reported.")
     else:
         parts.append(f"Comorbid conditions: {_UNDETERMINED}.")
 
+    # GI (Q33 + Q34)
     gi_dx = f.get("gi_diagnosis")
     gi_sx = f.get("gi_symptoms")
-    gi_clauses = []
+    gi_parts = []
     if _has(gi_dx) and gi_dx != "none reported":
-        gi_clauses.append(f"a diagnosis of {gi_dx}")
-    elif gi_dx == "none reported":
-        gi_clauses.append("no formal GI diagnosis")
-    else:
-        gi_clauses.append(f"GI diagnosis: {_UNDETERMINED}")
-
+        gi_parts.append(gi_dx)
     if _has(gi_sx) and gi_sx != "none reported":
-        gi_clauses.append(f"GI symptoms of {gi_sx}")
-    elif gi_sx == "none reported":
-        gi_clauses.append("no GI symptoms reported")
+        gi_parts.append(gi_sx)
+    if gi_parts:
+        parts.append(f"Gastrointestinal history: {'; '.join(gi_parts)}.")
+    elif gi_dx == "none reported" and gi_sx == "none reported":
+        parts.append("No gastrointestinal conditions or symptoms were reported.")
     else:
-        gi_clauses.append(f"GI symptoms: {_UNDETERMINED}")
-    parts.append("Gastrointestinal: " + "; ".join(gi_clauses) + ".")
+        pass  # Omit GI line if genuinely undetermined — avoid noise
 
+    # Mental health (Q35)
     mh = f.get("mental_health")
     if _has(mh) and mh != "none reported":
-        parts.append(f"Mental health diagnoses: {mh}.")
+        parts.append(f"Mental health diagnoses include {mh}.")
     elif mh == "none reported":
         parts.append("No mental health diagnoses were reported.")
-    else:
-        parts.append(f"Mental health diagnoses: {_UNDETERMINED}.")
+    # else: omit if undetermined
 
-    return " ".join(parts)
-
-
-def _compose_family_hx(f):
-    parts = []
+    # Family history (Q29 + Q30)
     fh = f.get("family_history")
-    if _has(fh):
-        parts.append(f"Family history of hypotension/fainting/POTS is {fh}.")
-    else:
-        parts.append(f"Family history of hypotension/fainting/POTS: {_UNDETERMINED}.")
-
     fhc = f.get("family_hx_cardiac")
+    fh_parts = []
+    if _has(fh):
+        fh_parts.append(f"hypotension/fainting/POTS: {fh}")
     if _has(fhc) and fhc != "none reported":
-        parts.append(f"Family history of cardiac conditions includes {fhc}.")
-    elif fhc == "none reported":
-        parts.append("No family history of sudden cardiac death, cardiomyopathy, or cardiac devices was reported.")
+        fh_parts.append(f"cardiac: {fhc}")
+    if fh_parts:
+        parts.append(f"Family history — {'; '.join(fh_parts)}.")
+    elif fh == "unremarkable" and (not _has(fhc) or fhc == "none reported"):
+        parts.append("Family history is unremarkable.")
     else:
-        parts.append(f"Family history of cardiac conditions: {_UNDETERMINED}.")
+        parts.append(f"Family history: {_UNDETERMINED}.")
 
     return " ".join(parts)
 
 
 def _compose_medications(f):
+    """List only medications the patient is currently taking or has used relevantly."""
     nc = f.get("negative_chronotropes")
     ad = f.get("antidepressants")
     fl = f.get("fludrocortisone_status")
-    md = f.get("midodrine_status")
+    md_status = f.get("midodrine_status")
     om = f.get("other_medications")
 
-    parts = []
+    current = []  # things they ARE on now
+    previous = []  # things they HAVE taken but stopped
 
-    # Negative chronotropes
+    # Negative chronotropes (Q36) — only include if actually on something
     if _has(nc):
-        if nc.lower().startswith("no") and "beta" not in nc.lower() and "ivabradine" not in nc.lower():
-            parts.append("not currently on negative chronotropes")
-        else:
-            parts.append(f"on {nc}")
-    else:
-        parts.append(f"negative chronotropes: {_UNDETERMINED}")
+        nc_l = nc.lower()
+        if "beta blocker" in nc_l or "ivabradine" in nc_l:
+            current.append(nc)
+        # "No" → not on any, omit silently
 
-    # Antidepressants
-    if _has(ad):
-        if ad == "none reported":
-            parts.append("no antidepressant therapy")
-        else:
-            parts.append(f"on {ad}")
-    else:
-        parts.append(f"antidepressant therapy: {_UNDETERMINED}")
+    # Antidepressants (Q37) — only include if on something
+    if _has(ad) and ad != "none reported":
+        current.append(ad)
 
-    # Fludrocortisone
+    # Fludrocortisone (Q38)
     if _has(fl):
         fl_l = fl.lower()
         if "current" in fl_l:
-            parts.append("currently taking fludrocortisone")
+            current.append("fludrocortisone")
         elif "discontinued" in fl_l:
-            parts.append("previously prescribed fludrocortisone, now discontinued")
-        elif "never" in fl_l:
-            parts.append("has never taken fludrocortisone")
-        else:
-            parts.append(f"fludrocortisone status: {fl}")
-    else:
-        parts.append(f"fludrocortisone status: {_UNDETERMINED}")
+            previous.append("fludrocortisone (discontinued)")
 
-    # Midodrine
-    if _has(md):
-        md_l = md.lower()
+    # Midodrine (Q39)
+    if _has(md_status):
+        md_l = md_status.lower()
         if "current" in md_l:
-            parts.append("currently taking midodrine")
+            current.append("midodrine")
         elif "discontinued" in md_l:
-            parts.append("previously prescribed midodrine, now discontinued")
-        elif "never" in md_l:
-            parts.append("has never taken midodrine")
-        else:
-            parts.append(f"midodrine status: {md}")
-    else:
-        parts.append(f"midodrine status: {_UNDETERMINED}")
+            previous.append("midodrine (discontinued)")
 
-    sentence = "Medications: " + "; ".join(parts) + "."
-
+    # Other medications (Q40)
     if _has(om):
-        sentence += f" Other relevant medications: {_trim_trailing_period(om)}."
-    else:
-        # Q40 was blank — note explicitly
-        sentence += " No other relevant medications were listed."
+        current.append(_trim_trailing_period(om))
 
-    return sentence
+    sentence_parts = []
+    if current:
+        sentence_parts.append(f"Current medications: {_join_and(current)}.")
+    if previous:
+        sentence_parts.append(f"Previously trialled: {_join_and(previous)}.")
+    if not current and not previous:
+        sentence_parts.append("No relevant current medications were reported.")
+
+    return " ".join(sentence_parts)
 
 
 def _compose_investigations(f):
@@ -1690,9 +1689,9 @@ def build_report(fields):
         _compose_demographics(fields),
         _compose_history(fields),
         _compose_postural(fields),
-        _compose_triggers_features(fields),
-        _compose_conditions(fields),
-        _compose_family_hx(fields),
+        _compose_triggers(fields),
+        _compose_symptoms(fields),
+        _compose_medical_history(fields),
         _compose_medications(fields),
         _compose_investigations(fields),
         _compose_test(fields),
@@ -1716,6 +1715,62 @@ def build_report(fields):
 # ─────────────────────────────────────────────────────────────
 # Public entry point
 # ─────────────────────────────────────────────────────────────
+
+def llm_cleanup_report(report_text, api_key):
+    """
+    Optional post-processing step: pass the deterministic report through GPT-4o-mini
+    for grammar and prose cleanup. Clinical facts, values, and [undetermined] markers
+    are never modified — the system prompt enforces this strictly.
+
+    Returns the cleaned report on success, or the original report if the API call
+    fails (network error, quota, invalid key, etc.).
+
+    NOTE: calling this function sends the report text (including patient data such
+    as age, sex, clinical findings) to the OpenAI API. The caller is responsible
+    for ensuring this is appropriate for their clinical context and privacy obligations.
+    """
+    try:
+        from openai import OpenAI
+        client = OpenAI(api_key=api_key)
+
+        system_prompt = (
+            "You are a clinical documentation assistant helping format a tilt table test report "
+            "for a physiotherapy electronic medical record.\n\n"
+            "Your task: improve the grammar, sentence flow and readability of the report text "
+            "provided by the user.\n\n"
+            "Rules you must follow without exception:\n"
+            "1. Do NOT add, remove or change any clinical facts, numbers, diagnoses, dates, "
+            "medications, measurements or values.\n"
+            "2. Do NOT add any clinical interpretations, opinions or recommendations not already "
+            "present in the text.\n"
+            "3. Keep the three section headings (Summary, Conclusion:, Recommendation:) exactly "
+            "as-is — same capitalisation, same position.\n"
+            "4. Keep every [undetermined] placeholder as the exact literal string [undetermined].\n"
+            "5. Keep <HMS-Patient_FirstName> exactly as-is.\n"
+            "6. Return only the cleaned report text — no preamble, no explanation."
+        )
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": report_text},
+            ],
+            temperature=0.1,
+            max_tokens=2500,
+        )
+        cleaned = response.choices[0].message.content.strip()
+        if not cleaned:
+            return report_text
+        # Strip trailing whitespace from each line (GPT sometimes adds markdown
+        # double-space line breaks) and normalise multiple blank lines.
+        lines = [line.rstrip() for line in cleaned.splitlines()]
+        return "\n".join(lines)
+
+    except Exception as e:
+        logger.warning("LLM grammar cleanup failed: %s — returning original report", e)
+        return report_text
+
 
 def process_pdf(pdf_bytes):
     """

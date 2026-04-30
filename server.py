@@ -13,7 +13,7 @@ import csv
 from io import StringIO
 import re
 from collections import defaultdict
-from tilt_table_extractor import process_pdf
+from tilt_table_extractor import process_pdf, llm_cleanup_report
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -688,6 +688,14 @@ def tilt_table_process():
             return jsonify({'error': 'Uploaded PDF is empty.'}), 400
 
         report_text, review_count = process_pdf(pdf_bytes)
+
+        # Optional LLM grammar/prose cleanup — runs only when OPENAI_API_KEY is set.
+        # The deterministic content (facts, values, [undetermined] markers) is
+        # preserved by strict system-prompt rules; this step only improves readability.
+        openai_key = os.getenv('OPENAI_API_KEY')
+        if openai_key:
+            report_text = llm_cleanup_report(report_text, openai_key)
+
         return jsonify({'report': report_text, 'review_count': review_count})
 
     except ValueError as e:
