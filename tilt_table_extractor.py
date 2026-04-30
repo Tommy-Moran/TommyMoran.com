@@ -1093,6 +1093,44 @@ def _trim_trailing_period(s):
     return s.rstrip().rstrip(".").rstrip()
 
 
+# Medical acronyms/abbreviations that must remain uppercase mid-sentence
+_KEEP_UPPER = {
+    "pots", "ibs", "ecg", "echo", "eeg", "mri", "ct", "ep",
+    "ssri", "snri", "adhd", "mcas", "gtn", "ocp", "oi",
+}
+
+
+def _sentence_case_list(text):
+    """
+    Lowercase a comma/and-joined OCR label string, preserving known medical
+    acronyms and all-uppercase abbreviations of ≤5 chars.
+
+    'Emotional Stress, Known Dehydration' → 'emotional stress, known dehydration'
+    'ECG, ECHO and Stress Test'           → 'ECG, ECHO and stress test'
+    'POTS, IBS'                           → 'POTS, IBS'
+    """
+    if not text:
+        return text
+
+    def _fix_word(w):
+        # Preserve any attached punctuation (commas, semicolons)
+        punct_tail = ""
+        core = w
+        while core and core[-1] in ",.;:":
+            punct_tail = core[-1] + punct_tail
+            core = core[:-1]
+        core_lower = core.lower()
+        if core_lower in _KEEP_UPPER:
+            return core + punct_tail          # keep original casing
+        if core.upper() == core and 1 < len(core) <= 5:
+            return core + punct_tail          # short all-caps token — keep
+        # Lowercase the first character
+        lowered = core[0].lower() + core[1:] if core else core
+        return lowered + punct_tail
+
+    return " ".join(_fix_word(w) for w in text.split())
+
+
 def _yn(v):
     """Map Yes/No selection (or None) to lowercase 'yes'/'no'/[undetermined]."""
     if not _has(v):
@@ -1242,7 +1280,7 @@ def _compose_postural(f):
 def _compose_triggers(f):
     """Triggers + exercise syncope + menstrual correlation."""
     parts = []
-    triggers = f.get("triggers")
+    triggers = _sentence_case_list(f.get("triggers"))
     if _has(triggers) and triggers != "none reported":
         parts.append(f"Reported symptom triggers include {triggers}.")
     elif triggers == "none reported":
@@ -1286,9 +1324,9 @@ def _compose_triggers(f):
 def _compose_symptoms(f):
     """Associated symptoms + palpitations."""
     parts = []
-    symptoms = f.get("symptoms")
+    symptoms = _sentence_case_list(f.get("symptoms"))
     palp = _yn(f.get("palpitations"))
-    palp_type = f.get("palpitation_type")
+    palp_type = _sentence_case_list(f.get("palpitation_type"))
 
     if _has(symptoms) and symptoms != "none reported":
         sym_str = symptoms
@@ -1327,7 +1365,7 @@ def _compose_medical_history(f):
     parts = []
 
     # Comorbid conditions (Q31 + Q32)
-    cond = f.get("conditions")
+    cond = _sentence_case_list(f.get("conditions"))
     if _has(cond) and cond != "none reported":
         parts.append(f"Comorbid conditions include {cond}.")
     elif cond == "none reported":
@@ -1336,8 +1374,8 @@ def _compose_medical_history(f):
         parts.append(f"Comorbid conditions: {_UNDETERMINED}.")
 
     # GI (Q33 + Q34)
-    gi_dx = f.get("gi_diagnosis")
-    gi_sx = f.get("gi_symptoms")
+    gi_dx = _sentence_case_list(f.get("gi_diagnosis"))
+    gi_sx = _sentence_case_list(f.get("gi_symptoms"))
     gi_parts = []
     if _has(gi_dx) and gi_dx != "none reported":
         gi_parts.append(gi_dx)
@@ -1351,7 +1389,7 @@ def _compose_medical_history(f):
         pass  # Omit GI line if genuinely undetermined — avoid noise
 
     # Mental health (Q35)
-    mh = f.get("mental_health")
+    mh = _sentence_case_list(f.get("mental_health"))
     if _has(mh) and mh != "none reported":
         parts.append(f"Mental health diagnoses include {mh}.")
     elif mh == "none reported":
@@ -1747,7 +1785,11 @@ def llm_cleanup_report(report_text, api_key):
             "as-is — same capitalisation, same position.\n"
             "4. Keep every [undetermined] placeholder as the exact literal string [undetermined].\n"
             "5. Keep <HMS-Patient_FirstName> exactly as-is.\n"
-            "6. Return only the cleaned report text — no preamble, no explanation."
+            "6. Normalise capitalisation: common nouns and condition names that appear "
+            "mid-sentence should be lowercase (e.g. 'emotional stress', 'brain fogging', "
+            "'chronic fatigue'). Preserve medical acronyms in uppercase: POTS, IBS, ECG, "
+            "ECHO, EEG, MRI, CT, EP, SSRI, SNRI, ADHD, MCAS, GTN, OCP.\n"
+            "7. Return only the cleaned report text — no preamble, no explanation."
         )
 
         response = client.chat.completions.create(
