@@ -55,18 +55,29 @@ td:last-child{font-weight:600;color:var(--text)}
 .cat-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase}
 footer{text-align:center;margin-top:40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);padding:0 12px}
 </style>
+<style>
+body{background:linear-gradient(-45deg,#070a14,#0a0e1a,#0c1121,#070a14);background-size:400% 400%;animation:bg-shift 30s ease infinite}
+@keyframes bg-shift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 15% 10%,rgba(59,130,246,.07) 0%,transparent 60%),radial-gradient(ellipse 50% 30% at 85% 80%,rgba(139,92,246,.05) 0%,transparent 60%);pointer-events:none;z-index:0}
+.header{text-align:center;margin-bottom:20px;padding:44px 12px 28px;border-bottom:none;position:relative}
+.header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80%;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.55),rgba(139,92,246,.45),rgba(45,212,191,.4),transparent)}
+.header-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.38em;text-transform:uppercase;color:var(--blue);opacity:.65;margin-bottom:14px}
+.header h1{font-size:clamp(28px,9vw,62px);font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#60a5fa 0%,#a78bfa 42%,#2dd4bf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;line-height:1.05;filter:drop-shadow(0 0 36px rgba(96,165,250,.18))}
+.header p{font-size:10px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;opacity:.75;margin-bottom:0}
+</style>
 </head>
 <body>
 <div class="header">
-<h1>IC Fellowship - Key Values Reference</h1>
-<p>// interventional cardiology &middot; thresholds &middot; doses &middot; targets &middot; trials &middot; classification systems</p>
+<span class="header-eyebrow">Interventional Cardiology &middot; Fellowship Prep</span>
+<h1>Key Values Reference</h1>
+<p>// thresholds &middot; doses &middot; targets &middot; trials &middot; classification systems &middot; ic fellowship</p>
 </div>
 <nav class="nav">
-<a href="#sizing">Sizing</a><a href="#wires">Guide Wires</a><a href="#physiology">Physiology</a>
+<a href="#sizing">Sizing</a><a href="#catheters">Catheters</a><a href="#wires">Guide Wires</a><a href="#physiology">Physiology</a>
 <a href="#imaging">IVUS/OCT</a><a href="#anticoag">Anticoagulation</a><a href="#antiplatelets">Antiplatelets</a>
 <a href="#stents">Stents</a><a href="#balloons">Balloons</a><a href="#atherectomy">Atherectomy</a>
 <a href="#haemo">Haemodynamics</a><a href="#classifications">Classifications</a><a href="#scores">Risk Scores</a>
-<a href="#mcs">MCS</a><a href="#largebore">Large Bore</a><a href="#radiation">Radiation</a><a href="#contrast">Contrast</a><a href="#trials">Trials</a>
+<a href="#mcs">MCS</a><a href="#largebore">Large Bore</a><a href="#escalation">Escalation</a><a href="#complications">Complications</a><a href="#radiation">Radiation</a><a href="#contrast">Contrast</a><a href="#trials">Trials</a>
 </nav>
 <div id="sizing" class="section-title">Equipment Sizing</div>
 <div class="grid">
@@ -98,6 +109,159 @@ footer{text-align:center;margin-top:40px;font-family:'JetBrains Mono',monospace;
 <tr><td>Balloon shaft (OTW)</td><td>150 cm</td></tr>
 <tr><td>Min guide for rota &ge;1.75 mm</td><td class="v-amber">7 Fr</td></tr>
 </table></div></div>
+</div>
+<div id="catheters" class="section-title">Diagnostic &amp; Guide Catheters</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--blue)"></div><h2>Diagnostic Catheter Basics</h2></div>
+<table>
+<tr><td>Standard diagnostic size</td><td>4–6 Fr (5 Fr most common for radial)</td></tr>
+<tr><td>Standard length</td><td>100 cm</td></tr>
+<tr><td>Tip shape</td><td>Determines coronary engagement — not sized to vessel diameter</td></tr>
+<tr><td>Injection technique</td><td class="v-coral">Hand injection ONLY — NEVER power inject through a coronary diagnostic catheter</td></tr>
+<tr><td>LCA injection volume</td><td class="v-blue">6–8 mL hand injection</td></tr>
+<tr><td>RCA injection volume</td><td class="v-blue">4–6 mL hand injection</td></tr>
+<tr><td>Flushing</td><td>Continuous heparinised saline via manifold — de-air all connections before every use</td></tr>
+<tr><td>Waveform check</td><td class="v-coral">Confirm non-damped non-ventricularised before EVERY injection — every time without exception</td></tr>
+</table></div>
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Left Coronary Diagnostic Catheters</h2></div>
+<div class="sub-label">Judkins Left (JL) — standard</div>
+<table>
+<tr><td>Shape</td><td>Pre-formed double curve; primary curve engages LM ostium; secondary curve rests against opposite aortic wall</td></tr>
+<tr><td>Sizes</td><td class="v-blue">JL3.5 / JL4 / JL4.5 / JL5 (cm between primary and secondary curve tips)</td></tr>
+<tr><td>JL4</td><td class="v-green">Standard for most patients from femoral; normal aortic root</td></tr>
+<tr><td>JL3.5</td><td>Small aortic root, small frame patients, paediatric</td></tr>
+<tr><td>JL4.5 / JL5</td><td>Dilated aorta, horizontal heart, large patients</td></tr>
+<tr><td>From radial</td><td class="v-amber">Tends to prolapse into aorta — advance into LSCA first then pull back to engage; Tiger or Ikari often preferred</td></tr>
+</table>
+<div class="sub-label">Amplatz Left (AL) — difficult anatomy</div>
+<table>
+<tr><td>Shape</td><td>Large U-shaped secondary curve sitting in aortic root; primary curve engages LM from below</td></tr>
+<tr><td>Sizes</td><td class="v-blue">AL0.75 / AL1 / AL2</td></tr>
+<tr><td>Use</td><td>Anomalous LCA origin, horizontal or dilated aorta, when JL fails to engage</td></tr>
+<tr><td>Critical disengagement rule</td><td class="v-coral">ADVANCE to disengage (prolapse out of ostium) — do NOT pull back; pulling drives tip deeper into LM</td></tr>
+</table>
+<div class="sub-label">Tiger / Ikari Left — radial dedicated</div>
+<table>
+<tr><td>Tiger (Terumo)</td><td>Single catheter engages both coronaries without exchange; most common radial diagnostic catheter in Europe/Asia</td></tr>
+<tr><td>Ikari Left</td><td>Specifically designed for right radial to LCA; accounts for radial artery takeoff angle</td></tr>
+<tr><td>Advantage</td><td class="v-green">Reduces catheter exchanges; efficient bilateral coronary angiography from right radial</td></tr>
+</table></div>
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--teal)"></div><h2>Right Coronary Diagnostic Catheters</h2></div>
+<div class="sub-label">Judkins Right (JR4) — standard</div>
+<table>
+<tr><td>Shape</td><td>Single primary curve; sits in right sinus of Valsalva; tip points anteriorly toward RCA ostium</td></tr>
+<tr><td>Sizes</td><td class="v-blue">JR3.5 / JR4 (standard) / JR5</td></tr>
+<tr><td>From femoral</td><td>Advance to aortic valve level; withdraw with clockwise rotation; tip drops into RCA ostium</td></tr>
+<tr><td>Limitation</td><td class="v-amber">Low backup — inadequate for complex RCA PCI; escalate guide early</td></tr>
+</table>
+<div class="sub-label">Amplatz Right (AR)</div>
+<table>
+<tr><td>Sizes</td><td class="v-blue">AR1 / AR2</td></tr>
+<tr><td>Use</td><td>Shepherd's crook RCA, anomalous RCA, high takeoff, when JR4 fails</td></tr>
+<tr><td>Caution</td><td class="v-coral">Can deeply intubate RCA; dissection risk if non-coaxial — gentle technique required</td></tr>
+</table>
+<div class="sub-label">Multipurpose (MP)</div>
+<table>
+<tr><td>Shape</td><td>Straight with end-hole and multiple side holes</td></tr>
+<tr><td>Uses</td><td class="v-green">RCA in difficult anatomy; right heart cath; LV gram; SVG cannulation; temporary pacing wire positioning</td></tr>
+</table></div>
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--green)"></div><h2>Guide Catheters — Left Coronary</h2></div>
+<div class="sub-label">key difference: larger lumen (6–8 Fr), stiffer shaft for backup support, optional side holes, 100 cm</div>
+<div class="sub-label">Judkins Left Guide (JL)</div>
+<table>
+<tr><td>Sizes</td><td class="v-blue">JL3.5 / JL4 / JL4.5 / JL5</td></tr>
+<tr><td>JL4 6 Fr from femoral</td><td class="v-green">Standard for most elective LCA PCI</td></tr>
+<tr><td>From radial</td><td class="v-amber">JL3.5 often better; less backup than EBU from radial — escalate to EBU early</td></tr>
+</table>
+<div class="sub-label">Extra Backup — EBU (Medtronic) / XB (Cardinal Health)</div>
+<table>
+<tr><td>Sizes</td><td class="v-blue">EBU 3.5 / 3.75 / 4.0; XB 3.5 / 4.0</td></tr>
+<tr><td>Mechanism</td><td>Secondary curve contacts opposite aortic wall — much greater coaxial backup than JL</td></tr>
+<tr><td>EBU 3.5</td><td class="v-green">Most common from right radial — first-choice guide for most LCA PCI from radial</td></tr>
+<tr><td>EBU 3.75 / 4.0</td><td>Larger aortic root or from femoral access</td></tr>
+<tr><td>Disengagement</td><td class="v-amber">Pull back with counterclockwise rotation — do NOT push forward (drives tip into LM)</td></tr>
+</table>
+<div class="sub-label">Amplatz Left Guide (AL)</div>
+<table>
+<tr><td>Sizes</td><td class="v-blue">AL0.75 / AL1 / AL2</td></tr>
+<tr><td>Use</td><td>Maximum backup LCA PCI; LM PCI; anomalous left coronary</td></tr>
+<tr><td>Disengagement rule</td><td class="v-coral">ADVANCE to prolapse out — never pull back hard (drives deeper into LM — dissection risk)</td></tr>
+<tr><td>Preferred for LM PCI</td><td class="v-green">AL1 or AL2 in 7–8 Fr</td></tr>
+</table>
+<div class="sub-label">IMA and bypass guides</div>
+<table>
+<tr><td>IMA catheter</td><td>LIMA / RIMA engagement and graft PCI; approach LIMA from left radial (shorter path) or femoral</td></tr>
+<tr><td>Left bypass (LCB)</td><td>SVG to LAD or LCx; ostium faces anteriorly and leftward</td></tr>
+<tr><td>Right bypass (RCB)</td><td>SVG to RCA; ostium faces anteriorly and superiorly; JR4 gives poor coaxial alignment</td></tr>
+</table></div>
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Guide Catheters — Right Coronary</h2></div>
+<div class="sub-label">JR4 Guide</div>
+<table>
+<tr><td>Standard use</td><td class="v-green">First-choice from femoral and radial for routine RCA PCI</td></tr>
+<tr><td>Limitation from radial</td><td class="v-coral">Low backup — inadequate for complex / calcified / distal RCA; escalate to AL0.75 early</td></tr>
+</table>
+<div class="sub-label">Amplatz Left for RCA — AL0.75 / AL1</div>
+<table>
+<tr><td>Backup</td><td class="v-green">Best backup for RCA from radial — significantly superior to JR4</td></tr>
+<tr><td>AL0.75</td><td>Standard-sized RCA or anterior takeoff — most common escalation from JR4</td></tr>
+<tr><td>AL1</td><td>Larger RCA, more horizontal or superior takeoff</td></tr>
+<tr><td>Rule</td><td class="v-amber">Disengage by advancing (same rule as for LCA use)</td></tr>
+</table>
+<div class="sub-label">Hockey Stick / AR / RCB</div>
+<table>
+<tr><td>Hockey Stick (HS)</td><td>Gentle single curve; horizontal or anterior RCA takeoff; SVG to RCA; moderate backup</td></tr>
+<tr><td>AR1 / AR2</td><td>More backup than JR4; shepherd's crook RCA, high takeoff; risk of deep intubation</td></tr>
+<tr><td>Right bypass (RCB)</td><td>Specifically shaped for SVG to RCA — JR4 gives poor coaxial alignment for SVG to RCA</td></tr>
+</table></div>
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Specialty Catheters</h2></div>
+<div class="sub-label">IMA catheter</div>
+<table>
+<tr><td>Purpose</td><td>Selective LIMA / RIMA engagement for angiography or graft PCI</td></tr>
+<tr><td>Approach</td><td>Femoral or left radial (shorter path to LIMA)</td></tr>
+<tr><td>Technique</td><td>Advance into LSCA; pull back slowly with slight rotation to find LIMA ostium</td></tr>
+<tr><td>Caution</td><td class="v-amber">LIMA spasm common — give IC GTN 200 mcg prophylactically before IMA PCI; do not engage deeply</td></tr>
+</table>
+<div class="sub-label">Pigtail</div>
+<table>
+<tr><td>Tip</td><td>Circular coil with multiple side holes — prevents LV perforation during power injection</td></tr>
+<tr><td>LV gram</td><td class="v-blue">30–36 mL at 12–15 mL/s</td></tr>
+<tr><td>Aortogram</td><td class="v-blue">40–60 mL at 20–25 mL/s</td></tr>
+<tr><td>LV entry</td><td>Advance to aortic root; straighten tip across valve with clockwise rotation; confirm LV position by pressure waveform before injecting</td></tr>
+</table>
+<div class="sub-label">Bernstein / Headhunter / Multipurpose</div>
+<table>
+<tr><td>Bernstein / Headhunter</td><td>Specialty angled catheters for anomalous coronaries, difficult ostia, bypass graft cannulation when standard shapes fail</td></tr>
+<tr><td>Multipurpose (MP)</td><td>Straight end-hole + side holes; RCA difficult anatomy; right heart cath; ventriculography; temp pacing</td></tr>
+</table></div>
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--blue)"></div><h2>Guide Catheter Selection — Quick Reference</h2></div>
+<table>
+<tr><td>LCA PCI standard from radial</td><td class="v-green">EBU 3.5 (first choice) or JL3.5</td></tr>
+<tr><td>LCA PCI standard from femoral</td><td class="v-green">JL4 or EBU 3.5</td></tr>
+<tr><td>LCA PCI extra backup needed</td><td class="v-amber">EBU 3.5 → AL1</td></tr>
+<tr><td>LM PCI</td><td class="v-amber">EBU 3.5 or AL1 (7–8 Fr preferred)</td></tr>
+<tr><td>RCA PCI standard from femoral</td><td class="v-green">JR4</td></tr>
+<tr><td>RCA PCI standard from radial</td><td class="v-amber">JR4 then escalate to AL0.75 early in any complexity</td></tr>
+<tr><td>RCA PCI complex or distal</td><td class="v-amber">AL0.75 or AL1</td></tr>
+<tr><td>Shepherd's crook RCA</td><td>AL0.75 or Hockey Stick</td></tr>
+<tr><td>RCA PCI maximum backup (femoral)</td><td class="v-coral">AL1 8 Fr</td></tr>
+<tr><td>SVG to LAD or LCx</td><td>JL4 or LCB (left bypass)</td></tr>
+<tr><td>SVG to RCA</td><td>RCB (right bypass) or AR1</td></tr>
+<tr><td>LIMA or RIMA PCI</td><td>IMA catheter</td></tr>
+<tr><td>Anomalous LCA from right sinus</td><td>JR4 or AL from right coronary cusp</td></tr>
+<tr><td>Anomalous RCA from left sinus</td><td>JL or AL from left cusp</td></tr>
+<tr><td>Bifurcation PCI LCA (two wires needed)</td><td class="v-blue">EBU 3.5 or AL1 in 7 Fr</td></tr>
+<tr><td>Rotablation &ge;1.75 mm burr</td><td class="v-coral">7 Fr minimum — EBU or AL</td></tr>
+</table></div>
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--teal)"></div><h2>Radial vs Femoral — Catheter Technique Differences</h2></div>
+<table>
+<tr><td>Right radial to LCA</td><td class="v-amber">JL tends to prolapse — advance into LSCA first then withdraw; Tiger or Ikari preferred for diagnostics; EBU preferred over JL for guide</td></tr>
+<tr><td>Right radial to RCA</td><td class="v-green">JR4 works well — shorter path; good engagement; standard first choice</td></tr>
+<tr><td>Right radial backup LCA</td><td class="v-green">EBU 3.5 significantly superior to JL4 — use as default guide for LCA PCI from right radial</td></tr>
+<tr><td>Right radial backup RCA</td><td class="v-amber">AL0.75 or AL1 significantly superior to JR4 — standard escalation for any complex RCA case from radial</td></tr>
+<tr><td>Left radial</td><td class="v-green">More direct path to LCA; JL4 works well without prolapse; preferred for LIMA access</td></tr>
+<tr><td>Femoral advantages</td><td>Larger sheaths easier (7–8 Fr); better torque transmission; preferred for max backup cases and large-bore structural</td></tr>
+<tr><td>Torque from radial</td><td class="v-amber">Slightly reduced due to subclavian and axillary curves — guide selection more critical to compensate</td></tr>
+</table></div>
 </div>
 <div id="wires" class="section-title">Coronary Guidewires</div>
 <div class="grid">
@@ -740,6 +904,471 @@ footer{text-align:center;margin-top:40px;font-family:'JetBrains Mono',monospace;
 <tr><td>Restenosis</td><td>~30-40% at 5-7 years (better than BAV - more durable)</td></tr>
 </table></div>
 
+</div>
+
+<div id="escalation" class="section-title">PCI Escalation Strategies</div>
+<div class="grid">
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Scenario 1 — Balloon Won't Cross the Lesion</h2></div>
+<div class="sub-label">optimise first</div>
+<table>
+<tr><td>Confirm wire position</td><td class="v-coral">Verify in true lumen — not subintimal before anything else</td></tr>
+<tr><td>Try smaller balloon</td><td>1.0–1.25 mm compliant balloon; lowest crossing profile available</td></tr>
+<tr><td>Ensure fully deflated</td><td class="v-amber">Check indeflator shows negative pressure before pushing</td></tr>
+<tr><td>Technique</td><td>Slow steady forward pressure with slight rotation — do not stab repeatedly</td></tr>
+<tr><td>Try shorter balloon</td><td>8 mm vs 15 mm; less friction, less bulk to push through lesion</td></tr>
+</table>
+<div class="sub-label">step 2 — improve guide support</div>
+<table>
+<tr><td>Deep seat guide</td><td class="v-amber">Advance 1–2 cm into proximal vessel for more coaxial support — dissection risk with AL catheters</td></tr>
+<tr><td>Upsize guide — LCA</td><td>JL4 → EBU 3.5 → AL1</td></tr>
+<tr><td>Upsize guide — RCA</td><td>JR4 → AL0.75 → AL1</td></tr>
+<tr><td>GuideLiner / Guidezilla</td><td class="v-green">Monorail extension catheter inside guide catheter; extends guide 20–25 cm into vessel; balloons and stents pass through it; advance carefully — tip edge can dissect</td></tr>
+<tr><td>Key distinction</td><td class="v-blue">Microcatheter = over wire inside vessel (wire support and exchange only — devices cannot pass through it). GuideLiner = inside guide catheter (balloons and stents pass through it)</td></tr>
+</table>
+<div class="sub-label">step 3 — improve wire support</div>
+<table>
+<tr><td>Support wire exchange</td><td>Exchange workhorse for Iron Man or Grand Slam via OTW balloon or microcatheter</td></tr>
+<tr><td>Exchange-length wire</td><td class="v-blue">300 cm — maintains position during device exchanges</td></tr>
+<tr><td>Microcatheter</td><td class="v-green">Finecross or Caravel advanced close to lesion — wire support at lesion site; enables wire exchange without losing position</td></tr>
+</table>
+<div class="sub-label">step 4 — modify the lesion</div>
+<table>
+<tr><td>Soft or fibrous lesion</td><td>Tornus catheter — screw-motion microcatheter drills through resistant lesions by rotation</td></tr>
+<tr><td>Calcified lesion</td><td class="v-amber">Rotablator — burr:artery ≤0.6; dedicated Rotawire required; 7 Fr guide for ≥1.75 mm burr</td></tr>
+<tr><td>Nodular or circumferential Ca</td><td class="v-green">IVL (Shockwave) — workhorse wire; 6 Fr compatible; treats nodular, deep, circumferential calcium</td></tr>
+<tr><td>Arc &gt;270° or nodular</td><td class="v-coral">IVL preferred over rotablation</td></tr>
+<tr><td>ELCA</td><td>Excimer laser — fibrous or in-stent resistant lesion; crosses and ablates simultaneously</td></tr>
+</table>
+<div class="sub-label">step 5 — extreme measures</div>
+<table>
+<tr><td>Child-in-mother + anchor</td><td>GuideLiner deep into vessel plus anchor balloon in side branch simultaneously — maximum support configuration</td></tr>
+<tr><td>OTW balloon</td><td>Better pushability than monorail — full-length shaft transmits force more efficiently</td></tr>
+<tr><td>Femoral + 8 Fr AL</td><td class="v-amber">Maximum backup — last resort if all radial escalations fail</td></tr>
+<tr><td>Stage the procedure</td><td class="v-coral">If all above fails, stop — do not perforate trying; review CT coronary, plan rota or IVL at next sitting</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Force balloon repeatedly</td><td class="v-coral">Without escalating — causes proximal dissection</td></tr>
+<tr><td>Leave without crossing</td><td class="v-coral">Underexpanded stent = #1 cause of ISR and stent thrombosis</td></tr>
+<tr><td>High-load CTO wire without microcatheter</td><td class="v-coral">Naked Confianza Pro = perforation risk</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Scenario 2 — Wire Won't Advance / Keeps Prolapsing Into Wrong Vessel</h2></div>
+<div class="sub-label">optimise technique first</div>
+<table>
+<tr><td>Reshape wire tip</td><td>More angulated (45–90°) to direct away from diagonal or side branch</td></tr>
+<tr><td>Change angiographic view</td><td>RAO cranial for mid-LAD to separate from diagonal</td></tr>
+<tr><td>Torque before advancing</td><td>Small clockwise or anticlockwise adjustments while gently pushing — do not force</td></tr>
+</table>
+<div class="sub-label">step 2 — jail the competing vessel</div>
+<table>
+<tr><td>Second workhorse wire</td><td class="v-green">Intentionally place into diagonal to occupy its ostium — acts as doorstop; primary wire preferentially tracks into LAD</td></tr>
+<tr><td>Brief balloon inflation</td><td>Inflate small balloon in diagonal at 1–2 atm briefly to physically close ostium while advancing main wire</td></tr>
+</table>
+<div class="sub-label">step 3 — wire escalation ladder</div>
+<table>
+<tr><td>Sion Blue / Runthrough</td><td>Better torque than BMW for subtle channel navigation</td></tr>
+<tr><td>Fielder FC</td><td class="v-blue">0.8 g, polymer jacket — designed for intraplaque channel navigation in subtotal occlusion</td></tr>
+<tr><td>Pilot 50</td><td class="v-amber">1.5 g, full hydrophilic — first escalation with penetrating capability</td></tr>
+<tr><td>Pilot 150</td><td class="v-amber">2.7 g, higher load hydrophilic — mid-cap CTO antegrade</td></tr>
+<tr><td>Gaia 1st</td><td class="v-amber">1.7 g, tapered 0.010", non-hydrophilic, excellent 1:1 torque, best directional control — first CTO penetration wire</td></tr>
+<tr><td>Gaia 2nd</td><td class="v-amber">3.5 g, same tapered tip — moderate to hard caps</td></tr>
+<tr><td>Confianza Pro 9 / 12</td><td class="v-coral">9–12 g, tapered 0.009", maximum penetration, hard calcified caps — ALWAYS use with microcatheter</td></tr>
+</table>
+<div class="sub-label">step 4 — microcatheter support</div>
+<table>
+<tr><td>Advance microcatheter</td><td class="v-green">Finecross or Caravel as close to lesion as possible over workhorse wire</td></tr>
+<tr><td>Wire exchange in catheter</td><td>Remove workhorse; reshape penetrating wire tip inside microcatheter — support at lesion gives much better directional control</td></tr>
+<tr><td>Staining test</td><td class="v-coral">Inject contrast through microcatheter if unsure of position — staining = subintimal; stop and reassess</td></tr>
+</table>
+<div class="sub-label">step 5 — subintimal techniques (last resort)</div>
+<table>
+<tr><td>ADR — Stingray system</td><td>Flat OTW balloon advances subintimally to distal cap; side exit ports allow Stingray wire to puncture back into true lumen — gold standard controlled re-entry</td></tr>
+<tr><td>STAR technique</td><td class="v-amber">Less controlled, more side branch loss — avoid unless necessary</td></tr>
+<tr><td>Retrograde approach</td><td>Via septal collaterals (Sion, Sion Black) or epicardial (Fielder XT-R, Suoh 03); requires dual arterial access</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Stiff wire without microcatheter</td><td class="v-coral">Naked Confianza Pro — how vessels perforate</td></tr>
+<tr><td>Assume subintimal is acceptable</td><td class="v-coral">Always inject contrast through microcatheter if uncertain of position</td></tr>
+<tr><td>Give up before jailing competitor</td><td class="v-coral">Simple second wire often solves the problem — try it first</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Scenario 3 — NC Balloon Won't Reach Deployed Stent</h2></div>
+<div class="sub-label">why this matters</div>
+<table>
+<tr><td>Underexpanded stent</td><td class="v-coral">#1 cause of stent thrombosis and ISR — must be fixed before leaving the lab; cannot accept suboptimal result</td></tr>
+</table>
+<div class="sub-label">step 1 — optimise current setup</div>
+<table>
+<tr><td>Guide coaxiality</td><td>Confirm JR4 / JL4 well seated; deep seat gently 1–2 cm for more coaxial support</td></tr>
+<tr><td>Balloon fully deflated</td><td class="v-amber">Indeflator at negative pressure confirmed before pushing</td></tr>
+<tr><td>Technique</td><td>Slow steady push with slight rotation</td></tr>
+</table>
+<div class="sub-label">step 2 — buddy wire</div>
+<table>
+<tr><td>Second workhorse wire</td><td class="v-green">Place alongside primary wire — stiffens system, reduces compliance, helps guide stay seated; try NC balloon again</td></tr>
+</table>
+<div class="sub-label">step 3 — support wire exchange</div>
+<table>
+<tr><td>Iron Man or Grand Slam</td><td>Via OTW balloon or microcatheter — stiff shaft straightens tortuosity, reduces system compliance</td></tr>
+</table>
+<div class="sub-label">step 4 — GuideLiner / Guidezilla (most effective single step)</div>
+<table>
+<tr><td>Insert through guide</td><td class="v-green">Advance tip into proximal to mid vessel — 20–25 cm extra support; balloon pushed from within coronary not from ostium</td></tr>
+<tr><td>Caution</td><td class="v-amber">Advance carefully — tip edge can dissect; never force past resistance</td></tr>
+</table>
+<div class="sub-label">step 5 — change guide catheter</div>
+<table>
+<tr><td>RCA from radial</td><td>Switch JR4 to AL0.75 or AL1 — significantly better backup</td></tr>
+<tr><td>LCA from radial</td><td>Switch JL4 to EBU 3.5 or AL1</td></tr>
+<tr><td>Upsize to 7 Fr</td><td class="v-teal">Wider lumen, more stable platform</td></tr>
+</table>
+<div class="sub-label">step 6 — anchor balloon technique</div>
+<table>
+<tr><td>Second wire into side branch</td><td>PDA, posterolateral, or diagonal</td></tr>
+<tr><td>Anchor balloon</td><td class="v-blue">1.5–2.0 mm compliant at 2–4 atm in side branch — anchors guide firmly, prevents backing out</td></tr>
+<tr><td>Advance NC while anchored</td><td class="v-green">Deflate and remove anchor balloon once NC balloon past the problem area</td></tr>
+</table>
+<div class="sub-label">step 7 — OTW balloon / step 8 — femoral 8 Fr AL</div>
+<table>
+<tr><td>OTW NC balloon</td><td>Better pushability — full-length shaft vs monorail segment</td></tr>
+<tr><td>Femoral 8 Fr AL1</td><td class="v-amber">Far more backup than any radial configuration — uncomfortable but underexpanded stent is serious</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Leave without post-dilating</td><td class="v-coral">Underexpansion = primary cause of stent thrombosis</td></tr>
+<tr><td>Force balloon repeatedly</td><td class="v-coral">Without escalating — proximal dissection risk</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Scenario 4 — Guide Catheter Damping or Ventricularisation</h2></div>
+<div class="sub-label">recognise immediately</div>
+<table>
+<tr><td>Damped waveform</td><td class="v-coral">Blunted low-amplitude trace — catheter tip against vessel wall or in small vessel — pull back immediately, do NOT inject</td></tr>
+<tr><td>Ventricularised waveform</td><td class="v-coral">LV-shaped arterial trace — guide has passed beyond ostium into vessel — emergency, pull back immediately</td></tr>
+<tr><td>Critical rule</td><td class="v-coral">NEVER inject contrast through a damped or ventricularised catheter — dissection risk</td></tr>
+</table>
+<div class="sub-label">management</div>
+<table>
+<tr><td>Pull guide to aortic root</td><td class="v-green">Confirm waveform normalises completely before any injection</td></tr>
+<tr><td>Re-engage carefully</td><td>Clockwise rotation; confirm coaxial position with gentle test injection ONLY when waveform completely normal</td></tr>
+<tr><td>If dissection suspected</td><td class="v-amber">Do not inject forcefully again; wire distal vessel carefully; IVUS to define extent before stenting; stent distal to proximal</td></tr>
+<tr><td>Aortocoronary dissection</td><td class="v-coral">Stop ALL injections; pull guide back; emergency CT aorta; cardiac surgery immediately; do NOT stent into aorta</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Inject with damped waveform</td><td class="v-coral">This is how ostial dissections start</td></tr>
+<tr><td>Ignore ventricularisation</td><td class="v-coral">Deep guide in coronary causes dissection and no-reflow</td></tr>
+<tr><td>Pull AL catheter back forcefully</td><td class="v-coral">Disengage AL by ADVANCING (prolapse out) — pulling back drives it deeper</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Scenario 5 — No-Reflow After PCI</h2></div>
+<div class="sub-label">exclude mechanical causes first — critical step</div>
+<table>
+<tr><td>Wire position</td><td>Confirm still across lesion and not prolapsed</td></tr>
+<tr><td>Dissection flap</td><td class="v-amber">Flow limitation from mechanical obstruction requires stenting — NOT vasodilators</td></tr>
+<tr><td>Thrombus</td><td>Check for visible filling defect; check guide catheter not obstructing ostium</td></tr>
+<tr><td>Pharmacological treatment</td><td class="v-coral">ONLY after mechanical causes excluded — giving vasodilators first risks treating the wrong cause</td></tr>
+</table>
+<div class="sub-label">IC vasodilators — deliver distally via infusion catheter or microcatheter</div>
+<table>
+<tr><td>Adenosine</td><td class="v-blue">30–60 mcg IC bolus — repeat as needed; very short half-life; safe</td></tr>
+<tr><td>Verapamil</td><td class="v-blue">100–200 mcg IC — CCB; excellent for microvascular spasm</td></tr>
+<tr><td>Nicardipine</td><td class="v-blue">100–200 mcg IC — dihydropyridine CCB; potent</td></tr>
+<tr><td>Nitroprusside</td><td class="v-blue">50–200 mcg IC — most potent vasodilator; use cautiously (hypotension risk)</td></tr>
+<tr><td>Delivery route</td><td class="v-green">IC via infusion catheter or microcatheter wedged distally — maximum local effect</td></tr>
+</table>
+<div class="sub-label">additional measures</div>
+<table>
+<tr><td>IC GP IIb/IIIa</td><td>If thrombus-mediated: abciximab 0.25 mg/kg or eptifibatide 180 mcg/kg IC — platelet-rich thrombus resistant to vasodilators alone</td></tr>
+<tr><td>Haemodynamic support</td><td>If BP falling: norepinephrine; consider Impella if severe LVEF impairment</td></tr>
+<tr><td>SVG PCI mandatory</td><td class="v-coral">Distal embolic protection device (FilterWire EZ or SpideRX) — Class I before any SVG PCI; prevents distal embolisation</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Nitrates for RV infarct no-reflow</td><td class="v-coral">RV is preload-dependent — nitrates cause haemodynamic collapse</td></tr>
+<tr><td>Vasodilators before excluding mechanical</td><td class="v-coral">Treat the correct cause first</td></tr>
+<tr><td>Ignore no-reflow</td><td class="v-coral">Can cause large MI, haemodynamic compromise, and death if untreated</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Scenario 6 — CTO Escalation (Overview)</h2></div>
+<div class="sub-label">antegrade true lumen escalation</div>
+<table>
+<tr><td>Wire ladder</td><td>BMW / Runthrough → Fielder FC (0.8g) → Pilot 50 (1.5g) → Pilot 150 (2.7g) → Gaia 1st (1.7g) → Gaia 2nd (3.5g) → Gaia 3rd (4.5g) → Confianza Pro 9 (9g) → Confianza Pro 12 (12g)</td></tr>
+<tr><td>Microcatheter rule</td><td class="v-coral">Always use from Pilot 50 onwards — never advance stiff wire without microcatheter support</td></tr>
+</table>
+<div class="sub-label">antegrade dissection and re-entry (ADR)</div>
+<table>
+<tr><td>Stingray balloon system</td><td class="v-green">Flat OTW balloon advances subintimally to distal cap; side exit ports allow Stingray wire to puncture back into true lumen — gold standard controlled re-entry</td></tr>
+</table>
+<div class="sub-label">retrograde approach</div>
+<table>
+<tr><td>Access required</td><td class="v-amber">Dual arterial access — femoral + radial or bilateral femoral</td></tr>
+<tr><td>Septal collateral wires</td><td>Sion or Sion Black (0.5g, atraumatic)</td></tr>
+<tr><td>Epicardial collateral wires</td><td>Fielder XT-R (0.5g) or Suoh 03 (0.3g, lowest tip load available)</td></tr>
+<tr><td>Crossing techniques</td><td>Retrograde true lumen; CART; reverse CART (most common — antegrade balloon opens subintimal space for retrograde wire)</td></tr>
+</table>
+<div class="sub-label">key CTO principles</div>
+<table>
+<tr><td>Dual injection mandatory</td><td class="v-blue">Bilateral coronary injections to define distal cap and collateral anatomy</td></tr>
+<tr><td>Proximal cap ambiguity</td><td>IVUS of donor vessel to define true proximal cap location</td></tr>
+<tr><td>J-CTO score</td><td class="v-teal">0 = easy → 4+ = very difficult; predicts procedural complexity and time</td></tr>
+<tr><td>CTO PCI success rates</td><td class="v-green">85–95% at experienced centres — requires dedicated training and proctorship</td></tr>
+</table></div>
+</div>
+
+<div id="complications" class="section-title">Complication Management</div>
+<div class="grid">
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Complication 1 — Coronary Perforation</h2></div>
+<div class="sub-label">universal first rule — no exceptions</div>
+<table>
+<tr><td>THE WIRE</td><td class="v-coral">NEVER REMOVE THE WIRE from the vessel — it is your lifeline back in and may be tamponading the hole. Applies to all perforation types without exception.</td></tr>
+</table>
+<div class="sub-label">immediate actions — all types</div>
+<table>
+<tr><td>Inflate balloon at site</td><td class="v-coral">4–6 atm — same balloon being used; tamponades hole while you organise definitive treatment</td></tr>
+<tr><td>Call for help</td><td class="v-coral">Senior operator, extra nursing, alert cardiac surgery immediately</td></tr>
+<tr><td>Bedside echo NOW</td><td class="v-coral">Most important immediate assessment — pericardial effusion drives every decision</td></tr>
+<tr><td>Stop heparin + GP IIb/IIIa</td><td class="v-amber">Stop infusion; no reversal agent for GP IIb/IIIa but stop further dosing</td></tr>
+</table>
+<div class="sub-label">Ellis Type I — low risk</div>
+<table>
+<tr><td>Appearance</td><td class="v-green">Extraluminal crater only; no extravasation beyond adventitia</td></tr>
+<tr><td>Management</td><td class="v-green">Conservative — serial echo at 30 min, 1 h, 4 h; reverse anticoagulation if effusion appears</td></tr>
+</table>
+<div class="sub-label">Ellis Type II — low-moderate risk</div>
+<table>
+<tr><td>Appearance</td><td class="v-amber">Pericardial or myocardial blush — no jet extravasation</td></tr>
+<tr><td>Prolonged balloon inflation</td><td class="v-amber">5–10 min at perforation site; reverse heparin: protamine 1 mg per 100 units UFH</td></tr>
+<tr><td>Outcome</td><td class="v-green">Most resolve with prolonged balloon alone — serial echo to confirm</td></tr>
+</table>
+<div class="sub-label">Ellis Type III — high risk — tamponade ~50%</div>
+<table>
+<tr><td>Appearance</td><td class="v-coral">Frank jet extravasation ≥1 mm</td></tr>
+<tr><td>Reverse ALL anticoagulation</td><td class="v-coral">Protamine for UFH; stop bivalirudin (t½ 25 min); platelet transfusion if GP IIb/IIIa running</td></tr>
+<tr><td>Pericardiocentesis</td><td class="v-coral">Subxiphoid approach; 18G spinal needle toward left shoulder at 45°; echo-guided; confirm with agitated saline; insert 6–8 Fr pigtail drain; autotransfuse drained blood</td></tr>
+<tr><td>Covered stent — ≥2.5 mm vessel</td><td class="v-blue">Graftmaster (Abbott) 2.8–4.8 mm / PK Papyrus (Biotronik) 2.5–5.0 mm (lower crossing profile)</td></tr>
+<tr><td>Embolisation — &lt;2.5 mm vessel</td><td>Autologous clot (2–3 mL blood, clot 5 min, inject); fat pledgets; coil (most precise); thrombin; Gelfoam — via microcatheter</td></tr>
+</table>
+<div class="sub-label">wire perforation specifically</div>
+<table>
+<tr><td>Do NOT remove wire</td><td class="v-coral">May be tamponading the exit hole — wire removal can open the hole</td></tr>
+<tr><td>Effusion not accumulating</td><td class="v-green">Inflate balloon proximally to reduce flow; watch echo; may withdraw wire slowly while monitoring</td></tr>
+<tr><td>Effusion growing</td><td class="v-coral">Wedge microcatheter at exit point; suction can seal small wire perforations; embolise if suction fails</td></tr>
+</table>
+<div class="sub-label">anticoagulation after perforation</div>
+<table>
+<tr><td>Withhold heparin</td><td class="v-amber">4–6 hours minimum after confirmed sealing on echo</td></tr>
+<tr><td>DAPT</td><td class="v-green">Do NOT stop — stent thrombosis risk too high; antiplatelet agents do not cause pericardial haemorrhage like anticoagulants</td></tr>
+</table>
+<div class="sub-label">call surgery early if</div>
+<table>
+<tr><td>Failure to seal</td><td class="v-coral">Ongoing haemorrhage despite covered stent + pericardiocentesis; effusion collecting faster than can be drained</td></tr>
+<tr><td>Alert early</td><td class="v-coral">Do not wait until patient is in extremis — early surgical notification saves lives</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Remove the wire</td><td class="v-coral">Repeated for emphasis — the single most critical rule in perforation management</td></tr>
+<tr><td>Delay echo</td><td class="v-coral">Pericardial effusion assessment drives every decision</td></tr>
+<tr><td>Give thrombolytics / stop DAPT</td><td class="v-coral">Absolute contraindications — one causes haemorrhage, the other causes stent thrombosis</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Complication 2 — Coronary Dissection Extending to LM</h2></div>
+<div class="sub-label">immediate recognition</div>
+<table>
+<tr><td>NEVER REMOVE THE WIRE</td><td class="v-coral">First rule — always; wire is your access to the distal vessel</td></tr>
+<tr><td>Haemodynamics</td><td class="v-coral">Assess immediately — LM dissection can decompensate in seconds</td></tr>
+<tr><td>Call simultaneously</td><td class="v-coral">Senior operator + anaesthetics + cardiac surgery — all at once</td></tr>
+<tr><td>Pre-emptive MCS</td><td class="v-amber">Consider Impella CP before stenting if haemodynamics borderline — stabilise first, then fix</td></tr>
+</table>
+<div class="sub-label">preparatory step — mandatory before any LM stenting</div>
+<table>
+<tr><td>Wire LCx FIRST</td><td class="v-coral">Before any LM stenting — if LM stented with LCx unwired, LCx may be jailed with no access back</td></tr>
+<tr><td>IVUS pullback</td><td class="v-green">From distal LAD to LM if time permits (60–90 sec) — defines extent; identifies LM ostial involvement; guides stent landing zones; LM typically 4.0–5.0 mm</td></tr>
+</table>
+<div class="sub-label">stenting direction — critical rule</div>
+<table>
+<tr><td>DISTAL TO PROXIMAL always</td><td class="v-coral">Seal the dissection from below and work upward — NEVER start at proximal end (pushes dissection further distally)</td></tr>
+</table>
+<div class="sub-label">stenting sequence</div>
+<table>
+<tr><td>1 — Distal LAD</td><td>Stent distal LAD extent if significant</td></tr>
+<tr><td>2 — LAD to LM junction</td><td>Stent LAD to LM junction</td></tr>
+<tr><td>3 — Into LM</td><td>Stent into LM if needed to cover proximal extent</td></tr>
+<tr><td>4 — POT</td><td class="v-blue">NC balloon sized to proximal LM after LM stent</td></tr>
+<tr><td>5 — Assess LCx</td><td>TIMI 3, no ostial compromise → leave; ostial compromise → balloon via rewired strut; TIMI &lt;3 → stent (TAP or DK-Crush)</td></tr>
+<tr><td>6 — KBI if LCx treated</td><td>SC balloons, simultaneous deflation</td></tr>
+<tr><td>7 — Final POT</td><td class="v-blue">Final proximal optimisation</td></tr>
+</table>
+<div class="sub-label">proximal extent scenarios</div>
+<table>
+<tr><td>LM body dissection</td><td>Stent back 2–3 mm proximal to dissection entry; IVUS confirms landing zone</td></tr>
+<tr><td>LM ostial dissection</td><td class="v-amber">Stent extends 1–2 mm into aorta; flare proximal edge with NC balloon; technically demanding — senior operator</td></tr>
+<tr><td>Aortocoronary dissection</td><td class="v-coral">STOP all injections; pull guide back gently; emergency CT aorta; cardiac surgery immediately; NEVER stent into aorta</td></tr>
+</table>
+<div class="sub-label">confirm before leaving lab</div>
+<table>
+<tr><td>IVUS confirmation</td><td class="v-green">LM MSA ≥7–8 mm²; no edge dissection; adequate apposition</td></tr>
+<tr><td>Angiography</td><td>TIMI 3 in LAD and LCx; no residual dissection in multiple views</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Remove the wire</td><td class="v-coral">First rule — always</td></tr>
+<tr><td>Start stenting from proximal end</td><td class="v-coral">Pushes dissection further distally</td></tr>
+<tr><td>Stent LM without LCx wire</td><td class="v-coral">May jail LCx with no way back in</td></tr>
+<tr><td>Stent into aortic root</td><td class="v-coral">If aortocoronary dissection — cardiac surgery emergency</td></tr>
+<tr><td>Leave without IVUS confirmation</td><td class="v-coral">LM result must be verified before leaving lab</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Complication 3 — Acute Stent Thrombosis</h2></div>
+<div class="sub-label">recognition</div>
+<table>
+<tr><td>Presentation</td><td class="v-coral">Crushing chest pain + ST elevation in stented territory within 24 h — treat as STEMI; activate cath lab immediately</td></tr>
+<tr><td>Mortality</td><td class="v-coral">20–45%</td></tr>
+</table>
+<div class="sub-label">while travelling to lab</div>
+<table>
+<tr><td>Aspirin 300 mg</td><td>If not already given</td></tr>
+<tr><td>Reload P2Y12</td><td class="v-coral">Even if on DAPT — inadequate loading may be the cause; if on clopidogrel switch to ticagrelor 180 mg or prasugrel 60 mg (no prior stroke/TIA)</td></tr>
+<tr><td>Heparin 5000 units IV</td><td class="v-blue">Bolus now</td></tr>
+</table>
+<div class="sub-label">the five causes — find it or it will re-thrombose</div>
+<table>
+<tr><td>Underexpansion</td><td class="v-coral">Most common — MSA below target at original procedure</td></tr>
+<tr><td>Malapposition</td><td>Struts not in contact with vessel wall</td></tr>
+<tr><td>Uncovered dissection</td><td>Edge dissection missed at original procedure</td></tr>
+<tr><td>DAPT failure</td><td class="v-amber">Non-compliance, poor absorption, CYP2C19 poor metaboliser (~30% clopidogrel patients)</td></tr>
+<tr><td>Macroplaque prolapse</td><td>Thrombus extruding through stent struts</td></tr>
+</table>
+<div class="sub-label">in the cath lab</div>
+<table>
+<tr><td>Heparin</td><td class="v-blue">70–100 units/kg IV; ACT 250–350 seconds</td></tr>
+<tr><td>First wire</td><td class="v-amber">Workhorse wire first — thrombotic occlusion usually crosses easily (soft thrombus)</td></tr>
+<tr><td>Avoid hydrophilic wire first</td><td class="v-coral">May pass subintimal through thrombus without realising</td></tr>
+</table>
+<div class="sub-label">thrombus management by burden</div>
+<table>
+<tr><td>Small to moderate</td><td class="v-green">Direct balloon angioplasty 1:1; restore flow; assess; stent only if needed</td></tr>
+<tr><td>Large (TIMI grade 4–5)</td><td class="v-amber">Aspiration thrombectomy — Export AP or Fetch 2; 60 mL syringe continuous suction; advance to proximal edge; slowly withdraw while aspirating</td></tr>
+<tr><td>Massive</td><td class="v-coral">Aspiration plus IC GP IIb/IIIa before ballooning</td></tr>
+</table>
+<div class="sub-label">IC GP IIb/IIIa — essential in stent thrombosis</div>
+<table>
+<tr><td>Rationale</td><td>Platelet-rich thrombus resistant to lysis alone</td></tr>
+<tr><td>Abciximab</td><td class="v-blue">0.25 mg/kg IC bolus then IV infusion 12 h</td></tr>
+<tr><td>Eptifibatide</td><td class="v-blue">180 mcg/kg IC bolus — faster offset if bleeding concern</td></tr>
+<tr><td>Delivery</td><td class="v-green">IC preferred — concentrated local dose at thrombus site</td></tr>
+</table>
+<div class="sub-label">IVUS or OCT — mandatory — find the cause</div>
+<table>
+<tr><td>Underexpansion</td><td class="v-amber">High pressure NC balloon 20–26 atm</td></tr>
+<tr><td>Malapposition</td><td>High pressure post-dilation</td></tr>
+<tr><td>Edge dissection</td><td>Additional stent to cover</td></tr>
+<tr><td>Stent fracture</td><td>Re-stent the segment</td></tr>
+<tr><td>Normal appearance</td><td class="v-amber">DAPT failure is the cause — maximise antiplatelet therapy</td></tr>
+</table>
+<div class="sub-label">post-procedure management</div>
+<table>
+<tr><td>Switch from clopidogrel</td><td class="v-coral">Upgrade to ticagrelor 90 mg BD or prasugrel 10 mg OD</td></tr>
+<tr><td>Platelet function testing</td><td>VerifyNow — confirms inadequate P2Y12 inhibition</td></tr>
+<tr><td>CYP2C19 genotyping</td><td class="v-amber">Identifies poor metabolisers who cannot activate clopidogrel</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Leave without finding the cause</td><td class="v-coral">Treat both the thrombosis AND the underlying mechanical problem</td></tr>
+<tr><td>Stop DAPT perioperatively</td><td class="v-coral">Highest stent thrombosis risk is first 30 days</td></tr>
+<tr><td>Hydrophilic wire first through thrombus</td><td class="v-coral">Use workhorse wire first — hydrophilic may pass subintimally</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Complication 4 — Femoral Access Complications</h2></div>
+<div class="sub-label">immediate actions — all femoral complications</div>
+<table>
+<tr><td>Manual compression</td><td class="v-amber">Firm sustained pressure above inguinal ligament; call for help; large-bore IV ×2; stop anticoagulation</td></tr>
+<tr><td>Heparin reversal</td><td class="v-blue">Protamine 1 mg per 100 units UFH given</td></tr>
+<tr><td>Bloods</td><td>FBC, coagulation, crossmatch 4–6 units packed red cells</td></tr>
+</table>
+<div class="sub-label">retroperitoneal haematoma — do not miss</div>
+<table>
+<tr><td>Mechanism</td><td class="v-coral">Puncture above inguinal ligament — vessel cannot be compressed against femoral head; retroperitoneal space accommodates litres before external signs appear</td></tr>
+<tr><td>Clinical features</td><td class="v-coral">Hypotension disproportionate to visible blood loss; back or flank pain; hip flexion (psoas irritation); ipsilateral femoral nerve palsy (anterior thigh numbness + weakness)</td></tr>
+<tr><td>Imaging if stable</td><td class="v-amber">Urgent CT abdomen/pelvis with contrast — defines location, extent, active extravasation</td></tr>
+<tr><td>Management if stable</td><td>CT angiography then IR embolisation or covered stent</td></tr>
+<tr><td>Management if unstable</td><td class="v-coral">Emergency vascular surgery — do not delay for further imaging</td></tr>
+</table>
+<div class="sub-label">external haematoma / pseudoaneurysm / AV fistula</div>
+<table>
+<tr><td>Contained haematoma</td><td class="v-green">Sustained manual or mechanical compression (FemoStop/C-clamp) ×20–30 min; serial haematocrit</td></tr>
+<tr><td>Expanding haematoma</td><td class="v-amber">Re-sheath vessel; inflate balloon in femoral artery at puncture site; covered stent if fails; surgical exploration last resort</td></tr>
+<tr><td>Pseudoaneurysm</td><td class="v-green">Ultrasound-guided thrombin injection (first line); manual compression under US; surgical repair if &gt;3 cm, expanding, or infected</td></tr>
+<tr><td>AV fistula (small)</td><td>Observe — may close spontaneously over weeks</td></tr>
+<tr><td>AV fistula (large)</td><td class="v-amber">Endovascular covered stent or surgical repair — high-output cardiac failure if large</td></tr>
+</table>
+<div class="sub-label">prevention — the most important management</div>
+<table>
+<tr><td>Puncture over femoral head</td><td class="v-green">Fluoroscopy to confirm position relative to femoral head</td></tr>
+<tr><td>Ultrasound-guided access</td><td class="v-green">Standard of care (ACC/AHA) — confirms anterior wall puncture, avoids high sticks</td></tr>
+<tr><td>Micropuncture technique</td><td>21G needle first; confirm position before upsizing to standard sheath</td></tr>
+</table>
+<div class="sub-label">never do</div>
+<table>
+<tr><td>Puncture above inguinal ligament</td><td class="v-coral">Without recognising retroperitoneal haematoma risk</td></tr>
+<tr><td>Assume hypotension is vasovagal</td><td class="v-coral">After femoral PCI — always exclude RPH first</td></tr>
+<tr><td>Delay CT if RPH suspected</td><td class="v-coral">Early diagnosis = IR embolisation; late = emergency surgery</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Complication 5 — Haemodynamic Collapse During PCI</h2></div>
+<div class="sub-label">first 30 seconds — simultaneously</div>
+<table>
+<tr><td>Call for help</td><td class="v-coral">Senior operator, nursing, anaesthetics</td></tr>
+<tr><td>Stop procedure</td><td class="v-coral">Leave wire in place; pull balloon or device back into guide catheter</td></tr>
+<tr><td>Monitor assessment</td><td>ECG rhythm, ST changes, BP, SpO2; check pressure waveform (damped or ventricularised?)</td></tr>
+<tr><td>Defibrillator</td><td class="v-coral">Pads on and charged — ready to use immediately</td></tr>
+</table>
+<div class="sub-label">arrhythmia management</div>
+<table>
+<tr><td>VF or pulseless VT</td><td class="v-coral">Defibrillate 200 J biphasic immediately; CPR; adrenaline 1 mg IV every 3–5 min; amiodarone 300 mg after 3rd shock</td></tr>
+<tr><td>Complete heart block (RCA PCI)</td><td class="v-amber">Atropine 0.5–1 mg IV; transvenous pacing — always have pacing available before dominant RCA PCI</td></tr>
+<tr><td>Sustained VT with pulse</td><td>Amiodarone 150 mg IV over 10 min; synchronised cardioversion 100–200 J if haemodynamically compromised</td></tr>
+</table>
+<div class="sub-label">angiographic assessment</div>
+<table>
+<tr><td>Contrast outside vessel</td><td class="v-coral">Perforation — balloon tamponade immediately; manage per perforation protocol</td></tr>
+<tr><td>No flow in treated vessel</td><td class="v-coral">Acute vessel closure / stent thrombosis — rewire + IC GP IIb/IIIa</td></tr>
+<tr><td>Dissection flap</td><td class="v-amber">Urgent stenting</td></tr>
+<tr><td>Air in coronary</td><td class="v-amber">100% O2; forceful IC contrast injection to disperse; aspiration catheter if large bolus; usually resolves in minutes; atropine / pacing if RCA air causes bradycardia</td></tr>
+</table>
+<div class="sub-label">echo — most important diagnostic step</div>
+<table>
+<tr><td>Pericardial effusion + RV collapse</td><td class="v-coral">Tamponade — pericardiocentesis NOW</td></tr>
+<tr><td>New RWMA</td><td class="v-coral">Acute vessel closure</td></tr>
+<tr><td>RV dilatation + D-sign</td><td>RV failure or massive PE</td></tr>
+<tr><td>Hyperdynamic small LV</td><td class="v-amber">Hypovolaemia</td></tr>
+<tr><td>Global hypokinesis</td><td>Cardiogenic shock</td></tr>
+</table>
+<div class="sub-label">vasopressors and inotropes</div>
+<table>
+<tr><td>Norepinephrine</td><td class="v-blue">0.1–0.3 mcg/kg/min — first-line vasopressor (SOAP II)</td></tr>
+<tr><td>Dobutamine</td><td class="v-blue">5–20 mcg/kg/min — inotrope for low CO with preserved BP</td></tr>
+<tr><td>Atropine</td><td>0.5–1 mg IV if bradycardia component</td></tr>
+</table>
+<div class="sub-label">MCS escalation</div>
+<table>
+<tr><td>IABP</td><td class="v-green">Rapid insertion 7–8 Fr femoral; reduces afterload, augments diastolic; buys time</td></tr>
+<tr><td>Impella CP</td><td class="v-green">DanGer Shock 2024 mortality benefit; 14 Fr femoral; 3.5–4.0 L/min; pre-position for very high-risk cases</td></tr>
+<tr><td>VA-ECMO</td><td class="v-amber">Full cardiopulmonary support; cardiac arrest or refractory shock; alert perfusion team EARLY — do not wait until arrest</td></tr>
+</table>
+<div class="sub-label">specific cause management</div>
+<table>
+<tr><td>RV infarct (inferior STEMI)</td><td class="v-coral">IV fluids aggressively — preload-dependent; AVOID nitrates, diuretics, morphine; restore AV synchrony; Impella RP for refractory RV failure</td></tr>
+<tr><td>Air embolism</td><td class="v-amber">100% O2; forceful IC contrast to disperse; aspiration catheter if large; usually resolves in minutes</td></tr>
+<tr><td>Tamponade</td><td class="v-coral">Pericardiocentesis subxiphoid; 6–8 Fr pigtail drain; autotransfuse collected blood; do NOT give IV fluids as primary treatment</td></tr>
+</table>
+<div class="sub-label">prevention — high-risk case preparation</div>
+<table>
+<tr><td>LVEF &lt;25% / LM / last vessel</td><td class="v-coral">Pre-position Impella CP; anaesthetic standby</td></tr>
+<tr><td>Dominant RCA PCI</td><td class="v-amber">Temporary pacing wire pre-inserted</td></tr>
+<tr><td>Every complex case</td><td class="v-green">Large-bore IV confirmed; blood crossmatched if high-risk; defibrillator pads on before starting</td></tr>
+</table></div>
 </div>
 
 <div id="radiation" class="section-title">Radiation Safety</div>
