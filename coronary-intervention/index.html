@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
 <title>IC Fellowship - Key Values Reference</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap');
@@ -1491,5 +1491,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div></div>
 
 <footer>IC Fellowship Interview Prep &middot; Key Values Reference &middot; Review with your attending &middot; Good luck</footer>
+
+<button id="scroll-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8679;</button>
+
+<style>
+#scroll-top{position:fixed;bottom:28px;right:28px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(96,165,250,.35);background:rgba(10,14,26,.75);backdrop-filter:blur(8px);color:#60a5fa;font-size:22px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s,border-color .2s;z-index:999;display:flex;align-items:center;justify-content:center;padding:0}
+#scroll-top.visible{opacity:1;pointer-events:auto}
+#scroll-top:hover{border-color:rgba(96,165,250,.75);background:rgba(96,165,250,.12);transform:translateY(-2px)}
+</style>
+<script>
+(function(){
+  var btn=document.getElementById('scroll-top');
+  window.addEventListener('scroll',function(){
+    btn.classList.toggle('visible',window.scrollY>300);
+  },{passive:true});
+})();
+</script>
 </body>
 </html>
