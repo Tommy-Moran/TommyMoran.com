@@ -706,6 +706,23 @@ def tilt_table_process():
         return jsonify({'error': 'An unexpected error occurred while processing the PDF.'}), 500
 
 
+# ─────────────────────────────────────────────────────────────
+# Coronary Intervention educational resource routes
+# ─────────────────────────────────────────────────────────────
+
+@app.route('/coronary-intervention')
+def coronary_intervention_redirect():
+    return redirect('/coronary-intervention/')
+
+@app.route('/coronary-intervention/')
+def coronary_intervention_index():
+    return send_from_directory('coronary-intervention', 'index.html')
+
+@app.route('/coronary-intervention/<path:path>')
+def coronary_intervention_static(path):
+    return send_from_directory('coronary-intervention', path)
+
+
 if __name__ == '__main__':
     try:
         # Initialize HEART database

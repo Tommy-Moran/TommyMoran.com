@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none';">
+<title>IC Fellowship - Key Values Reference</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap');
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d47;--blue:#3b82f6;--blue-bright:#60a5fa;--teal:#0d9488;--teal-bright:#2dd4bf;--coral:#ef4444;--coral-bright:#f87171;--amber:#f59e0b;--amber-bright:#fbbf24;--green:#22c55e;--green-bright:#4ade80;--purple:#8b5cf6;--purple-bright:#a78bfa;--text:#f1f5f9;--text-dim:#94a3b8;--text-faint:#475569}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;padding:16px 12px 60px;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.header{text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.header h1{font-size:clamp(16px,5vw,28px);font-weight:800;letter-spacing:-0.02em;color:var(--blue-bright);margin-bottom:4px;line-height:1.2}
+.header p{font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;letter-spacing:0.03em}
+.nav{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:20px}
+.nav a{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);color:var(--text-dim);-webkit-tap-highlight-color:transparent}
+.nav a:active{color:var(--blue-bright);border-color:var(--blue);background:rgba(59,130,246,.12)}
+.section-title{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-faint);margin:24px 0 10px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* GRID — single column on mobile, multi on wider screens */
+.grid{display:grid;grid-template-columns:1fr;gap:12px;max-width:1500px;margin:0 auto}
+@media(min-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}}
+@media(min-width:600px){.grid.wide-grid{grid-template-columns:repeat(auto-fill,minmax(420px,1fr))}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;min-width:0}
+.card-header{padding:9px 13px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.card-header .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.card-header h2{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);line-height:1.3}
+.full{grid-column:1/-1}
+/* STANDARD 2-COLUMN TABLE */
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+tr:not(:last-child){border-bottom:1px solid var(--border)}
+tr:active{background:var(--surface2)}
+@media(hover:hover){tr:hover{background:var(--surface2)}}
+td{padding:6px 11px;font-size:11.5px;line-height:1.4;vertical-align:top;word-break:break-word;overflow-wrap:anywhere}
+td:first-child{color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:10px;width:42%;border-right:1px solid var(--border)}
+td:last-child{font-weight:600;color:var(--text)}
+.sub-label{padding:4px 11px;font-size:8.5px;font-family:'JetBrains Mono',monospace;letter-spacing:0.09em;text-transform:uppercase;color:var(--text-faint);background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);border-top:1px solid var(--border)}
+.v-blue{color:var(--blue-bright)!important}.v-teal{color:var(--teal-bright)!important}.v-coral{color:var(--coral-bright)!important}.v-amber{color:var(--amber-bright)!important}.v-green{color:var(--green-bright)!important}.v-purple{color:var(--purple-bright)!important}.v-dim{color:var(--text-dim)!important;font-weight:400!important}
+/* WIRE TABLE — scrollable container on mobile */
+.wire-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.wire-table{width:100%;min-width:520px;border-collapse:collapse;font-size:10.5px}
+.wire-table th{padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-faint);border-bottom:1px solid var(--border);text-align:left;background:rgba(255,255,255,0.02);white-space:nowrap}
+.wire-table td{padding:5px 9px;border-bottom:1px solid var(--border);vertical-align:middle;word-break:break-word}
+.wire-table td:first-child{color:var(--text);font-weight:700;white-space:nowrap;border-right:none}
+.wire-table td:nth-child(2){color:var(--text-dim);font-size:9.5px;white-space:nowrap}
+.wire-table td:nth-child(3){white-space:nowrap;font-weight:700}
+.wire-table td:nth-child(4){white-space:nowrap;font-size:10px}
+.wire-table tr:last-child td{border-bottom:none}
+.wire-table tr:active td{background:var(--surface2)}
+@media(hover:hover){.wire-table tr:hover td{background:var(--surface2)}}
+.hydro-yes{color:var(--blue-bright)}.hydro-no{color:var(--text-faint)}
+.cat-row td{background:rgba(255,255,255,0.03)}
+.cat-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase}
+footer{text-align:center;margin-top:40px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);padding:0 12px}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>IC Fellowship - Key Values Reference</h1>
+<p>// interventional cardiology &middot; thresholds &middot; doses &middot; targets &middot; trials &middot; classification systems</p>
+</div>
+<nav class="nav">
+<a href="#sizing">Sizing</a><a href="#wires">Guide Wires</a><a href="#physiology">Physiology</a>
+<a href="#imaging">IVUS/OCT</a><a href="#anticoag">Anticoagulation</a><a href="#antiplatelets">Antiplatelets</a>
+<a href="#stents">Stents</a><a href="#balloons">Balloons</a><a href="#atherectomy">Atherectomy</a>
+<a href="#haemo">Haemodynamics</a><a href="#classifications">Classifications</a><a href="#scores">Risk Scores</a>
+<a href="#mcs">MCS</a><a href="#largebore">Large Bore</a><a href="#radiation">Radiation</a><a href="#contrast">Contrast</a><a href="#trials">Trials</a>
+</nav>
+<div id="sizing" class="section-title">Equipment Sizing</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--blue)"></div><h2>French Sizing</h2></div>
+<table>
+<tr><td>1 French</td><td class="v-blue">0.333 mm</td></tr>
+<tr><td>OD formula</td><td class="v-blue">Fr &divide; 3 = OD (mm)</td></tr>
+<tr><td>4 Fr OD</td><td>1.33 mm</td></tr>
+<tr><td>5 Fr OD</td><td>1.67 mm - diagnostic radial</td></tr>
+<tr><td>6 Fr OD</td><td>2.00 mm - standard PCI</td></tr>
+<tr><td>7 Fr OD</td><td>2.33 mm - complex / rota</td></tr>
+<tr><td>8 Fr OD</td><td>2.67 mm - large bore</td></tr>
+<tr><td>6Fr Slender OD</td><td class="v-teal">= 5Fr standard (0.12 mm wall)</td></tr>
+<tr><td>7Fr Slender OD</td><td class="v-teal">= 6Fr standard</td></tr>
+<tr><td>SAR target (radial)</td><td class="v-green">&lt;1.0 (low RAO risk)</td></tr>
+<tr><td>Radial artery avg female</td><td>2.2-2.4 mm</td></tr>
+<tr><td>Radial artery avg male</td><td>2.6-2.8 mm</td></tr>
+</table></div>
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--teal)"></div><h2>Guide Catheter Inner Diameter</h2></div>
+<table>
+<tr><td>5 Fr inner lumen</td><td>0.056" (1.42 mm) - diagnostic only</td></tr>
+<tr><td>6 Fr inner lumen</td><td class="v-blue">0.070" (1.78 mm) - standard PCI</td></tr>
+<tr><td>7 Fr inner lumen</td><td>0.081" (2.06 mm) - two wires / rota</td></tr>
+<tr><td>8 Fr inner lumen</td><td>0.091" (2.31 mm) - large bore</td></tr>
+<tr><td>Guide length standard</td><td>100 cm</td></tr>
+<tr><td>Sheath standard length</td><td>11 cm</td></tr>
+<tr><td>Long radial sheath</td><td>25 cm</td></tr>
+<tr><td>Balloon shaft (RX)</td><td>140-145 cm</td></tr>
+<tr><td>Balloon shaft (OTW)</td><td>150 cm</td></tr>
+<tr><td>Min guide for rota &ge;1.75 mm</td><td class="v-amber">7 Fr</td></tr>
+</table></div></div>
+</div>
+<div id="wires" class="section-title">Coronary Guidewires</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--teal)"></div><h2>Wire Basics</h2></div>
+<table>
+<tr><td>Universal diameter</td><td class="v-blue">0.014 inches (0.36 mm) - ALL coronary wires</td></tr>
+<tr><td>Standard length</td><td>180 cm</td></tr>
+<tr><td>Exchange length</td><td class="v-amber">300 cm</td></tr>
+<tr><td>Hydrophilic wires</td><td>Slippery coating - easier navigation, less tactile feel, higher perforation risk</td></tr>
+<tr><td>Non-hydrophilic</td><td>Better tactile feedback, safer feel, preferred in CTO for control</td></tr>
+<tr><td>Tip shaping</td><td>Manual - 1-2 mm 45 deg routine; 90 deg / J for complex</td></tr>
+</table></div>
+
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--teal)"></div><h2>All Coronary Wires - Quick Reference</h2></div>
+<div class="wire-wrap"><table class="wire-table">
+<thead><tr><th>Wire</th><th>Company</th><th>Tip Load</th><th>Hydrophilic?</th><th>Key Use / Notes</th></tr></thead>
+<tbody>
+<tr class="cat-row"><td colspan="5"><span class="cat-label v-green">Workhorse - Routine PCI</span></td></tr>
+<tr><td>BMW Universal</td><td class="v-dim">Abbott</td><td class="v-green">0.7 g</td><td class="hydro-yes">Partial distal 30 cm</td><td>Reference workhorse. Moderate torque, atraumatic floppy tip.</td></tr>
+<tr><td>BMW Heavy</td><td class="v-dim">Abbott</td><td class="v-green">0.9 g</td><td class="hydro-no">Non-hydrophilic (tip)</td><td>Stiffer shaft than BMW Universal. Same floppy tip. Extra support in tortuous vessels. Good for calcified workhorse cases.</td></tr>
+<tr><td>Runthrough NS</td><td class="v-dim">Terumo</td><td class="v-green">0.6 g</td><td class="hydro-no">Non-hydrophilic</td><td>Excellent 1:1 torque. Very popular Europe/Asia. Atraumatic.</td></tr>
+<tr><td>Sion</td><td class="v-dim">Asahi</td><td class="v-green">0.5 g</td><td class="hydro-no">Polymer jacket (semi)</td><td>Excellent torque. Best for bifurcations / SB access. Retrograde CTO.</td></tr>
+<tr><td>Sion Blue</td><td class="v-dim">Asahi</td><td class="v-green">0.5 g</td><td class="hydro-yes">Hydrophilic distal</td><td>Slippier than Sion. Tortuous vessels. Routine PCI.</td></tr>
+<tr class="cat-row"><td colspan="5"><span class="cat-label v-blue">Support / Extra Backup</span></td></tr>
+<tr><td>Iron Man</td><td class="v-dim">Abbott</td><td class="v-amber">Stiff shaft</td><td class="hydro-yes">Hydrophilic distal</td><td>Maximum support. Calcified / tortuous. Stiff proximal shaft.</td></tr>
+<tr><td>Grand Slam</td><td class="v-dim">Abbott</td><td class="v-amber">Stiff shaft</td><td class="hydro-yes">Hydrophilic distal</td><td>Similar to Iron Man. Device delivery in difficult anatomy.</td></tr>
+<tr><td>Wiggle Wire</td><td class="v-dim">Abbott</td><td class="v-amber">Stiff</td><td class="hydro-yes">Hydrophilic</td><td>Wavy distal segment - maintains guide position in RCA. Prevents prolapse.</td></tr>
+<tr><td>Platinum Plus</td><td class="v-dim">Boston Scientific</td><td class="v-amber">Stiff shaft</td><td class="hydro-yes">Hydrophilic distal</td><td>Support wire. Excellent radiopacity from platinum tip.</td></tr>
+<tr class="cat-row"><td colspan="5"><span class="cat-label v-amber">Hydrophilic Specialty - Tortuous / Subtotal / CTO Antegrade</span></td></tr>
+<tr><td>Whisper MS/LS</td><td class="v-dim">Abbott</td><td class="v-amber">0.8 g</td><td class="hydro-yes">Full hydrophilic</td><td>Very slippery. Subtle channels. Subintimal tracking.</td></tr>
+<tr><td>Pilot 50</td><td class="v-dim">Abbott</td><td class="v-amber">1.5 g</td><td class="hydro-yes">Full hydrophilic</td><td>CTO antegrade first escalation. Beyond workhorse.</td></tr>
+<tr><td>Pilot 150</td><td class="v-dim">Abbott</td><td class="v-amber">2.7 g</td><td class="hydro-yes">Full hydrophilic</td><td>More penetrating than Pilot 50. Mid-cap CTO antegrade.</td></tr>
+<tr><td>Pilot 200</td><td class="v-dim">Abbott</td><td class="v-coral">4.0 g</td><td class="hydro-yes">Full hydrophilic</td><td>High-load hydrophilic. Hard cap antegrade. Subintimal tracking.</td></tr>
+<tr><td>Fielder XT</td><td class="v-dim">Asahi</td><td class="v-amber">0.8 g</td><td class="hydro-yes">Polymer jacket</td><td>CTO antegrade - intraplaque channel navigation. Low tip load.</td></tr>
+<tr><td>Fielder FC</td><td class="v-dim">Asahi</td><td class="v-amber">0.8 g</td><td class="hydro-yes">Polymer jacket</td><td>Similar to XT. Slightly more flexible. Channel navigation.</td></tr>
+<tr class="cat-row"><td colspan="5"><span class="cat-label v-coral">CTO Penetration - Escalating Tip Load</span></td></tr>
+<tr><td>Gaia 1st</td><td class="v-dim">Asahi</td><td class="v-amber">1.7 g</td><td class="hydro-no">Polymer jacket</td><td>Tapered 0.010" tip. Excellent 1:1 torque. BEST directional control. First CTO penetration wire.</td></tr>
+<tr><td>Gaia 2nd</td><td class="v-dim">Asahi</td><td class="v-amber">3.5 g</td><td class="hydro-no">Polymer jacket</td><td>Tapered 0.010". More penetrating. Moderate-hard caps.</td></tr>
+<tr><td>Gaia 3rd</td><td class="v-dim">Asahi</td><td class="v-coral">4.5 g</td><td class="hydro-no">Polymer jacket</td><td>High-load tapered tip. Hard fibrous caps. Still good torque.</td></tr>
+<tr><td>Confianza Pro 9</td><td class="v-dim">Asahi</td><td class="v-coral">9 g</td><td class="hydro-no">Polymer jacket</td><td>Tapered 0.009" tip. Maximum penetration. Hard calcified caps. Less torque than Gaia.</td></tr>
+<tr><td>Confianza Pro 12</td><td class="v-dim">Asahi</td><td class="v-coral">12 g</td><td class="hydro-no">Polymer jacket</td><td>Highest Asahi tip load. Very hard caps only. Use with microcatheter support always.</td></tr>
+<tr><td>Miracle Bros 3</td><td class="v-dim">Asahi</td><td class="v-amber">3 g</td><td class="hydro-no">Non-hydrophilic</td><td>Classic escalation series. Less refined than Gaia for modern CTO work.</td></tr>
+<tr><td>Miracle Bros 6</td><td class="v-dim">Asahi</td><td class="v-coral">6 g</td><td class="hydro-no">Non-hydrophilic</td><td>Mid-load. Harder caps.</td></tr>
+<tr><td>Miracle Bros 12</td><td class="v-dim">Asahi</td><td class="v-coral">12 g</td><td class="hydro-no">Non-hydrophilic</td><td>Very hard caps. High perforation risk.</td></tr>
+<tr><td>Hornet 10</td><td class="v-dim">Boston Scientific</td><td class="v-coral">10 g</td><td class="hydro-no">Non-hydrophilic</td><td>High stiffness. Hard proximal caps. Alternative to Confianza.</td></tr>
+<tr><td>Hornet 14</td><td class="v-dim">Boston Scientific</td><td class="v-coral">14 g</td><td class="hydro-no">Non-hydrophilic</td><td>Highest tip load available. Very hard calcified caps only.</td></tr>
+<tr class="cat-row"><td colspan="5"><span class="cat-label v-purple">Retrograde CTO - Collateral Navigation</span></td></tr>
+<tr><td>Sion (retrograde)</td><td class="v-dim">Asahi</td><td class="v-green">0.5 g</td><td class="hydro-no">Polymer jacket</td><td>Atraumatic. Standard retrograde wire through septal collaterals.</td></tr>
+<tr><td>Sion Black</td><td class="v-dim">Asahi</td><td class="v-green">0.5 g</td><td class="hydro-no">Polymer jacket</td><td>Slightly stiffer. Better through tortuous collaterals.</td></tr>
+<tr><td>Fielder XT-R</td><td class="v-dim">Asahi</td><td class="v-green">0.5 g</td><td class="hydro-yes">Polymer jacket</td><td>Ultra-low load. Most atraumatic retrograde. Epicardial collaterals.</td></tr>
+<tr><td>Suoh 03</td><td class="v-dim">Asahi</td><td class="v-green">0.3 g</td><td class="hydro-yes">Polymer jacket</td><td>Lowest tip load available. Delicate epicardial collateral navigation.</td></tr>
+<tr class="cat-row"><td colspan="5"><span class="cat-label v-teal">Specialty / Dedicated Wires</span></td></tr>
+<tr><td>Rotawire Floppy</td><td class="v-dim">Boston Scientific</td><td class="v-dim">-</td><td class="hydro-no">Non-hydrophilic</td><td>Dedicated Rotablator. Floppy distal tip. Standard rotablation cases.</td></tr>
+<tr><td>Rotawire Extra Support</td><td class="v-dim">Boston Scientific</td><td class="v-dim">-</td><td class="hydro-no">Non-hydrophilic</td><td>Stiffer for tortuous vessels during rotablation.</td></tr>
+<tr><td>ViperWire Advance</td><td class="v-dim">CSI / Abbott</td><td class="v-dim">-</td><td class="hydro-no">Non-hydrophilic</td><td>Dedicated orbital atherectomy (CSI Diamondback) wire.</td></tr>
+</tbody>
+</table></div></div></div>
+</div>
+<div id="physiology" class="section-title">Coronary Physiology</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Epicardial Thresholds</h2></div>
+<table>
+<tr><td>FFR significant</td><td class="v-coral">&le;0.80 &rarr; treat</td></tr>
+<tr><td>FFR safe to defer</td><td class="v-green">&gt;0.80</td></tr>
+<tr><td>iFR significant</td><td class="v-coral">&le;0.89 &rarr; treat</td></tr>
+<tr><td>RFR significant</td><td class="v-coral">&le;0.89</td></tr>
+<tr><td>iFR gray zone</td><td class="v-amber">0.86-0.93 &rarr; adjudicate with FFR</td></tr>
+<tr><td>Post-PCI FFR target</td><td class="v-green">&ge;0.90</td></tr>
+<tr><td>Post-PCI iFR target</td><td class="v-green">&ge;0.95</td></tr>
+<tr><td>QFR (wire-free)</td><td>Angiography-derived FFR - FAVOUR III positive</td></tr>
+<tr><td>Guideline class</td><td class="v-green">Class 1A ESC 2024 / ACC 2025</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Adenosine - Hyperaemia Protocol</h2></div>
+<table>
+<tr><td>IV infusion dose</td><td class="v-blue">140 mcg/kg/min</td></tr>
+<tr><td>IV route</td><td>Antecubital vein (NOT hand - slow transit)</td></tr>
+<tr><td>IV steady state onset</td><td class="v-teal">~60-90 seconds</td></tr>
+<tr><td>IV duration (pullback)</td><td>Continuous during entire FFR pullback (&ge;2 min)</td></tr>
+<tr><td>IC bolus - LCA</td><td class="v-blue">60-150 mcg (most use 100-150 mcg)</td></tr>
+<tr><td>IC bolus - RCA</td><td class="v-blue">60-100 mcg (smaller territory)</td></tr>
+<tr><td>IC onset</td><td class="v-teal">~5-10 seconds</td></tr>
+<tr><td>IC duration</td><td>~30-60 seconds - spot measurement only</td></tr>
+<tr><td>IC vs IV accuracy</td><td>IC adequate for spot FFR. IV preferred for pullback.</td></tr>
+<tr><td>Side effects</td><td>Chest tightness, flushing, dyspnoea, AV block (esp RCA)</td></tr>
+<tr><td>Contraindications</td><td>2nd/3rd degree AV block (no pacer), severe asthma</td></tr>
+<tr><td>Reversal</td><td>Spontaneous - half-life &lt;10 seconds</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Microvascular Thresholds</h2></div>
+<table>
+<tr><td>CFR abnormal</td><td class="v-coral">&lt;2.0 (some use &lt;2.5)</td></tr>
+<tr><td>IMR elevated CMD</td><td class="v-coral">&gt;25</td></tr>
+<tr><td>IMR severe MVO (post-STEMI)</td><td class="v-coral">&gt;40</td></tr>
+<tr><td>HMR elevated</td><td class="v-coral">&gt;2.5</td></tr>
+<tr><td>RRR abnormal</td><td class="v-coral">&lt;3.5</td></tr>
+<tr><td>IMR formula</td><td>Pd x Tmn (at hyperaemia)</td></tr>
+<tr><td>CFR formula</td><td>Tmn rest / Tmn hyperaemia</td></tr>
+<tr><td>Yong correction (FFR &lt;0.80)</td><td class="v-blue">IMR x (1 - FFR sq) / (1 - FFR)</td></tr>
+<tr><td>ACh epi spasm criterion</td><td class="v-coral">&gt;90% reduction + symptoms + ECG changes</td></tr>
+<tr><td>ACh micro spasm criterion</td><td>Sx + ECG + slow flow, NO visible epi spasm</td></tr>
+<tr><td>ACh doses LCA</td><td class="v-blue">2 mcg &rarr; 20 mcg &rarr; 100 mcg IC (each 20s)</td></tr>
+<tr><td>ACh RCA max</td><td class="v-amber">50 mcg (AV block risk)</td></tr>
+<tr><td>Reversal</td><td>IC GTN 200 mcg</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>TIMI Flow &amp; Frame Count</h2></div>
+<table>
+<tr><td>TIMI 0</td><td class="v-coral">No flow past occlusion</td></tr>
+<tr><td>TIMI 1</td><td class="v-coral">Penetrates but no distal fill</td></tr>
+<tr><td>TIMI 2</td><td class="v-amber">Fills slowly, clears slowly</td></tr>
+<tr><td>TIMI 3</td><td class="v-green">Normal flow and clearance</td></tr>
+<tr><td>TFC frame rate (standard)</td><td class="v-blue">30 fps (Gibson 1996)</td></tr>
+<tr><td>Adjust for 25 fps labs</td><td>Multiply by 25/30</td></tr>
+<tr><td>Normal TFC - LAD</td><td>&lt;36 frames</td></tr>
+<tr><td>Corrected TFC - LAD</td><td class="v-blue">TFC / 1.7 (target &lt;21)</td></tr>
+<tr><td>Normal TFC - LCx</td><td>&lt;22 frames</td></tr>
+<tr><td>Normal TFC - RCA</td><td>&lt;20 frames</td></tr>
+<tr><td>MBG 3 (normal blush)</td><td class="v-green">Contrast enters and clears normally</td></tr>
+<tr><td>MBG 0 (no blush)</td><td class="v-coral">No myocardial opacification - severe MVO</td></tr>
+</table></div></div>
+</div>
+<div id="imaging" class="section-title">IVUS / OCT Thresholds</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Technical Specs</h2></div>
+<table>
+<tr><td>IVUS frequency</td><td>20-40 MHz ultrasound</td></tr>
+<tr><td>IVUS axial resolution</td><td>100-200 um</td></tr>
+<tr><td>IVUS penetration</td><td>5-8 mm (full arterial wall)</td></tr>
+<tr><td>IVUS flush needed?</td><td class="v-green">NO - works through blood</td></tr>
+<tr><td>IVUS ostial LM?</td><td class="v-green">YES - preferred modality</td></tr>
+<tr><td>OCT wavelength</td><td>~1300 nm near-infrared light</td></tr>
+<tr><td>OCT axial resolution</td><td class="v-teal">10-15 um (10x better than IVUS)</td></tr>
+<tr><td>OCT penetration</td><td>1-2 mm (superficial only)</td></tr>
+<tr><td>OCT flush needed?</td><td class="v-coral">YES - contrast flush required</td></tr>
+<tr><td>OCT ostial LM?</td><td class="v-coral">AVOID - cannot adequately flush</td></tr>
+<tr><td>Guideline class (both)</td><td class="v-green">Class 1A ESC 2024 / ACC 2025</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>MLA Significance Thresholds</h2></div>
+<table>
+<tr><td>IVUS MLA - LM significant</td><td class="v-coral">&lt;6.0 mm sq</td></tr>
+<tr><td>IVUS MLA - non-LM significant</td><td class="v-coral">&lt;4.0 mm sq</td></tr>
+<tr><td>OCT MLA - LM significant</td><td class="v-coral">&lt;4.5 mm sq</td></tr>
+<tr><td>OCT MLA - non-LM significant</td><td class="v-coral">&lt;2.5 mm sq</td></tr>
+<tr><td>Post-stent MSA - LM target</td><td class="v-green">&ge;7-8 mm sq</td></tr>
+<tr><td>Post-stent MSA - non-LM (IVUS)</td><td class="v-green">&ge;5.5 mm sq</td></tr>
+<tr><td>Post-stent MSA - non-LM (OCT)</td><td class="v-green">&ge;4.5 mm sq</td></tr>
+<tr><td>LM crossover - proximal LM</td><td class="v-green">&ge;11.4 mm sq (5yr MACE-free)</td></tr>
+<tr><td>LM crossover - distal LM</td><td class="v-green">&ge;8.4 mm sq</td></tr>
+<tr><td>LM crossover - LAD ostium</td><td class="v-green">&ge;8.1 mm sq</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Calcium Modification Criteria (IVUS/OCT)</h2></div>
+<div class="sub-label">consider modification if any of the following</div>
+<table>
+<tr><td>Calcium arc (&gt;180 deg)</td><td class="v-amber">Consider modification</td></tr>
+<tr><td>Calcium arc (&gt;270 deg)</td><td class="v-coral">Modification very likely needed</td></tr>
+<tr><td>Calcium length (&gt;5 mm)</td><td class="v-amber">Consider modification</td></tr>
+<tr><td>Calcium thickness (&gt;0.5 mm OCT)</td><td class="v-amber">Modification likely needed</td></tr>
+<tr><td>Superficial calcium (&lt;180 um)</td><td>Rotablation preferred (surface modification)</td></tr>
+<tr><td>Deep calcium</td><td>IVL preferred (penetrates deeper layers)</td></tr>
+<tr><td>Nodular calcium (OCT)</td><td class="v-coral">Protruding nodule: IVL preferred, AVOID rota</td></tr>
+<tr><td>NC balloon waist &gt;18 atm</td><td class="v-amber">Escalate regardless of calcium arc</td></tr>
+</table>
+<div class="sub-label">escalation by arc severity</div>
+<table>
+<tr><td>&lt;90 deg (mild)</td><td class="v-green">NC balloon 18-20 atm</td></tr>
+<tr><td>90-180 deg (moderate)</td><td class="v-teal">Scoring balloon (AngioSculpt)</td></tr>
+<tr><td>180-270 deg (severe)</td><td class="v-amber">Rotablator or IVL</td></tr>
+<tr><td>&gt;270 deg or nodular</td><td class="v-coral">IVL preferred; rota if unavailable</td></tr>
+<tr><td>Tortuous + calcified</td><td class="v-coral">IVL only - rota cannot navigate</td></tr>
+</table></div></div>
+</div>
+<div id="anticoag" class="section-title">Anticoagulation</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Heparin / Bivalirudin / ACT Targets</h2></div>
+<table>
+<tr><td>Normal ACT</td><td>70-120 seconds</td></tr>
+<tr><td>Target ACT - PCI</td><td class="v-green">250-350 seconds</td></tr>
+<tr><td>Target ACT - PCI + GP IIb/IIIa</td><td class="v-amber">200-250 seconds</td></tr>
+<tr><td>UFH PCI dose</td><td class="v-blue">70-100 units/kg IV</td></tr>
+<tr><td>UFH with GP IIb/IIIa</td><td>50-70 units/kg IV</td></tr>
+<tr><td>UFH diagnostic only</td><td>2,000-5,000 units IV</td></tr>
+<tr><td>Protamine reversal</td><td class="v-blue">1 mg per 100 units UFH given</td></tr>
+<tr><td>Bivalirudin bolus</td><td>0.75 mg/kg IV</td></tr>
+<tr><td>Bivalirudin infusion (PCI)</td><td>1.75 mg/kg/hr</td></tr>
+<tr><td>Bivalirudin post-PCI (MATRIX)</td><td>0.25 mg/kg/hr x 4 hours</td></tr>
+<tr><td>Bivalirudin half-life</td><td class="v-teal">~25 minutes</td></tr>
+<tr><td>Enoxaparin de novo PCI</td><td>0.5-0.75 mg/kg IV</td></tr>
+<tr><td>Fondaparinux + PCI</td><td>Add UFH 85 units/kg bolus</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>GP IIb/IIIa Inhibitors - Dosing</h2></div>
+<div class="sub-label">abciximab (reopro) - Abbott / irreversible 48-72h</div>
+<table>
+<tr><td>IV bolus</td><td class="v-blue">0.25 mg/kg IV</td></tr>
+<tr><td>IV infusion</td><td>0.125 mcg/kg/min x 12 h (max 10 mcg/min)</td></tr>
+<tr><td>IC bolus (preferred)</td><td class="v-blue">0.25 mg/kg IC - same dose, local delivery</td></tr>
+<tr><td>Offset</td><td class="v-coral">48-72 h (receptor-bound - longest acting)</td></tr>
+</table>
+<div class="sub-label">eptifibatide (integrilin) - cyclic peptide - 4-6h offset</div>
+<table>
+<tr><td>IV bolus</td><td class="v-blue">180 mcg/kg x 2 boluses (10 min apart)</td></tr>
+<tr><td>IV infusion</td><td>2 mcg/kg/min x 18-24 h</td></tr>
+<tr><td>IC bolus</td><td>180 mcg/kg IC single bolus</td></tr>
+<tr><td>Renal adjustment</td><td>Reduce infusion to 1 mcg/kg/min if CrCl &lt;50</td></tr>
+</table>
+<div class="sub-label">tirofiban (aggrastat) - 4-8h offset</div>
+<table>
+<tr><td>IV bolus</td><td class="v-blue">25 mcg/kg IV over 3 min</td></tr>
+<tr><td>IV infusion</td><td>0.15 mcg/kg/min x 18-24 h</td></tr>
+<tr><td>IC bolus</td><td>25 mcg/kg IC</td></tr>
+</table>
+<div class="sub-label">key rules for all GP IIb/IIIa</div>
+<table>
+<tr><td>Reduce UFH when using</td><td>Cut to 50-70 units/kg (additive anticoagulation)</td></tr>
+<tr><td>IC vs IV delivery</td><td class="v-green">IC preferred for no-reflow - concentrated local dose</td></tr>
+<tr><td>Routine STEMI use</td><td class="v-coral">NOT recommended (BRAVE-3, HORIZONS-AMI)</td></tr>
+<tr><td>Selective use</td><td>Large thrombus, bail-out no-reflow, stent thrombosis</td></tr>
+</table></div></div>
+</div>
+<div id="antiplatelets" class="section-title">Antiplatelet Therapy</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--blue)"></div><h2>All P2Y12 Inhibitors</h2></div>
+<table>
+<tr><td>Aspirin load</td><td class="v-blue">300-325 mg (chewed - faster absorption)</td></tr>
+<tr><td>Aspirin maintenance</td><td>75-100 mg daily indefinitely</td></tr>
+<tr><td>Clopidogrel load (PCI)</td><td class="v-blue">600 mg oral</td></tr>
+<tr><td>Clopidogrel maintenance</td><td>75 mg OD</td></tr>
+<tr><td>Clopidogrel onset</td><td class="v-amber">2-6 hours (variable - CYP2C19 dependent)</td></tr>
+<tr><td>Clopidogrel offset</td><td>5-7 days</td></tr>
+<tr><td>Ticagrelor load</td><td class="v-blue">180 mg oral</td></tr>
+<tr><td>Ticagrelor maintenance</td><td>90 mg BD</td></tr>
+<tr><td>Ticagrelor onset</td><td class="v-green">~30 min (fastest oral P2Y12)</td></tr>
+<tr><td>Ticagrelor offset</td><td class="v-teal">3-5 days (reversible binding)</td></tr>
+<tr><td>Prasugrel load</td><td class="v-blue">60 mg oral</td></tr>
+<tr><td>Prasugrel maintenance</td><td>10 mg OD (5 mg if &gt;75yr or &lt;60 kg)</td></tr>
+<tr><td>Prasugrel onset</td><td class="v-green">30-60 min</td></tr>
+<tr><td>Prasugrel offset</td><td>5-7 days</td></tr>
+<tr><td>Cangrelor bolus (IV only)</td><td class="v-blue">30 mcg/kg IV bolus</td></tr>
+<tr><td>Cangrelor infusion</td><td>4 mcg/kg/min during PCI</td></tr>
+<tr><td>Cangrelor onset</td><td class="v-green">2 minutes (fastest)</td></tr>
+<tr><td>Cangrelor offset</td><td class="v-teal">60 minutes after stopping</td></tr>
+<tr><td>Prasugrel - prior stroke/TIA</td><td class="v-coral">ABSOLUTE contraindication</td></tr>
+<tr><td>DAPT ACS minimum</td><td class="v-amber">12 months</td></tr>
+<tr><td>DAPT elective PCI standard</td><td>6 months</td></tr>
+</table></div></div>
+</div>
+<div id="stents" class="section-title">Stent Specifications</div>
+<div class="grid wide-grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>XIENCE Skypoint - Abbott (Everolimus / CoCr)</h2></div>
+<table>
+<tr><td>Strut thickness</td><td>81 um (CoCr ML8 platform)</td></tr>
+<tr><td>Drug / polymer</td><td>Everolimus / fluoropolymer durable coating</td></tr>
+<tr><td>Deployment behaviour</td><td class="v-amber">Elongates minimally at markers</td></tr>
+<tr><td>Diameters available</td><td class="v-blue">2.25 / 2.5 / 2.75 / 3.0 / 3.25 / 3.5 / 4.0 / 4.5 / 5.0 / 5.25 mm</td></tr>
+<tr><td>Lengths available</td><td class="v-blue">8 / 12 / 15 / 18 / 23 / 28 / 33 / 38 / 48 mm</td></tr>
+<tr><td>Nominal pressure</td><td class="v-green">8 atm</td></tr>
+<tr><td>RBP (&le;3.5 mm)</td><td class="v-amber">18 atm</td></tr>
+<tr><td>RBP (&gt;3.5 mm)</td><td class="v-amber">16 atm</td></tr>
+<tr><td>Longitudinal strength</td><td>3 connectors - good stability</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Synergy / Synergy XD - Boston Scientific (Everolimus / PtCr)</h2></div>
+<table>
+<tr><td>Strut thickness</td><td class="v-teal">74 um SV / 79 um LV (ultra-thin PtCr)</td></tr>
+<tr><td>Drug / polymer</td><td>Everolimus / biodegradable PLGA (~4 months)</td></tr>
+<tr><td>Deployment behaviour</td><td class="v-green">Deploys AT markers - minimal foreshortening</td></tr>
+<tr><td>Diameters available</td><td class="v-blue">2.25 / 2.5 / 2.75 / 3.0 / 3.25 / 3.5 / 4.0 mm (XD up to 5.0 mm)</td></tr>
+<tr><td>Lengths available</td><td class="v-blue">8 / 12 / 16 / 20 / 24 / 28 / 32 / 38 / 44 / 48 mm</td></tr>
+<tr><td>Nominal pressure</td><td class="v-green">8 atm</td></tr>
+<tr><td>RBP (&le;3.5 mm)</td><td class="v-amber">18 atm</td></tr>
+<tr><td>RBP (&gt;3.5 mm)</td><td class="v-amber">16 atm</td></tr>
+<tr><td>Longitudinal strength</td><td class="v-green">Best in class (Peak PCI trial)</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Resolute Onyx / Frontier - Medtronic (Zotarolimus / CoCr + Pt core)</h2></div>
+<table>
+<tr><td>Strut thickness</td><td>81 um (CoCr + platinum core wire)</td></tr>
+<tr><td>Drug / polymer</td><td>Zotarolimus / BioLinx durable polymer</td></tr>
+<tr><td>Deployment behaviour</td><td class="v-amber">Foreshortens ~1-2 mm - account for this</td></tr>
+<tr><td>Diameters available</td><td class="v-blue">2.0 / 2.25 / 2.5 / 2.75 / 3.0 / 3.5 / 4.0 / 4.5 / 5.0 mm</td></tr>
+<tr><td>Onyx XL diameters</td><td class="v-blue">4.5 / 5.0 / 5.5 / 6.0 mm (large vessel)</td></tr>
+<tr><td>Lengths available</td><td class="v-blue">8 / 12 / 15 / 18 / 22 / 26 / 30 / 34 / 38 mm</td></tr>
+<tr><td>Nominal pressure</td><td class="v-green">9 atm</td></tr>
+<tr><td>RBP (&le;3.5 mm)</td><td class="v-amber">18 atm</td></tr>
+<tr><td>RBP (&gt;3.5 mm)</td><td class="v-amber">16 atm</td></tr>
+<tr><td>RBP (Onyx XL 5.0 mm)</td><td class="v-amber">14 atm</td></tr>
+<tr><td>Radiopacity</td><td class="v-green">BEST in class - Pt core wire</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Orsiro / Orsiro Mission - Biotronik (Sirolimus / CoCr)</h2></div>
+<table>
+<tr><td>Strut thickness</td><td class="v-teal">60 um (&le;3.0 mm) / 80 um (&gt;3.0 mm) - thinnest available</td></tr>
+<tr><td>Drug / polymer</td><td>Sirolimus / biodegradable PLLA polymer</td></tr>
+<tr><td>Deployment behaviour</td><td class="v-amber">Foreshortens ~2-3 mm - account for this</td></tr>
+<tr><td>Diameters available</td><td class="v-blue">2.25 / 2.5 / 2.75 / 3.0 / 3.5 / 4.0 mm</td></tr>
+<tr><td>Lengths available</td><td class="v-blue">9 / 13 / 18 / 22 / 26 / 30 / 35 / 40 mm</td></tr>
+<tr><td>Nominal pressure</td><td class="v-green">8 atm</td></tr>
+<tr><td>RBP (&le;3.5 mm)</td><td class="v-amber">18 atm</td></tr>
+<tr><td>RBP (&gt;3.5 mm)</td><td class="v-amber">16 atm</td></tr>
+<tr><td>Key trials</td><td>BIOFLOW V - superior to XIENCE in ACS; BIOSTEMI - superior in STEMI</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Ultimaster Tansei - Terumo (Sirolimus / CoCr)</h2></div>
+<table>
+<tr><td>Strut thickness</td><td>80 um (CoCr)</td></tr>
+<tr><td>Drug / polymer</td><td>Sirolimus / biodegradable abluminal polymer</td></tr>
+<tr><td>Diameters available</td><td class="v-blue">2.5 / 2.75 / 3.0 / 3.5 / 4.0 mm</td></tr>
+<tr><td>Lengths available</td><td class="v-blue">8 / 13 / 18 / 23 / 28 / 33 / 38 mm</td></tr>
+<tr><td>Nominal pressure</td><td class="v-green">8 atm</td></tr>
+<tr><td>RBP</td><td class="v-amber">16-18 atm depending on size</td></tr>
+<tr><td>Feature</td><td>Good flexibility for tortuous vessels. Helical support structure.</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Stent Generation Summary</h2></div>
+<table>
+<tr><td>BMS restenosis rate</td><td class="v-coral">15-30%</td></tr>
+<tr><td>1st gen DES struts</td><td class="v-coral">&gt;130 um (SS platform, durable polymer)</td></tr>
+<tr><td>2nd gen DES struts</td><td class="v-amber">80-90 um (CoCr / PtCr)</td></tr>
+<tr><td>Ultrathin DES struts</td><td class="v-teal">&lt;70 um</td></tr>
+<tr><td>Modern DES ISR rate</td><td class="v-green">~4%</td></tr>
+<tr><td>Synergy deploys</td><td class="v-green">AT markers (minimal change)</td></tr>
+<tr><td>XIENCE deploys</td><td>Elongates minimally</td></tr>
+<tr><td>Resolute Onyx deploys</td><td class="v-amber">Foreshortens ~1-2 mm</td></tr>
+<tr><td>Orsiro deploys</td><td class="v-amber">Foreshortens ~2-3 mm</td></tr>
+<tr><td>Delivery shaft (RX)</td><td>140-145 cm</td></tr>
+</table></div></div>
+</div>
+<div id="balloons" class="section-title">Balloons</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--teal)"></div><h2>Balloon Pressures &amp; Sizing</h2></div>
+<table>
+<tr><td>SC balloon nominal</td><td>6-10 atm</td></tr>
+<tr><td>NC balloon range</td><td class="v-blue">18-26 atm</td></tr>
+<tr><td>Post-dilation target (NC)</td><td class="v-blue">18-20 atm</td></tr>
+<tr><td>Pre-dilation sizing</td><td>0.5 mm undersize vs reference vessel</td></tr>
+<tr><td>Post-dilation NC sizing</td><td>1:1 or +0.25 mm to stent size</td></tr>
+<tr><td>POT balloon type</td><td class="v-amber">NC ONLY - sized to proximal MV</td></tr>
+<tr><td>KBI balloon type</td><td class="v-teal">SC ONLY - one per vessel, simultaneous deflation</td></tr>
+<tr><td>DCB contact time</td><td class="v-blue">30-60 seconds minimum</td></tr>
+<tr><td>Balloon diameters</td><td>1.0-5.0 mm (NC up to 6.0 mm)</td></tr>
+<tr><td>Balloon lengths</td><td>8 / 10 / 12 / 15 / 20 / 25 / 30 / 38 / 40 mm</td></tr>
+<tr><td>Indeflator standard volume</td><td>20 mL</td></tr>
+<tr><td>Inflation mix</td><td>50:50 contrast:saline (faster deflation)</td></tr>
+</table></div></div>
+</div>
+<div id="atherectomy" class="section-title">Atherectomy Specifications</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Rotablator - Boston Scientific</h2></div>
+<table>
+<tr><td>Mechanism</td><td>Diamond-coated burr - differential cutting superficial calcium only</td></tr>
+<tr><td>Operating speed</td><td class="v-blue">140,000-180,000 RPM</td></tr>
+<tr><td>Max run duration</td><td class="v-amber">15-20 seconds per run</td></tr>
+<tr><td>RPM deceleration warning</td><td class="v-coral">&gt;5,000 RPM drop = too aggressive, stop</td></tr>
+<tr><td>Max burr:artery ratio</td><td class="v-amber">0.6 (never exceed)</td></tr>
+<tr><td>Burr sizes available</td><td class="v-blue">1.25 / 1.5 / 1.75 / 2.0 / 2.15 / 2.25 / 2.38 / 2.5 mm</td></tr>
+<tr><td>Min guide - 1.25-1.5 mm</td><td class="v-green">6 Fr</td></tr>
+<tr><td>Min guide - 1.75 mm</td><td class="v-amber">6 Fr (tight) / 7 Fr recommended</td></tr>
+<tr><td>Min guide - &ge;2.0 mm</td><td class="v-coral">7 Fr minimum</td></tr>
+<tr><td>Wire required</td><td class="v-coral">Dedicated Rotawire ONLY (floppy or extra support)</td></tr>
+<tr><td>Rotaflow cocktail</td><td>Heparin + verapamil 2.5-5 mg + GTN 100 mcg in saline</td></tr>
+<tr><td>Particle size</td><td class="v-green">&lt;10 um (cleared by RES - no microembolisation)</td></tr>
+<tr><td>Treats</td><td>Superficial calcium only</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Orbital Atherectomy - CSI/Abbott (Diamondback 360)</h2></div>
+<table>
+<tr><td>Mechanism</td><td>Eccentric orbiting diamond crown - rotates AND orbits - superficial + deep calcium</td></tr>
+<tr><td>Operating speed</td><td class="v-blue">80,000-120,000 RPM</td></tr>
+<tr><td>Crown sizes available</td><td class="v-blue">1.25 mm micro crown / 1.25 mm classic crown</td></tr>
+<tr><td>Vessel range (one crown)</td><td class="v-green">2.5-4.0 mm (orbital motion adapts)</td></tr>
+<tr><td>Min guide</td><td class="v-green">6 Fr compatible (all sizes)</td></tr>
+<tr><td>Wire required</td><td class="v-coral">Dedicated ViperWire Advance ONLY</td></tr>
+<tr><td>Speed settings</td><td>Low (80k RPM) / High (120k RPM) - use low first</td></tr>
+<tr><td>vs Rotablator key diff</td><td>Treats deeper calcium; one crown multiple vessel sizes; no deceleration issue</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>IVL - Shockwave Medical</h2></div>
+<table>
+<tr><td>Mechanism</td><td>Balloon-based sonic pressure waves - cracks deep + circumferential + nodular calcium</td></tr>
+<tr><td>Initial inflation pressure</td><td class="v-blue">4 atm (to deliver pulses)</td></tr>
+<tr><td>Pulses per inflation</td><td>10 pulses per 10-second cycle</td></tr>
+<tr><td>Max pulses per lesion</td><td class="v-amber">80 pulses (8 cycles)</td></tr>
+<tr><td>After pulsing</td><td>Inflate to high pressure for full expansion</td></tr>
+<tr><td>Catheter diameters</td><td class="v-blue">2.5 / 3.0 / 3.5 / 4.0 mm</td></tr>
+<tr><td>Catheter lengths</td><td>12 mm and 22 mm</td></tr>
+<tr><td>Min guide</td><td class="v-green">6 Fr (all sizes)</td></tr>
+<tr><td>Wire required</td><td class="v-green">Standard 0.014" workhorse wire</td></tr>
+<tr><td>Key advantage</td><td>Treats nodular, deep, circumferential Ca; tortuous vessels; workhorse wire</td></tr>
+<tr><td>Key trial</td><td>DISRUPT CAD III - 92.4% procedural success, 7.6% MACE at 30 days</td></tr>
+</table></div></div>
+</div>
+<div id="haemo" class="section-title">Haemodynamics &amp; LV Gram</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--green)"></div><h2>Normal Haemodynamic Values</h2></div>
+<table>
+<tr><td>Normal LVEDP</td><td class="v-green">&le;12 mmHg</td></tr>
+<tr><td>Mildly elevated LVEDP</td><td class="v-amber">13-18 mmHg</td></tr>
+<tr><td>Moderately elevated LVEDP</td><td class="v-amber">19-25 mmHg</td></tr>
+<tr><td>Severely elevated LVEDP</td><td class="v-coral">&gt;25 mmHg - reduce LV gram volume + rate</td></tr>
+<tr><td>Normal aortic systolic</td><td>100-140 mmHg</td></tr>
+<tr><td>Normal pulse pressure</td><td>~40 mmHg</td></tr>
+<tr><td>Severe AR pulse pressure</td><td class="v-coral">&gt;80 mmHg (wide = hallmark)</td></tr>
+<tr><td>Severe AS mean gradient</td><td class="v-coral">&gt;40 mmHg</td></tr>
+<tr><td>AVA severe AS</td><td class="v-coral">&lt;1.0 cm sq</td></tr>
+<tr><td>AVA very severe AS</td><td class="v-coral">&lt;0.6 cm sq</td></tr>
+<tr><td>Severe MS mean gradient</td><td class="v-coral">&gt;10 mmHg</td></tr>
+<tr><td>MVA severe MS</td><td class="v-coral">&lt;1.0 cm sq</td></tr>
+<tr><td>Normal PCWP</td><td class="v-green">&lt;12 mmHg</td></tr>
+<tr><td>PCWP V-wave significant MR</td><td class="v-coral">&gt;40 mmHg</td></tr>
+<tr><td>PCWP V-wave severe MR</td><td class="v-coral">&gt;80 mmHg</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--green)"></div><h2>LV Gram Injector Settings</h2></div>
+<table>
+<tr><td>Normal LV - volume</td><td class="v-blue">30-36 mL</td></tr>
+<tr><td>Normal LV - rate</td><td class="v-blue">12-15 mL/s</td></tr>
+<tr><td>LVEDP &gt;25 - volume</td><td class="v-amber">Reduce to 20-25 mL</td></tr>
+<tr><td>LVEDP &gt;25 - rate</td><td class="v-amber">Reduce to 10-12 mL/s</td></tr>
+<tr><td>Poor EF (&lt;30%)</td><td>20-25 mL at 10 mL/s or omit entirely</td></tr>
+<tr><td>Severe MR (3+/4+)</td><td>May increase to 35-40 mL (rapid escape via MR)</td></tr>
+<tr><td>Severe AS + high LVEDP</td><td class="v-coral">20 mL at 10 mL/s or omit - use echo data</td></tr>
+<tr><td>Renal impairment</td><td>15-20 mL diluted (50:50) or omit</td></tr>
+<tr><td>Aortogram volume</td><td>40-60 mL</td></tr>
+<tr><td>Aortogram rate</td><td>20-25 mL/s</td></tr>
+<tr><td>PSI limit (LV gram)</td><td>600-900 PSI</td></tr>
+<tr><td>Max safe contrast formula</td><td class="v-blue">3-4 x eGFR (mL)</td></tr>
+<tr><td>Low-risk contrast:Cr ratio</td><td class="v-green">&lt;3.7</td></tr>
+</table></div></div>
+</div>
+<div id="classifications" class="section-title">Classification Systems</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Ellis Classification - Coronary Perforation</h2></div>
+<table>
+<tr><td>Type I</td><td class="v-green">Extraluminal crater only. No extravasation beyond adventitia. LOW risk. Observe + serial echo.</td></tr>
+<tr><td>Type II</td><td class="v-amber">Pericardial/myocardial blush - no jet extravasation. LOW-MOD risk. Prolonged balloon + heparin reversal.</td></tr>
+<tr><td>Type III</td><td class="v-coral">Frank jet &ge;1 mm. HIGH risk. Tamponade ~50%. Balloon tamponade + covered stent + pericardiocentesis.</td></tr>
+<tr><td>Type III cavity spill</td><td class="v-coral">Free flow into chamber or pericardium. CRITICAL. Surgical emergency. Autotransfusion.</td></tr>
+<tr><td>Type III incidence</td><td>~0.1-0.2% of all PCI</td></tr>
+<tr><td>Covered stent options</td><td>Graftmaster (Abbott) 2.8-4.8 mm / PK Papyrus (Biotronik) 2.5-5.0 mm</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>NHLBI Classification - Coronary Dissection</h2></div>
+<table>
+<tr><td>Type A</td><td class="v-green">Minor radiolucency, no flow limitation. Observe.</td></tr>
+<tr><td>Type B</td><td class="v-teal">Parallel tracts / double lumen, no flow limitation. Consider stent if large.</td></tr>
+<tr><td>Type C</td><td class="v-amber">Extraluminal cap - dye retained. Usually stent - propagation risk.</td></tr>
+<tr><td>Type D</td><td class="v-coral">Spiral dissection. Urgent stenting - cover entire dissection.</td></tr>
+<tr><td>Type E</td><td class="v-coral">Persistent reduced flow (TIMI &lt;3). Urgent stenting.</td></tr>
+<tr><td>Type F</td><td class="v-coral">Total occlusion (TIMI 0). Emergency - MCS standby.</td></tr>
+<tr><td>Aortocoronary dissection</td><td class="v-coral">STOP injecting. CT aorta urgently. Cardiac surgery immediately.</td></tr>
+<tr><td>Stenting direction</td><td>Distal to proximal - seal from below, work upward</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Medina Classification - Bifurcation Lesions</h2></div>
+<table>
+<tr><td>Format</td><td>(pMV, dMV, SB) - 1=disease present, 0=none</td></tr>
+<tr><td>True bifurcation examples</td><td class="v-coral">(1,1,1) / (1,0,1) / (0,1,1)</td></tr>
+<tr><td>Non-true bifurcation</td><td class="v-green">(1,1,0) / (1,0,0) - SB rarely compromised</td></tr>
+<tr><td>Ostial LAD disease</td><td>(0,1,0) - main vessel only, no LM, no SB</td></tr>
+<tr><td>Threshold for SB treatment</td><td>&gt;75% SB stenosis after MV stenting + POT + TIMI &lt;3</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>TIMI Thrombus Grade</h2></div>
+<table>
+<tr><td>Grade 0</td><td class="v-green">No thrombus</td></tr>
+<tr><td>Grade 1</td><td>Possible thrombus - hazy blush only</td></tr>
+<tr><td>Grade 2</td><td>Small (&lt;0.5x vessel diameter)</td></tr>
+<tr><td>Grade 3</td><td>Medium (0.5-2x vessel diameter)</td></tr>
+<tr><td>Grade 4</td><td class="v-amber">Large (&gt;2x vessel diameter)</td></tr>
+<tr><td>Grade 5</td><td class="v-coral">Total occlusion from thrombus</td></tr>
+<tr><td>Aspiration threshold</td><td>Consider Grade 4-5 in STEMI or stent thrombosis</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Stent Thrombosis Timing (ARC Definition)</h2></div>
+<table>
+<tr><td>Acute ST</td><td class="v-coral">0-24 hours</td></tr>
+<tr><td>Subacute ST</td><td class="v-coral">1-30 days</td></tr>
+<tr><td>Late ST</td><td class="v-amber">30 days - 1 year</td></tr>
+<tr><td>Very late ST</td><td class="v-amber">&gt;1 year</td></tr>
+<tr><td>Definite ST</td><td>Angiographic/pathological confirmation + clinical event</td></tr>
+<tr><td>Probable ST</td><td>Unexplained death &lt;30 days or MI in stented territory</td></tr>
+<tr><td>Possible ST</td><td>Unexplained death &gt;30 days</td></tr>
+<tr><td>Acute ST mortality</td><td class="v-coral">20-45%</td></tr>
+<tr><td>#1 cause acute ST</td><td class="v-coral">Stent underexpansion (MSA below target)</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>ISR - Mehran Classification</h2></div>
+<table>
+<tr><td>Type I - focal</td><td class="v-green">&lt;10 mm in-stent. DCB first choice (Class 1).</td></tr>
+<tr><td>Type II - diffuse intra-stent</td><td class="v-amber">&gt;10 mm within stent margins. DES re-stenting preferred.</td></tr>
+<tr><td>Type III - proliferative</td><td class="v-coral">&gt;10 mm beyond stent edges. DES or consider CABG.</td></tr>
+<tr><td>Type IV - total occlusion</td><td class="v-coral">TIMI 0. Treat as CTO. CABG if PCI fails.</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>SCAI Cardiogenic Shock Classification</h2></div>
+<table>
+<tr><td>Stage A - At risk</td><td class="v-green">Not yet in shock. High-risk features (large MI, prior HF).</td></tr>
+<tr><td>Stage B - Beginning</td><td class="v-teal">Mild hypotension/tachycardia. Compensated. Normal lactate.</td></tr>
+<tr><td>Stage C - Classic</td><td class="v-amber">Hypoperfusion, elevated lactate. Needs active intervention.</td></tr>
+<tr><td>Stage D - Deteriorating</td><td class="v-coral">Failing despite initial support. Escalating vasopressors.</td></tr>
+<tr><td>Stage E - Extremis</td><td class="v-coral">Cardiac arrest / near-arrest. CPR or full mechanical support.</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>AR Grading - Sellers (Aortogram)</h2></div>
+<table>
+<tr><td>Grade 1+</td><td class="v-green">Faint incomplete LV opacification - clears each beat</td></tr>
+<tr><td>Grade 2+</td><td class="v-teal">Full but faint LV opacification - clears slowly</td></tr>
+<tr><td>Grade 3+</td><td class="v-amber">LV density equals aortic density</td></tr>
+<tr><td>Grade 4+</td><td class="v-coral">LV denser than aorta - opacifies on first beat</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--blue)"></div><h2>MR Grading - Sellers (LV Gram)</h2></div>
+<table>
+<tr><td>Grade 1+</td><td class="v-green">Small LA opacification - clears each beat</td></tr>
+<tr><td>Grade 2+</td><td class="v-teal">Moderate LA - less dense than LV</td></tr>
+<tr><td>Grade 3+</td><td class="v-amber">LA as dense as LV - persists</td></tr>
+<tr><td>Grade 4+</td><td class="v-coral">LA denser than LV - pulmonary veins opacify</td></tr>
+</table></div></div>
+</div>
+<div id="scores" class="section-title">Risk Scores</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Revascularisation Decisions</h2></div>
+<table>
+<tr><td>SYNTAX low</td><td class="v-green">0-22 &rarr; PCI acceptable</td></tr>
+<tr><td>SYNTAX intermediate</td><td class="v-amber">23-32 &rarr; Heart Team decision</td></tr>
+<tr><td>SYNTAX high</td><td class="v-coral">&gt;32 &rarr; CABG preferred</td></tr>
+<tr><td>STS low surgical risk</td><td class="v-green">&lt;4%</td></tr>
+<tr><td>STS intermediate</td><td class="v-amber">4-8%</td></tr>
+<tr><td>STS high surgical risk</td><td class="v-coral">&gt;8% &rarr; favour PCI / TAVI</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>ACS Risk Stratification</h2></div>
+<table>
+<tr><td>GRACE high risk</td><td class="v-coral">&gt;140 &rarr; invasive &lt;2 hours</td></tr>
+<tr><td>GRACE intermediate</td><td class="v-amber">108-140 &rarr; invasive &lt;24 hours</td></tr>
+<tr><td>GRACE low risk</td><td class="v-green">&lt;108 &rarr; invasive &lt;72 hours</td></tr>
+<tr><td>TIMI high risk</td><td class="v-coral">5-7 points</td></tr>
+<tr><td>TIMI intermediate</td><td class="v-amber">3-4 points</td></tr>
+<tr><td>TIMI low risk</td><td class="v-green">0-2 points</td></tr>
+<tr><td>HEART score high risk</td><td class="v-coral">&ge;7 &rarr; early invasive</td></tr>
+<tr><td>HEART score intermediate</td><td class="v-amber">4-6</td></tr>
+<tr><td>HEART score low risk</td><td class="v-green">&le;3 &rarr; safe discharge</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--purple)"></div><h2>Bleeding Risk</h2></div>
+<table>
+<tr><td>HAS-BLED high bleed</td><td class="v-coral">&ge;3</td></tr>
+<tr><td>DAPT score - prolong</td><td class="v-amber">&ge;2 (ischaemic benefit &gt; bleed risk)</td></tr>
+<tr><td>DAPT score - standard</td><td class="v-green">&lt;2 (no net benefit from prolonging)</td></tr>
+<tr><td>ARC-HBR major criteria</td><td>OAC use, eGFR &lt;30, Hb &lt;11, prior ICH, active malignancy, cirrhosis</td></tr>
+<tr><td>PRECISE-DAPT high bleed</td><td class="v-coral">&ge;25 &rarr; consider short DAPT 3-6 months</td></tr>
+</table></div></div>
+</div>
+<div id="mcs" class="section-title">Mechanical Circulatory Support</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>MCS Device Specifications</h2></div>
+<table>
+<tr><td>IABP - access sheath</td><td class="v-blue">7-8 Fr femoral (standard)</td></tr>
+<tr><td>IABP balloon sizes</td><td>25 / 34 / 40 / 50 cc (by patient height)</td></tr>
+<tr><td>IABP size &lt;162 cm</td><td class="v-amber">34 cc</td></tr>
+<tr><td>IABP size 162-182 cm</td><td class="v-blue">40 cc (most common)</td></tr>
+<tr><td>IABP size &gt;182 cm</td><td class="v-blue">50 cc</td></tr>
+<tr><td>IABP size paediatric</td><td>25 cc</td></tr>
+<tr><td>IABP augmentation support</td><td>0.5 L/min - reduces afterload, augments diastolic pressure</td></tr>
+<tr><td>IABP trigger modes</td><td>ECG (R-wave), pressure, pacemaker, internal</td></tr>
+<tr><td>IABP timing (1:1)</td><td>Inflate at dicrotic notch; deflate just before systole</td></tr>
+<tr><td>IABP-SHOCK II (2012)</td><td class="v-coral">No mortality benefit in cardiogenic shock</td></tr>
+<tr><td>Impella 2.5</td><td>2.5 L/min - 13 Fr femoral</td></tr>
+<tr><td>Impella CP</td><td class="v-blue">3.5-4.0 L/min - 14 Fr femoral</td></tr>
+<tr><td>Impella 5.0</td><td>5.0 L/min - surgical cutdown</td></tr>
+<tr><td>Impella 5.5</td><td>5.5 L/min - surgical cutdown</td></tr>
+<tr><td>Impella RP</td><td>Right-sided support - RV failure</td></tr>
+<tr><td>DanGer Shock 2024</td><td class="v-green">Impella CP: 180-day mortality 45.8% vs 58.5% - FIRST MCS mortality benefit</td></tr>
+<tr><td>Impella contraindications</td><td class="v-coral">Severe AR, LV thrombus, mechanical AVR</td></tr>
+<tr><td>VA-ECMO</td><td>Full cardiopulmonary bypass equivalent</td></tr>
+<tr><td>ECMO-CS (2023)</td><td class="v-coral">VA-ECMO - no mortality benefit vs standard care</td></tr>
+<tr><td>ECPELLA</td><td>ECMO + Impella = LV venting to prevent distension</td></tr>
+</table></div></div>
+</div>
+<div id="largebore" class="section-title">Large Bore &amp; Structural Equipment</div>
+<div class="grid">
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--blue)"></div><h2>Large Bore Sheath Sizes</h2></div>
+<table>
+<tr><td>IABP sheath</td><td>7-8 Fr femoral</td></tr>
+<tr><td>Impella CP sheath</td><td class="v-blue">14 Fr femoral</td></tr>
+<tr><td>Impella 5.0 / 5.5</td><td class="v-coral">Surgical cutdown - 21 Fr</td></tr>
+<tr><td>VA-ECMO arterial</td><td class="v-coral">15-21 Fr femoral arterial</td></tr>
+<tr><td>VA-ECMO venous</td><td class="v-coral">21-25 Fr femoral venous</td></tr>
+<tr><td>TAVI transfemoral</td><td class="v-coral">14-16 Fr (most modern systems)</td></tr>
+<tr><td>TAVI Edwards SAPIEN 3</td><td>14 Fr (small/regular) / 16 Fr (large)</td></tr>
+<tr><td>TAVI Evolut (Medtronic)</td><td>14 Fr EnVeo sheath (all sizes)</td></tr>
+<tr><td>BAV (standard)</td><td class="v-amber">8-12 Fr femoral arterial</td></tr>
+<tr><td>BAV (large balloon)</td><td class="v-amber">12-14 Fr femoral arterial</td></tr>
+<tr><td>Pericardiocentesis drain</td><td>6-8 Fr pigtail catheter</td></tr>
+<tr><td>Rotablator guide min</td><td class="v-amber">7 Fr (&ge;1.75 mm burr)</td></tr>
+<tr><td>Atherectomy / IVL</td><td class="v-green">6 Fr (OA and IVL - all sizes)</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Aortic Balloon Valvuloplasty (BAV)</h2></div>
+<table>
+<tr><td>Indication</td><td>Bridge to TAVI / SAVR in severe AS; palliation; haemodynamic stabilisation pre-procedure</td></tr>
+<tr><td>Access route</td><td class="v-blue">Retrograde femoral arterial (most common)</td></tr>
+<tr><td>Sheath size</td><td class="v-amber">8-14 Fr depending on balloon size used</td></tr>
+<tr><td>Wire required</td><td class="v-blue">0.035" stiff wire (Amplatz Extra Stiff or Lunderquist)</td></tr>
+<tr><td>Wire position</td><td>Deep in LV apex (prevents wire prolapse during inflation)</td></tr>
+<tr><td>Balloon sizes available</td><td class="v-blue">18 / 20 / 22 / 23 / 25 mm diameter</td></tr>
+<tr><td>Starting balloon size</td><td>Usually 2-4 mm smaller than annulus (undersizing intentional)</td></tr>
+<tr><td>Balloon length</td><td>40-60 mm (standard BAV balloons)</td></tr>
+<tr><td>Key balloon brands</td><td>NUCLEUS (NuMed) / Z-MED II (NuMed) / TRUE Dilation (Bard)</td></tr>
+<tr><td>Inflation medium</td><td>1:4 contrast:saline mix (fast inflation / deflation)</td></tr>
+<tr><td>Inflation technique</td><td>Rapid inflation / deflation during RV pacing at 180-220 bpm</td></tr>
+<tr><td>Pacing rate (standstill)</td><td class="v-coral">180-220 bpm (reduces cardiac output to minimise balloon ejection)</td></tr>
+<tr><td>Pacing wire position</td><td>RV apex via femoral or jugular venous access</td></tr>
+<tr><td>Inflation time</td><td class="v-amber">3-5 seconds (shorter = less haemodynamic compromise)</td></tr>
+<tr><td>Number of inflations</td><td>Typically 2-4 inflations, escalating size if needed</td></tr>
+<tr><td>Expected result</td><td>Reduce mean gradient by ~50% (e.g. 60 mmHg &rarr; ~30 mmHg); improve AVA by 0.2-0.4 cm sq</td></tr>
+<tr><td>Restenosis rate</td><td class="v-coral">~50% at 6 months - NOT a definitive treatment</td></tr>
+<tr><td>Major complications</td><td>Severe AR (3-4%), stroke (~2%), vascular access (~5-10%), haemodynamic collapse</td></tr>
+<tr><td>Contraindications</td><td>Severe AR (&ge;3+), LV thrombus, bicuspid valve (relative)</td></tr>
+</table></div>
+
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--amber)"></div><h2>Mitral Balloon Valvuloplasty (PTMC / BMV)</h2></div>
+<table>
+<tr><td>Indication</td><td>Severe mitral stenosis (MVA &lt;1.0 cm sq) - suitable anatomy (Wilkins score &le;8)</td></tr>
+<tr><td>Access route</td><td class="v-blue">Transseptal puncture (femoral venous)</td></tr>
+<tr><td>Sheath size (venous)</td><td class="v-amber">8-14 Fr femoral venous (Inoue: 12 Fr; double balloon: 2x 9 Fr)</td></tr>
+<tr><td>Technique</td><td>Inoue balloon (most common) or double-balloon technique</td></tr>
+<tr><td>Inoue balloon sizes</td><td class="v-blue">24 / 26 / 28 / 30 mm (size = patient height / 10 + 10)</td></tr>
+<tr><td>Inoue sizing formula</td><td class="v-blue">Height (cm) / 10 + 10 = starting size (mm)</td></tr>
+<tr><td>Wire used</td><td>0.025" Inoue coiled wire (specific to system)</td></tr>
+<tr><td>Transseptal needle</td><td>Brockenbrough needle through Mullins sheath - Fossa ovalis</td></tr>
+<tr><td>Target MVA post-procedure</td><td class="v-green">&gt;1.5 cm sq or doubling of baseline MVA</td></tr>
+<tr><td>Endpoint - stop if</td><td class="v-coral">MR increases by &ge;1 grade OR MVA &gt;1.5 cm sq achieved</td></tr>
+<tr><td>Wilkins score &le;8</td><td class="v-green">Good morphology - good outcome likely</td></tr>
+<tr><td>Wilkins score &gt;10</td><td class="v-coral">Unfavourable - consider surgical commissurotomy</td></tr>
+<tr><td>Restenosis</td><td>~30-40% at 5-7 years (better than BAV - more durable)</td></tr>
+</table></div>
+
+</div>
+
+<div id="radiation" class="section-title">Radiation Safety</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--coral)"></div><h2>Dose Limits &amp; Thresholds</h2></div>
+<table>
+<tr><td>Annual occupational limit</td><td class="v-amber">20 mSv/year (5-year average)</td></tr>
+<tr><td>Single year maximum</td><td class="v-coral">50 mSv</td></tr>
+<tr><td>Eye lens annual limit</td><td class="v-amber">20 mSv/year (cataracts recognised)</td></tr>
+<tr><td>Extremities limit</td><td>500 mSv/year</td></tr>
+<tr><td>Pregnant - foetal limit</td><td class="v-coral">1 mSv (remainder of pregnancy)</td></tr>
+<tr><td>Air kerma - skin erythema</td><td class="v-amber">2 Gy (2,000 mGy) - alert patient</td></tr>
+<tr><td>Air kerma - desquamation</td><td class="v-coral">5 Gy - dermatology follow-up</td></tr>
+<tr><td>Air kerma - severe skin injury</td><td class="v-coral">10 Gy</td></tr>
+<tr><td>Air kerma - necrosis risk</td><td class="v-coral">15 Gy</td></tr>
+<tr><td>Inverse square law</td><td>2x distance = 1/4 dose</td></tr>
+<tr><td>Low-dose fluoro frame rate</td><td class="v-green">7.5 fps (50% dose vs 15 fps)</td></tr>
+<tr><td>Cine vs fluoro dose</td><td class="v-coral">Cine = 10-15x more dose per second</td></tr>
+</table></div></div>
+</div>
+<div id="contrast" class="section-title">Contrast &amp; CA-AKI</div>
+<div class="grid">
+<div class="card"><div class="card-header"><div class="dot" style="background:var(--blue)"></div><h2>Contrast Safety</h2></div>
+<table>
+<tr><td>LOCM osmolality</td><td>500-900 mOsm/kg</td></tr>
+<tr><td>IOCM osmolality</td><td class="v-green">~290 mOsm/kg (iso-osmolar - least nephrotoxic)</td></tr>
+<tr><td>Standard iodine conc.</td><td>320-370 mg I/mL</td></tr>
+<tr><td>CA-AKI definition</td><td class="v-coral">Cr rise &ge;0.3 mg/dL within 48-72 h</td></tr>
+<tr><td>Max safe contrast formula</td><td class="v-blue">3-4 x eGFR (mL)</td></tr>
+<tr><td>Low-risk contrast:Cr ratio</td><td class="v-green">&lt;3.7</td></tr>
+<tr><td>Hydration first line</td><td>0.9% NaCl 1 mL/kg/hr pre + post procedure</td></tr>
+<tr><td>NAC (PRESERVE 2018)</td><td class="v-coral">No benefit vs placebo - not routinely recommended</td></tr>
+<tr><td>Allergy premedication</td><td>Prednisolone 50 mg at 13 h / 7 h / 1 h before</td></tr>
+<tr><td>Anaphylaxis treatment</td><td class="v-coral">Adrenaline 0.5 mg IM (1:1000 solution)</td></tr>
+</table></div></div>
+</div>
+<div id="trials" class="section-title">Landmark Trials</div>
+<div class="grid wide-grid">
+<div class="card full"><div class="card-header"><div class="dot" style="background:var(--green)"></div><h2>Comprehensive Trial Reference</h2></div>
+<div class="sub-label">coronary physiology</div>
+<table>
+<tr><td>DEFER (2001)</td><td>Safe to defer PCI if FFR &gt;0.75-0.80 - 5yr MACE equivalent to treated group. Established FFR deferral safety.</td></tr>
+<tr><td>FAME (2009)</td><td class="v-green">FFR-guided PCI: MACE 13.2% vs 18.3% angio-guided. Less stents, less contrast, less cost.</td></tr>
+<tr><td>FAME 2 (2012)</td><td class="v-green">FFR-guided PCI superior to medical therapy alone (FFR &le;0.80) - less urgent revascularisation (1.6% vs 11.1%).</td></tr>
+<tr><td>DEFINE-FLAIR (2017)</td><td>iFR noninferior to FFR at 1yr (MACE 6.8% vs 7.0%). Fewer side effects. No adenosine needed.</td></tr>
+<tr><td>iFR-SWEDEHEART (2017)</td><td>iFR noninferior to FFR (6.7% vs 6.1%). Faster, better tolerated, equivalent outcomes.</td></tr>
+<tr><td>FLAVOUR (2022)</td><td>FFR-guided PCI noninferior to IVUS-guided for intermediate stenosis - MACE 10.8% vs 12.3%.</td></tr>
+</table>
+<div class="sub-label">intravascular imaging</div>
+<table>
+<tr><td>IVUS-XPL (2015, Lancet)</td><td class="v-green">IVUS-guided PCI (long LAD/LCx): TLF 2.9% vs 5.8% angio at 1yr. Larger stent area. Direct evidence for LAD ostial PCI.</td></tr>
+<tr><td>ULTIMATE (2018, JACC)</td><td class="v-green">IVUS-guided: TVF 2.9% vs 5.4% at 1yr. Benefit driven entirely by preventing stent underexpansion.</td></tr>
+<tr><td>RENOVATE-COMPLEX (2023)</td><td class="v-green">IVUS-guided complex PCI: TVF 7.7% vs 12.3% angio at 1yr. Class 1A basis for complex PCI imaging.</td></tr>
+<tr><td>ILUMIEN IV (2023, NEJM)</td><td class="v-green">OCT-guided PCI: TVF 7.4% vs 8.9% angio at 2yr (p=0.035). First RCT showing OCT clinical benefit.</td></tr>
+<tr><td>OCTOBER (2023, NEJM)</td><td class="v-green">OCT-guided bifurcation PCI: MACE RR 0.63 vs angio. OCT superior specifically for bifurcations.</td></tr>
+<tr><td>OCTIVUS (2023)</td><td>OCT noninferior to IVUS for complex PCI - MACE 5.2% vs 4.9%. OCT is a valid alternative.</td></tr>
+</table>
+<div class="sub-label">stemi &amp; reperfusion</div>
+<table>
+<tr><td>RIVAL (2011, Lancet)</td><td class="v-green">Radial vs femoral: major vascular complications 1.4% vs 3.7%. Trend to mortality benefit in STEMI subgroup.</td></tr>
+<tr><td>MATRIX (2015, NEJM)</td><td class="v-green">Radial in ACS: NACE 15.2% vs 17.4% femoral. Bleeding reduction AND mortality benefit.</td></tr>
+<tr><td>RIFLE-STEACS (2012)</td><td class="v-green">Radial in STEMI: 30-day MACE 13.6% vs 21.0% femoral. Radial now standard for STEMI.</td></tr>
+<tr><td>COMPLETE (2019, NEJM)</td><td class="v-green">Staged complete revascularisation vs culprit-only in STEMI: CV death/MI 7.8% vs 10.5% at 3yr.</td></tr>
+<tr><td>CULPRIT-SHOCK (2017, NEJM)</td><td class="v-green">Culprit-only PCI in CS + MVD: 30d death/RRT 45.9% vs 55.4% immediate multivessel. Less is more acutely.</td></tr>
+<tr><td>BIOVASC (2022)</td><td>Immediate complete revascularisation noninferior to staged complete at 1yr MACE.</td></tr>
+<tr><td>COMFORTABLE AMI (2012)</td><td class="v-green">DES vs BMS in STEMI: TLF 4.3% vs 8.7% at 1yr. DES now standard in STEMI.</td></tr>
+<tr><td>EXAMINATION (2012)</td><td class="v-green">DES vs BMS in STEMI: patient-oriented composite endpoint 11.9% vs 14.2%. DES superior.</td></tr>
+</table>
+<div class="sub-label">cardiogenic shock &amp; mcs</div>
+<table>
+<tr><td>IABP-SHOCK II (2012, NEJM)</td><td class="v-coral">IABP in CS: 30-day mortality 39.7% vs 41.3% control. NO mortality benefit. Practice-changing negative trial.</td></tr>
+<tr><td>DanGer Shock (2024, NEJM)</td><td class="v-green">Impella CP in STEMI-CS: 180-day mortality 45.8% vs 58.5%. FIRST MCS device to show mortality benefit. RCT.</td></tr>
+<tr><td>ECMO-CS (2023, NEJM)</td><td class="v-coral">VA-ECMO in CS: no mortality benefit vs standard care at 30 days. More limb ischaemia in ECMO group.</td></tr>
+<tr><td>SOAP II (2010, NEJM)</td><td class="v-green">Norepinephrine vs dopamine in shock: fewer arrhythmias, trend to lower mortality with norepinephrine. First line vasopressor.</td></tr>
+</table>
+<div class="sub-label">bifurcation &amp; left main</div>
+<table>
+<tr><td>NORDIC (2006)</td><td>Provisional = two-stent for non-LM bifurcations. No MACE difference at 6 months. Provisional first established.</td></tr>
+<tr><td>BBC ONE (2010)</td><td class="v-green">Provisional superior: MACE 8.0% vs 15.2% two-stent. Less contrast, faster. BBC ONE established provisional standard.</td></tr>
+<tr><td>EBC TWO (2016)</td><td>Culotte noninferior to provisional for non-LM at 1yr. Two-stent acceptable when needed.</td></tr>
+<tr><td>DKCRUSH-III (2013)</td><td class="v-green">DK-Crush superior to Culotte for non-LM true bifurcations: TLF 6.2% vs 10.3%.</td></tr>
+<tr><td>DKCRUSH-V (2019, NEJM)</td><td class="v-green">DK-Crush superior to provisional for LM bifurcation: 30-day MACE 5.0% vs 10.7% (p=0.02). Gold standard for LM.</td></tr>
+<tr><td>EXCEL (2016, NEJM)</td><td class="v-amber">LM PCI noninferior to CABG at 3yr. Controversy at 5yr (mortality 13.0% vs 9.9% CABG). Endpoint dispute.</td></tr>
+<tr><td>NOBLE (2016, Lancet)</td><td class="v-coral">LM: CABG superior to PCI at 5yr - MACE 29% vs 19%. CABG preferred for complex LM disease.</td></tr>
+</table>
+<div class="sub-label">antiplatelet therapy</div>
+<table>
+<tr><td>CURE (2001, NEJM)</td><td class="v-green">Clopidogrel + aspirin vs aspirin alone in NSTEMI: CV death/MI/stroke 9.3% vs 11.4%. Established DAPT.</td></tr>
+<tr><td>PLATO (2009, NEJM)</td><td class="v-green">Ticagrelor vs clopidogrel: CV death/MI/stroke 9.8% vs 11.7%. ALL-CAUSE mortality reduced. Ticagrelor now standard for ACS.</td></tr>
+<tr><td>TRITON-TIMI 38 (2007, NEJM)</td><td class="v-amber">Prasugrel vs clopidogrel: less MI/ST (9.9% vs 12.1%) but more major bleeding. Contraindicated prior stroke/TIA.</td></tr>
+<tr><td>CHAMPION PHOENIX (2013, NEJM)</td><td class="v-green">Cangrelor: 26% RRR in periprocedural MI and stent thrombosis vs clopidogrel.</td></tr>
+<tr><td>AUGUSTUS (2019, NEJM)</td><td class="v-green">AF + ACS/PCI: dropping aspirin from triple therapy = less bleeding, same ischaemic events. Dual therapy standard.</td></tr>
+<tr><td>TWILIGHT (2019, NEJM)</td><td class="v-green">Ticagrelor monotherapy after 3 months DAPT: less bleeding, noninferior ischaemic outcomes. De-escalation evidence.</td></tr>
+</table>
+<div class="sub-label">calcium modification &amp; atherectomy</div>
+<table>
+<tr><td>DISRUPT CAD III (2021, JACC)</td><td class="v-green">IVL (Shockwave): procedural success 92.4%, MACE 7.6% at 30 days. Safe and effective for severe calcium.</td></tr>
+<tr><td>ORBITAL II (2014)</td><td class="v-green">Orbital atherectomy: procedural success 97.7%, in-hospital MACE 2.2%.</td></tr>
+</table>
+<div class="sub-label">stent technology</div>
+<table>
+<tr><td>BIOFLOW V (2017)</td><td class="v-green">Orsiro (ultrathin sirolimus) superior to XIENCE in ACS subgroup: TLF 6.2% vs 10.9%.</td></tr>
+<tr><td>BIOSTEMI (2019)</td><td class="v-green">Orsiro superior to BES in STEMI: TLF 4.7% vs 9.4% at 1yr. Best STEMI stent evidence.</td></tr>
+<tr><td>ABSORB III (2015)</td><td class="v-coral">Bioresorbable scaffold (BRS Absorb): higher TLF + scaffold thrombosis vs DES. Absorb withdrawn from market.</td></tr>
+</table>
+<div class="sub-label">ostial lad &amp; lm crossover</div>
+<table>
+<tr><td>BMC 2025 - Lee et al.</td><td class="v-green">Crossover stenting: 2yr MACE 2.6% vs floating wire 13.5% vs precise ostial 15.8% (p&lt;0.05, n=116).</td></tr>
+<tr><td>OPTIMAL (ACC 2026)</td><td>IVUS vs angio for LM PCI: no significant MACE difference at 2.9yr. Angio reasonable when IVUS unavailable.</td></tr>
+</table>
+<div class="sub-label">timing &amp; door-to-balloon targets</div>
+<table>
+<tr><td>D2B target - primary PCI</td><td class="v-coral">&lt;90 min from first medical contact</td></tr>
+<tr><td>D2B - transfer from non-PCI centre</td><td class="v-coral">&lt;120 min total ischaemic time</td></tr>
+<tr><td>Fibrinolysis threshold</td><td>&gt;120 min anticipated delay &rarr; lyse then transfer (pharmacoinvasive)</td></tr>
+<tr><td>Hold ticagrelor before CABG</td><td class="v-amber">5 days</td></tr>
+<tr><td>Hold prasugrel before CABG</td><td class="v-amber">7 days</td></tr>
+<tr><td>Hold clopidogrel before CABG</td><td class="v-amber">5 days</td></tr>
+</table>
+</div></div>
+
+<footer>IC Fellowship Interview Prep &middot; Key Values Reference &middot; Review with your attending &middot; Good luck</footer>
+</body>
+</html>
