@@ -63,7 +63,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80%;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.55),rgba(139,92,246,.45),rgba(45,212,191,.4),transparent)}
 .header-eyebrow{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.38em;text-transform:uppercase;color:var(--blue);opacity:.65;margin-bottom:14px}
 .header h1{font-size:clamp(28px,9vw,62px);font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#60a5fa 0%,#a78bfa 42%,#2dd4bf 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;line-height:1.05;filter:drop-shadow(0 0 36px rgba(96,165,250,.18))}
-@media(max-width:480px){.header h1{font-size:clamp(20px,9.5vw,40px);letter-spacing:0;word-break:normal;overflow-wrap:normal}}
+@media(max-width:480px){.header h1{font-size:clamp(18px,8vw,38px);letter-spacing:0;word-break:normal;overflow-wrap:normal}}
 .header p{font-size:10px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;opacity:.75;margin-bottom:0}
 </style>
 </head>
@@ -73,15 +73,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 #back-home{position:fixed;top:16px;left:16px;z-index:900;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(96,165,250,.55);text-decoration:none;border:1px solid rgba(96,165,250,.18);padding:6px 12px;border-radius:20px;background:rgba(10,14,26,.6);backdrop-filter:blur(8px);transition:color .2s,border-color .2s,background .2s}
 #back-home:hover{color:#60a5fa;border-color:rgba(96,165,250,.5);background:rgba(96,165,250,.08)}
 </style>
-<div id="disclaimer">&#9888;&nbsp; Educational resource for trainees and fellows only. Not for clinical use. Always reference official publications and discuss with your supervisor.</div>
-<style>
-#disclaimer{background:rgba(245,158,11,.07);border-bottom:1px solid rgba(245,158,11,.2);color:rgba(245,158,11,.75);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.04em;text-align:center;padding:8px 16px;line-height:1.5}
-</style>
 <div class="header">
 <span class="header-eyebrow">Interventional Cardiology</span>
 <h1>Key Values Reference</h1>
 <p>// thresholds &middot; doses &middot; targets &middot; trials &middot; classification systems &middot; ic fellowship</p>
+<p id="disclaimer">Educational resource for trainees &amp; fellows only &mdash; not for clinical use. Reference official publications and discuss with your supervisor.</p>
 </div>
+<style>
+#disclaimer{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.04em;line-height:1.7;background:linear-gradient(90deg,#a07830,#f0d060,#c89840,#f0d060,#a07830);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gold-sheen 4s linear infinite;opacity:.65}
+@keyframes gold-sheen{0%{background-position:200% center}100%{background-position:0% center}}
+</style>
 <nav class="nav">
 <a href="#sizing">Sizing</a><a href="#catheters">Catheters</a><a href="#wires">Guide Wires</a><a href="#physiology">Physiology</a>
 <a href="#imaging">IVUS/OCT</a><a href="#anticoag">Anticoagulation</a><a href="#antiplatelets">Antiplatelets</a>
