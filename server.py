@@ -689,12 +689,17 @@ def tilt_table_process():
 
         report_text, review_count = process_pdf(pdf_bytes)
 
-        # Optional LLM grammar/prose cleanup — runs only when OPENAI_API_KEY is set.
-        # The deterministic content (facts, values, [undetermined] markers) is
-        # preserved by strict system-prompt rules; this step only improves readability.
+        # Optional LLM grammar/prose cleanup. Prefers Claude Sonnet (ANTHROPIC_API_KEY),
+        # falls back to GPT-4o-mini (OPENAI_API_KEY). The deterministic content (facts,
+        # values, [undetermined] markers) is preserved by strict system-prompt rules.
+        anthropic_key = os.getenv('ANTHROPIC_API_KEY')
         openai_key = os.getenv('OPENAI_API_KEY')
-        if openai_key:
-            report_text = llm_cleanup_report(report_text, openai_key)
+        if anthropic_key or openai_key:
+            report_text = llm_cleanup_report(
+                report_text,
+                anthropic_api_key=anthropic_key,
+                openai_api_key=openai_key,
+            )
 
         return jsonify({'report': report_text, 'review_count': review_count})
 

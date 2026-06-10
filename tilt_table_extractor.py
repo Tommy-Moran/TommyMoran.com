@@ -540,6 +540,18 @@ def extract_fields(text, ocr_results=None):
     # ── Patient demographics ──────────────────────────────────
     d["first_name"] = "<HMS-Patient_FirstName>"
 
+    # Attempt to extract last name from common REDCap name field formats:
+    # "Name: Smith, John" or "Patient Name: SMITH John" or "Surname: Smith"
+    d["last_name"] = _field(
+        text,
+        r"(?:Patient\s+)?Name[:\s]+([A-Za-z''\-]+)\s*,",   # "Smith, John" — last name before comma
+        r"Surname[:\s]+([A-Za-z''\-]+)",
+        r"Family\s+[Nn]ame[:\s]+([A-Za-z''\-]+)",
+        label="last_name"
+    )
+    if d["last_name"] == _UNDETERMINED:
+        d["last_name"] = None
+
     d["mrn"] = _field(
         text,
         r"(?:Eastern\s+Health\s+)?MRN[:\s#]*([0-9A-Za-z\-]+)",
@@ -1093,6 +1105,63 @@ def _trim_trailing_period(s):
     return s.rstrip().rstrip(".").rstrip()
 
 
+def _patient_ref(f):
+    """Return 'Mr/Ms/Mx LastName' based on extracted name and sex, or the HMS placeholder."""
+    last = f.get("last_name")
+    sex = f.get("sex", "")
+    if _has(last):
+        sex_l = str(sex).lower()
+        if sex_l == "male":
+            title = "Mr"
+        elif sex_l == "female":
+            title = "Ms"
+        else:
+            title = "Mx"
+        return f"{title} {last}"
+    return "<HMS-Patient_FirstName>"
+
+
+def _max_hr_rise_control(f):
+    """Return peak HR rise (bpm) during the control phase, or None."""
+    readings = f.get("control_readings", [])
+    baseline_hr = f.get("baseline_hr")
+    if not readings or baseline_hr is None:
+        return None
+    max_hr = max(hr for _, hr in readings)
+    return max_hr - baseline_hr
+
+
+def _max_hr_rise_phase2(f):
+    """Return peak HR rise during phase 2 relative to phase 2 baseline reading, or None."""
+    readings = f.get("phase2_readings", [])
+    if len(readings) < 2:
+        return None
+    baseline_hr = readings[0][1]
+    subsequent = readings[1:]
+    max_hr = max(hr for _, hr in subsequent)
+    return max_hr - baseline_hr
+
+
+def _vvs_subtype(readings, baseline_sbp):
+    """
+    Determine VVS subtype from a sequence of (sbp, hr) readings.
+    Returns 'bp_first' if SBP drops >20 before HR drops below 50,
+    'hr_first' otherwise.
+    """
+    bp_drop_idx = None
+    hr_drop_idx = None
+    for i, (sbp, hr) in enumerate(readings):
+        if bp_drop_idx is None and baseline_sbp and (baseline_sbp - sbp) > 20:
+            bp_drop_idx = i
+        if hr_drop_idx is None and hr < 50:
+            hr_drop_idx = i
+    if bp_drop_idx is not None and hr_drop_idx is not None:
+        return "bp_first" if bp_drop_idx <= hr_drop_idx else "hr_first"
+    if bp_drop_idx is not None:
+        return "bp_first"
+    return "hr_first"
+
+
 # Medical acronyms/abbreviations that must remain uppercase mid-sentence
 _KEEP_UPPER = {
     "pots", "ibs", "ecg", "echo", "eeg", "mri", "ct", "ep",
@@ -1162,76 +1231,71 @@ def _compose_demographics(f):
 
 def _compose_history(f):
     parts = []
-    fn = f.get("first_name", "<HMS-Patient_FirstName>")
 
     dur_n, dur_u = f.get("duration_number"), f.get("duration_unit")
     pre_dur_n, pre_dur_u = f.get("presyncope_duration_number"), f.get("presyncope_duration_unit")
     freq = f.get("frequency")
     pre_freq = f.get("presyncope_frequency")
 
+    # Syncope history
     if _has(dur_n) and _has(dur_u):
-        s = f"{fn} reports a {dur_n}-{dur_u.rstrip('s')} history of syncope"
+        s = f"Syncope symptoms for {dur_n} {dur_u}"
         if _has(freq):
             s += f", occurring {freq}"
         s += "."
         parts.append(s)
     else:
-        parts.append(f"No syncope history was reported.")
+        parts.append("No overt syncope.")
 
+    # Presyncope history
     if _has(pre_dur_n) and _has(pre_dur_u):
-        s = f"Presyncope symptoms have been present for {pre_dur_n} {pre_dur_u}"
+        s = f"Presyncope symptoms for {pre_dur_n} {pre_dur_u}"
         if _has(pre_freq):
             s += f", occurring {pre_freq}"
         s += "."
         parts.append(s)
     elif _has(pre_freq):
-        parts.append(f"Presyncope symptoms occur {pre_freq}.")
+        parts.append(f"Presyncope symptoms occurring {pre_freq}.")
     else:
         parts.append("No presyncope history was reported.")
 
+    # Episode counts + most recent date
     sync_ep = f.get("syncope_episodes_last_month")
     pre_ep = f.get("presyncope_episodes_last_month")
     recent = f.get("most_recent_date")
 
-    if _has(sync_ep) and _has(pre_ep):
-        ep_clause = f"There have been {sync_ep} syncope and {pre_ep} presyncope episodes in the last month"
-    elif _has(sync_ep):
-        ep_clause = f"There have been {sync_ep} syncope episodes in the last month"
-    elif _has(pre_ep):
-        ep_clause = f"There have been {pre_ep} presyncope episodes in the last month"
-    else:
-        ep_clause = f"Episode count over the last month was not recorded ({_UNDETERMINED})"
+    if _has(sync_ep) or _has(pre_ep):
+        ep_bits = []
+        if _has(sync_ep):
+            ep_bits.append(f"{sync_ep} syncope")
+        if _has(pre_ep):
+            ep_bits.append(f"{pre_ep} presyncope")
+        ep_clause = f"There have been {_join_and(ep_bits)} episodes in the last month"
+        if _has(recent):
+            ep_clause += f", with the most recent episode on {recent}."
+        else:
+            ep_clause += "."
+        parts.append(ep_clause)
 
-    if _has(recent):
-        ep_clause += f", with the most recent episode on {recent}."
-    else:
-        ep_clause += f"; date of the most recent episode is {_UNDETERMINED}."
-    parts.append(ep_clause)
-
-    # Warning before syncope — frame as high-risk feature presence/absence
+    # Warning syncope — template phrasing
     nws = f.get("no_warning_syncope")
     if _has(nws):
         nws_l = str(nws).lower()
         if nws_l == "never":
-            parts.append("No high-risk syncope features: episodes are always preceded by warning symptoms.")
+            parts.append("Never experiences high risk syncope.")
         elif nws_l == "rare":
-            parts.append("Episodes occasionally occur without prior warning.")
+            parts.append("Rarely experiences high risk syncope.")
         elif nws_l == "frequent":
-            parts.append("High-risk syncope features present: episodes frequently occur without prior warning.")
+            parts.append("Frequently experiences high risk syncope.")
         else:
-            parts.append(f"Frequency of episodes without warning: {nws}.")
+            parts.append(f"High risk syncope frequency: {nws}.")
     else:
-        parts.append(f"Presence of high-risk syncope features (episodes without warning): {_UNDETERMINED}.")
+        parts.append(f"High risk syncope frequency: {_UNDETERMINED}.")
 
-    # Initiating event
+    # Initiating event — template phrasing
     ile = f.get("initiating_life_event")
     detail = f.get("initiating_event_detail")
     if _yn(ile) == "yes":
-        if _has(detail):
-            parts.append(f"A known initiating life event was reported: {_trim_trailing_period(detail)}.")
-        else:
-            parts.append("A known initiating life event was reported (no further detail).")
-        # Sub-categorisation
         sub = []
         if _yn(f.get("event_was_medical")) == "yes":
             sub.append("medical illness")
@@ -1239,12 +1303,12 @@ def _compose_history(f):
             sub.append("surgical or trauma")
         if _yn(f.get("event_was_emotional")) == "yes":
             sub.append("emotional trauma")
-        if sub:
-            parts.append(f"The event was characterised as: {_join_and(sub)}.")
+        context = _trim_trailing_period(detail) if _has(detail) else (_join_and(sub) if sub else "a known event")
+        parts.append(f"Symptom onset occurred in the context of {context}.")
     elif _yn(ile) == "no":
-        parts.append("No known initiating life event was reported.")
+        parts.append("No clear precipitating illness/factors identified.")
     else:
-        parts.append(f"Initiating life event status: {_UNDETERMINED}.")
+        parts.append(f"Precipitating illness/factors: {_UNDETERMINED}.")
 
     return " ".join(parts)
 
@@ -1253,7 +1317,7 @@ def _compose_postural(f):
     parts = []
     posture = f.get("posture")
     if _has(posture):
-        parts.append(f"Symptoms typically occur with {posture}.")
+        parts.append(f"Symptoms typically occur in the {str(posture).lower()}.")
     else:
         parts.append(f"Usual posture at symptom onset: {_UNDETERMINED}.")
 
@@ -1261,16 +1325,16 @@ def _compose_postural(f):
     bld = _yn(f.get("better_lying_down"))
 
     if pcp == "yes":
-        parts.append("Postural change from lying or sitting to standing provokes symptoms.")
+        parts.append("Change in posture from lying/seated to standing provokes symptoms.")
     elif pcp == "no":
-        parts.append("Postural change from lying or sitting to standing does not provoke symptoms.")
+        parts.append("Change in posture from lying/seated to standing does not provoke symptoms.")
     else:
         parts.append(f"Whether postural change provokes symptoms is {_UNDETERMINED}.")
 
     if bld == "yes":
         parts.append("Symptoms improve when lying down.")
     elif bld == "no":
-        parts.append("Symptoms are not reported to improve when lying down.")
+        parts.append("Symptoms unaffected by lying down.")
     else:
         parts.append(f"Whether lying down improves symptoms is {_UNDETERMINED}.")
 
@@ -1282,7 +1346,7 @@ def _compose_triggers(f):
     parts = []
     triggers = _sentence_case_list(f.get("triggers"))
     if _has(triggers) and triggers != "none reported":
-        parts.append(f"Reported symptom triggers include {triggers}.")
+        parts.append(f"Common triggers include: {triggers}.")
     elif triggers == "none reported":
         parts.append("No specific symptom triggers were reported.")
     else:
@@ -1322,92 +1386,72 @@ def _compose_triggers(f):
 
 
 def _compose_symptoms(f):
-    """Associated symptoms + palpitations."""
-    parts = []
+    """Associated symptoms + palpitations — template label 'Common associated features include:'."""
     symptoms = _sentence_case_list(f.get("symptoms"))
     palp = _yn(f.get("palpitations"))
     palp_type = _sentence_case_list(f.get("palpitation_type"))
 
+    feature_parts = []
     if _has(symptoms) and symptoms != "none reported":
-        sym_str = symptoms
-    elif symptoms == "none reported":
-        sym_str = None
-    else:
-        sym_str = None
+        feature_parts.append(symptoms)
 
     if palp == "yes":
         if _has(palp_type) and palp_type != "none reported":
-            palp_str = f"palpitations ({palp_type})"
+            feature_parts.append(f"palpitations ({palp_type})")
         else:
-            palp_str = "palpitations"
-    elif palp == "no":
-        palp_str = None
-    else:
-        palp_str = None
+            feature_parts.append("palpitations")
 
-    # Build sentence(s) — keep OCR-formatted symptom string intact, append palpitations cleanly
-    if sym_str and palp_str:
-        parts.append(f"Associated symptoms include {sym_str}, and {palp_str}.")
-    elif sym_str:
-        parts.append(f"Associated symptoms include {sym_str}.")
-    elif palp_str:
-        parts.append(f"Associated symptoms: {palp_str} reported.")
-    elif symptoms == "none reported" and palp == "no":
-        parts.append("No associated symptoms or palpitations were reported.")
-    else:
-        parts.append(f"Associated symptoms: {_UNDETERMINED}.")
-
-    return " ".join(parts)
+    if feature_parts:
+        return f"Common associated features include: {', '.join(feature_parts)}."
+    if symptoms == "none reported" and palp == "no":
+        return "No associated features were reported."
+    return f"Associated features: {_UNDETERMINED}."
 
 
 def _compose_medical_history(f):
-    """Comorbidities, GI, mental health, and family history grouped together."""
+    """Comorbidities, GI, mental health, and family history — template structure."""
     parts = []
 
-    # Comorbid conditions (Q31 + Q32)
+    # Associated conditions (template label)
     cond = _sentence_case_list(f.get("conditions"))
     if _has(cond) and cond != "none reported":
-        parts.append(f"Comorbid conditions include {cond}.")
+        parts.append(f"Associated conditions include: {cond}.")
     elif cond == "none reported":
-        parts.append("No comorbid conditions were reported.")
+        parts.append("No associated conditions were reported.")
     else:
-        parts.append(f"Comorbid conditions: {_UNDETERMINED}.")
+        parts.append(f"Associated conditions: {_UNDETERMINED}.")
 
-    # GI (Q33 + Q34)
+    # "Other medical history includes:" label + GI + mental health detail
+    other_detail = []
     gi_dx = _sentence_case_list(f.get("gi_diagnosis"))
     gi_sx = _sentence_case_list(f.get("gi_symptoms"))
-    gi_parts = []
+    gi_bits = []
     if _has(gi_dx) and gi_dx != "none reported":
-        gi_parts.append(gi_dx)
+        gi_bits.append(gi_dx)
     if _has(gi_sx) and gi_sx != "none reported":
-        gi_parts.append(gi_sx)
-    if gi_parts:
-        parts.append(f"Gastrointestinal history: {'; '.join(gi_parts)}.")
-    elif gi_dx == "none reported" and gi_sx == "none reported":
-        parts.append("No gastrointestinal conditions or symptoms were reported.")
-    else:
-        pass  # Omit GI line if genuinely undetermined — avoid noise
+        gi_bits.append(gi_sx)
+    if gi_bits:
+        other_detail.append(f"Gastrointestinal: {'; '.join(gi_bits)}.")
 
-    # Mental health (Q35)
     mh = _sentence_case_list(f.get("mental_health"))
     if _has(mh) and mh != "none reported":
-        parts.append(f"Mental health diagnoses include {mh}.")
-    elif mh == "none reported":
-        parts.append("No mental health diagnoses were reported.")
-    # else: omit if undetermined
+        other_detail.append(f"Mental health: {mh}.")
 
-    # Family history (Q29 + Q30)
+    if other_detail:
+        parts.append("Other medical history includes: " + " ".join(other_detail))
+    else:
+        parts.append("Other medical history includes:")
+
+    # Family history — template format
     fh = f.get("family_history")
     fhc = f.get("family_hx_cardiac")
-    fh_parts = []
-    if _has(fh):
-        fh_parts.append(f"hypotension/fainting/POTS: {fh}")
-    if _has(fhc) and fhc != "none reported":
-        fh_parts.append(f"cardiac: {fhc}")
-    if fh_parts:
-        parts.append(f"Family history — {'; '.join(fh_parts)}.")
-    elif fh == "unremarkable" and (not _has(fhc) or fhc == "none reported"):
+    if fh == "unremarkable" and (not _has(fhc) or fhc == "none reported"):
         parts.append("Family history is unremarkable.")
+    elif _has(fh) and fh != "unremarkable":
+        # fh is already "remarkable for [detail]"
+        parts.append(f"Family history is {fh} with hypotension/fainting.")
+    elif _has(fhc) and fhc != "none reported":
+        parts.append(f"Family history is remarkable for {fhc} with POTS.")
     else:
         parts.append(f"Family history: {_UNDETERMINED}.")
 
@@ -1472,123 +1516,101 @@ def _compose_investigations(f):
     comm = f.get("investigation_comments")
     parts = []
     if _has(inv) and inv != "none reported":
-        parts.append(f"Prior investigations include {inv}.")
+        parts.append(f"Significant investigation results (as per patient): {inv}.")
     elif inv == "none reported":
-        parts.append("No prior investigations were recorded.")
+        parts.append("Significant investigation results (as per patient): none reported.")
     else:
-        parts.append(f"Prior investigations: {_UNDETERMINED}.")
+        parts.append(f"Significant investigation results (as per patient): {_UNDETERMINED}.")
     if _has(comm):
         parts.append(f"Additional investigation notes: {_trim_trailing_period(comm)}.")
     return " ".join(parts)
 
 
 def _compose_test(f):
-    parts = []
-    fn = f.get("first_name", "<HMS-Patient_FirstName>")
-
-    # Test type
+    """
+    Produces two concise tilt interpretation sentences matching the HealthTrack
+    template format, separated by a blank line:
+      "Baseline tilt interpretation: [phrase]."
+      "[Drug] tilt interpretation: [phrase]."
+    """
+    pr = _patient_ref(f)
     drug = f.get("tilt_drug")
     test_type = f.get("test_type")
-    if drug == "Isoprenaline":
-        test_str = "an isoprenaline-provoked tilt table test"
-    elif drug == "GTN":
-        test_str = "a GTN-provoked tilt table test"
-    elif drug is None and _has(test_type) and "passive" in test_type.lower():
-        test_str = "a passive tilt table test (no pharmacological provocation)"
-    else:
-        test_str = f"a tilt table test ({_UNDETERMINED} provocation)"
-    parts.append(f"{fn} underwent {test_str}.")
 
-    # Baseline vitals
-    bp = f.get("baseline_bp") or _UNDETERMINED
-    hr = f.get("baseline_hr")
-    hr_str = str(hr) if hr is not None else _UNDETERMINED
-    rhythm = f.get("baseline_rhythm")
-    rhythm_str = f", baseline rhythm {rhythm}" if _has(rhythm) else ""
-    parts.append(f"Baseline observations were BP {bp} mmHg, HR {hr_str} bpm{rhythm_str}.")
+    def _interp_phrase(result_calc, readings, baseline_sbp, hr_rise):
+        if result_calc == _RESULT_POTS:
+            rise_str = f" with heart rate increase by {hr_rise} bpm" if hr_rise is not None else ""
+            return f"positive for a POTS response{rise_str} and {pr} experienced familiar symptoms"
+        if result_calc == _RESULT_OI:
+            return f"positive for orthostatic intolerance and {pr} experienced familiar symptoms"
+        if result_calc == _RESULT_VVS:
+            subtype = _vvs_subtype(readings, baseline_sbp)
+            if subtype == "bp_first":
+                return (
+                    f"positive for a vasovagal response with blood pressure drop prior to "
+                    f"bradycardia and {pr} experienced familiar symptoms"
+                )
+            return (
+                f"positive for a vasovagal response with bradycardia occurring prior to "
+                f"blood pressure drop and {pr} experienced familiar symptoms"
+            )
+        if result_calc == _RESULT_NORMAL:
+            return "normal"
+        return _UNDETERMINED
 
-    # Control phase
+    # Baseline tilt interpretation
     ctrl_calc = f.get("control_result_calc")
-    ctrl_tol = f.get("control_tolerance")
-    ctrl_sev = f.get("control_symptom_severity") or "mild"
+    ctrl_readings = f.get("control_readings", [])
+    baseline_sbp = _extract_systolic(f.get("baseline_bp"))
+    ctrl_hr_rise = _max_hr_rise_control(f)
+    ctrl_phrase = _interp_phrase(ctrl_calc, ctrl_readings, baseline_sbp, ctrl_hr_rise)
+    baseline_line = f"Baseline tilt interpretation: {ctrl_phrase}."
+
+    # Clinician control notes (appended inline if present)
     ctrl_notes = f.get("control_notes", "")
-    if ctrl_calc == _RESULT_POTS:
-        ctrl_desc = "an HR rise meeting POTS criteria (≥30 bpm, or ≥40 bpm aged 12–19)"
-    elif ctrl_calc == _RESULT_OI:
-        ctrl_desc = "a sustained HR rise of ≥20 bpm without meeting POTS criteria"
-    elif ctrl_calc == _RESULT_VVS:
-        ctrl_desc = "a fall in systolic BP of >20 mmHg and/or HR <50 bpm"
-    elif ctrl_calc == _RESULT_NORMAL:
-        ctrl_desc = "no significant haemodynamic change"
-    else:
-        ctrl_desc = _UNDETERMINED
-    sev_phrase = f"{ctrl_sev} symptoms" if ctrl_sev != "no" else "no symptoms"
-    parts.append(f"During the control phase, {ctrl_desc} was observed; {fn} {ctrl_tol or _UNDETERMINED} with {sev_phrase}.")
     if ctrl_notes and not ctrl_notes.startswith("[REVIEW") and not ctrl_notes.startswith(_UNDETERMINED):
         note_clean = ctrl_notes.rstrip()
         if not note_clean.endswith((".", "!", "?")):
             note_clean += "."
-        parts.append(f"Control phase clinician note: {note_clean}")
+        baseline_line += " " + note_clean
 
-    # Phase 2
+    paragraphs = [baseline_line]
+
+    # Phase 2 / drug tilt interpretation
     p2_calc = f.get("phase2_result_calc")
-    p2_tol = f.get("phase2_tolerance")
-    p2_notes = f.get("phase2_notes", "")
-    stop_min = f.get("phase2_stop_minute")
-    stop_str = ""
-    if stop_min and stop_min < 10:
-        stop_str = f" The phase 2 protocol was terminated at {stop_min} {'minute' if stop_min == 1 else 'minutes'}."
-    if p2_calc == _RESULT_NOT_REACHED:
-        parts.append("Phase 2 pharmacological provocation was not administered." + stop_str)
-    elif drug is None and (_has(test_type) and "passive" in test_type.lower()):
-        parts.append(f"No pharmacological provocation was administered (passive tilt only); {fn} {p2_tol or _UNDETERMINED}." + stop_str)
-    else:
-        if p2_calc == _RESULT_POTS:
-            p2_desc = "an HR rise meeting POTS criteria"
-        elif p2_calc == _RESULT_OI:
-            p2_desc = "a sustained HR rise of ≥20 bpm without meeting POTS criteria"
-        elif p2_calc == _RESULT_VVS:
-            p2_desc = "a fall in systolic BP of >20 mmHg and/or HR <50 bpm"
-        elif p2_calc == _RESULT_NORMAL:
-            p2_desc = "no significant haemodynamic change"
+    is_passive = (drug is None and _has(test_type) and "passive" in str(test_type).lower())
+
+    if p2_calc not in (None, _RESULT_NOT_REACHED) and not is_passive:
+        p2_readings = f.get("phase2_readings", [])
+        p2_baseline_sbp = p2_readings[0][0] if p2_readings else None
+        p2_subsequent = p2_readings[1:] if len(p2_readings) > 1 else []
+        p2_hr_rise = _max_hr_rise_phase2(f)
+        p2_phrase = _interp_phrase(p2_calc, p2_subsequent, p2_baseline_sbp, p2_hr_rise)
+
+        if drug == "Isoprenaline":
+            drug_label = "Isoprenaline"
+        elif drug == "GTN":
+            drug_label = "GTN"
         else:
-            p2_desc = _UNDETERMINED
-        drug_str = drug if drug else "the provocation agent"
-        parts.append(f"Following administration of {drug_str}, {p2_desc} was observed; {fn} {p2_tol or _UNDETERMINED}." + stop_str)
-    if p2_notes and not p2_notes.startswith("[REVIEW") and not p2_notes.startswith(_UNDETERMINED):
-        note_clean = p2_notes.rstrip()
-        if not note_clean.endswith((".", "!", "?")):
-            note_clean += "."
-        parts.append(f"Phase 2 clinician note: {note_clean}")
+            drug_label = "Pharmacological"
 
-    # Recovery vitals
-    rec_bp = f.get("recovery_bp")
-    rec_hr = f.get("recovery_hr")
-    rec_bp_str = rec_bp if rec_bp else "not recorded"
-    rec_hr_str = str(rec_hr) if rec_hr is not None else "not recorded"
-    parts.append(f"Recovery observations were BP {rec_bp_str} mmHg, HR {rec_hr_str} bpm.")
+        drug_line = f"{drug_label} tilt interpretation: {p2_phrase}."
 
-    # Symptom correlation
-    sc = f.get("symptom_correlation")
-    if _has(sc):
-        sc_l = sc.lower()
-        if "correlate" in sc_l and "different" not in sc_l:
-            parts.append("Symptoms experienced during the test correlated with the patient's baseline symptoms.")
-        elif "different" in sc_l:
-            parts.append("Symptoms experienced during the test were different to the patient's baseline symptoms.")
-        elif "no symptom" in sc_l:
-            parts.append("No symptoms were experienced during the test.")
-        else:
-            parts.append(f"Symptom correlation with baseline: {sc}.")
-    else:
-        parts.append(f"Symptom correlation with baseline: {_UNDETERMINED}.")
+        p2_notes = f.get("phase2_notes", "")
+        if p2_notes and not p2_notes.startswith("[REVIEW") and not p2_notes.startswith(_UNDETERMINED):
+            note_clean = p2_notes.rstrip()
+            if not note_clean.endswith((".", "!", "?")):
+                note_clean += "."
+            drug_line += " " + note_clean
 
-    # Free-text results conclusion
+        paragraphs.append(drug_line)
+
+    # Free-text results conclusion from clinician
     rc = f.get("results_conclusion")
     if _has(rc):
-        parts.append(f"Clinician's results conclusion: {_trim_trailing_period(rc)}.")
+        paragraphs.append(f"Clinician's results conclusion: {_trim_trailing_period(rc)}.")
 
-    return " ".join(parts)
+    return "\n\n".join(paragraphs)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -1670,13 +1692,13 @@ def _compose_conclusion(f):
         diagnosis = "UNDETERMINED"
 
     sentence_map = {
-        "POTS": "Conclusion: Positive study for POTS.",
-        "OH": "Conclusion: Positive study for orthostatic hypotension.",
-        "VVS": "Conclusion: Positive study for vasovagal syncope.",
-        "VVP": "Conclusion: Positive study for vasovagal presyncope.",
-        "MIXED": "Conclusion: Positive study for mixed response.",
-        "NORMAL": "Conclusion: Negative study.",
-        "UNDETERMINED": f"Conclusion: {_UNDETERMINED}.",
+        "POTS": "Conclusions: Positive study for POTS.",
+        "OH": "Conclusions: Positive study for orthostatic hypotension.",
+        "VVS": "Conclusions: Positive study for vasovagal syncope.",
+        "VVP": "Conclusions: Positive study for vasovagal presyncope.",
+        "MIXED": "Conclusions: Positive study for mixed response.",
+        "NORMAL": "Conclusions: Negative study.",
+        "UNDETERMINED": f"Conclusions: {_UNDETERMINED}.",
     }
     return sentence_map[diagnosis], diagnosis
 
@@ -1684,30 +1706,36 @@ def _compose_conclusion(f):
 def _compose_recommendation(diagnosis):
     rec_map = {
         "POTS": (
-            "Recommendation: Increase fluid intake, target 3L per day. Regular exercise. "
-            "Consider addition of fludrocortisone, midodrine, ivabradine."
+            "Recommendations: Blood pressure support with fluid intake of >3 litres per day "
+            "and high salt diet. "
+            "Modified exercise program for postural retraining. "
+            "Consider low dose fludrocortisone if symptoms persist despite optimisation of "
+            "conservative measures."
         ),
         "OH": (
-            "Recommendation: Increase fluid intake, target 3L per day. Regular exercise. "
-            "Consider addition of fludrocortisone, midodrine, ivabradine."
+            "Recommendations: Blood pressure support with fluid intake of >3 litres per day "
+            "and high salt diet. "
+            "Modified exercise program for postural retraining. "
+            "Consider low dose fludrocortisone if symptoms persist despite optimisation of "
+            "conservative measures."
         ),
         "VVS": (
-            "Recommendation: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
+            "Recommendations: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
             "Increase fluid and salt intake. Consider midodrine if symptoms persist despite "
-            "conservative measures."
+            "optimisation of conservative measures."
         ),
         "VVP": (
-            "Recommendation: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
+            "Recommendations: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
             "Increase fluid and salt intake. Consider midodrine if symptoms persist despite "
-            "conservative measures."
+            "optimisation of conservative measures."
         ),
         "MIXED": (
-            "Recommendation: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
+            "Recommendations: Avoid known triggers. Counter-pressure manoeuvres at symptom onset. "
             "Increase fluid and salt intake. Consider midodrine if symptoms persist despite "
-            "conservative measures."
+            "optimisation of conservative measures."
         ),
-        "NORMAL": "Recommendation: No specific intervention indicated based on this study.",
-        "UNDETERMINED": f"Recommendation: {_UNDETERMINED} — to be completed by clinician.",
+        "NORMAL": "Recommendations: No specific intervention indicated based on this study.",
+        "UNDETERMINED": f"Recommendations: {_UNDETERMINED} — to be completed by clinician.",
     }
     return rec_map.get(diagnosis, rec_map["UNDETERMINED"])
 
@@ -1724,7 +1752,6 @@ def build_report(fields):
     Returns (report_text: str, undetermined_count: int).
     """
     summary_blocks = [
-        _compose_demographics(fields),
         _compose_history(fields),
         _compose_postural(fields),
         _compose_triggers(fields),
@@ -1740,7 +1767,7 @@ def build_report(fields):
     recommendation_sentence = _compose_recommendation(diagnosis_key)
 
     full_report = (
-        "Summary\n"
+        "Summary\n\n"
         f"{summary_text}\n\n"
         f"{conclusion_sentence}\n\n"
         f"{recommendation_sentence}"
@@ -1754,64 +1781,86 @@ def build_report(fields):
 # Public entry point
 # ─────────────────────────────────────────────────────────────
 
-def llm_cleanup_report(report_text, api_key):
+def llm_cleanup_report(report_text, anthropic_api_key=None, openai_api_key=None):
     """
-    Optional post-processing step: pass the deterministic report through GPT-4o-mini
-    for grammar and prose cleanup. Clinical facts, values, and [undetermined] markers
-    are never modified — the system prompt enforces this strictly.
+    Optional post-processing step: pass the deterministic report through an LLM
+    for grammar and prose cleanup. Claude Sonnet is preferred; falls back to
+    GPT-4o-mini if only an OpenAI key is available.
 
-    Returns the cleaned report on success, or the original report if the API call
-    fails (network error, quota, invalid key, etc.).
+    Clinical facts, values, and [undetermined] markers are never modified —
+    the system prompt enforces this strictly.
+
+    Returns the cleaned report on success, or the original report if the API
+    call fails (network error, quota, invalid key, etc.).
 
     NOTE: calling this function sends the report text (including patient data such
-    as age, sex, clinical findings) to the OpenAI API. The caller is responsible
+    as age, sex, clinical findings) to the API provider. The caller is responsible
     for ensuring this is appropriate for their clinical context and privacy obligations.
     """
-    try:
-        from openai import OpenAI
-        client = OpenAI(api_key=api_key)
+    system_prompt = (
+        "You are a clinical documentation assistant helping format a tilt table test report "
+        "for a physiotherapy electronic medical record.\n\n"
+        "Your task: improve the grammar, sentence flow and readability of the report text "
+        "provided by the user.\n\n"
+        "Rules you must follow without exception:\n"
+        "1. Do NOT add, remove or change any clinical facts, numbers, diagnoses, dates, "
+        "medications, measurements or values.\n"
+        "2. Do NOT add any clinical interpretations, opinions or recommendations not already "
+        "present in the text.\n"
+        "3. Keep the four section headings (Summary, Conclusions:, Recommendations:) exactly "
+        "as-is — same capitalisation, same position.\n"
+        "4. Keep every [undetermined] placeholder as the exact literal string [undetermined].\n"
+        "5. Keep any 'Mr/Ms/Mx [Name]' patient references exactly as-is. Also keep "
+        "<HMS-Patient_FirstName> exactly as-is if it appears.\n"
+        "6. Normalise capitalisation: common nouns and condition names that appear "
+        "mid-sentence should be lowercase (e.g. 'emotional stress', 'brain fog', "
+        "'chronic fatigue'). Preserve medical acronyms in uppercase: POTS, IBS, ECG, "
+        "ECHO, EEG, MRI, CT, EP, SSRI, SNRI, ADHD, MCAS, GTN, OCP.\n"
+        "7. Return only the cleaned report text — no preamble, no explanation."
+    )
 
-        system_prompt = (
-            "You are a clinical documentation assistant helping format a tilt table test report "
-            "for a physiotherapy electronic medical record.\n\n"
-            "Your task: improve the grammar, sentence flow and readability of the report text "
-            "provided by the user.\n\n"
-            "Rules you must follow without exception:\n"
-            "1. Do NOT add, remove or change any clinical facts, numbers, diagnoses, dates, "
-            "medications, measurements or values.\n"
-            "2. Do NOT add any clinical interpretations, opinions or recommendations not already "
-            "present in the text.\n"
-            "3. Keep the three section headings (Summary, Conclusion:, Recommendation:) exactly "
-            "as-is — same capitalisation, same position.\n"
-            "4. Keep every [undetermined] placeholder as the exact literal string [undetermined].\n"
-            "5. Keep <HMS-Patient_FirstName> exactly as-is.\n"
-            "6. Normalise capitalisation: common nouns and condition names that appear "
-            "mid-sentence should be lowercase (e.g. 'emotional stress', 'brain fogging', "
-            "'chronic fatigue'). Preserve medical acronyms in uppercase: POTS, IBS, ECG, "
-            "ECHO, EEG, MRI, CT, EP, SSRI, SNRI, ADHD, MCAS, GTN, OCP.\n"
-            "7. Return only the cleaned report text — no preamble, no explanation."
-        )
-
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": report_text},
-            ],
-            temperature=0.1,
-            max_tokens=2500,
-        )
-        cleaned = response.choices[0].message.content.strip()
-        if not cleaned:
-            return report_text
-        # Strip trailing whitespace from each line (GPT sometimes adds markdown
-        # double-space line breaks) and normalise multiple blank lines.
-        lines = [line.rstrip() for line in cleaned.splitlines()]
+    def _normalise_output(text):
+        lines = [line.rstrip() for line in text.splitlines()]
         return "\n".join(lines)
 
-    except Exception as e:
-        logger.warning("LLM grammar cleanup failed: %s — returning original report", e)
-        return report_text
+    # Prefer Claude Sonnet
+    if anthropic_api_key:
+        try:
+            import anthropic
+            client = anthropic.Anthropic(api_key=anthropic_api_key)
+            message = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=2500,
+                system=system_prompt,
+                messages=[{"role": "user", "content": report_text}],
+            )
+            cleaned = message.content[0].text.strip()
+            if cleaned:
+                return _normalise_output(cleaned)
+        except Exception as e:
+            logger.warning("Claude LLM cleanup failed: %s — trying OpenAI fallback", e)
+
+    # Fallback: OpenAI GPT-4o-mini
+    if openai_api_key:
+        try:
+            from openai import OpenAI
+            client = OpenAI(api_key=openai_api_key)
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": report_text},
+                ],
+                temperature=0.1,
+                max_tokens=2500,
+            )
+            cleaned = response.choices[0].message.content.strip()
+            if cleaned:
+                return _normalise_output(cleaned)
+        except Exception as e:
+            logger.warning("OpenAI LLM cleanup failed: %s — returning original report", e)
+
+    return report_text
 
 
 def process_pdf(pdf_bytes):
