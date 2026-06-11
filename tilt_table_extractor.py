@@ -1896,9 +1896,10 @@ def llm_cleanup_report(report_text, anthropic_api_key=None, openai_api_key=None)
     return report_text
 
 
-def process_pdf(pdf_bytes):
+def process_pdf(pdf_bytes, patient_surname=None):
     """
     Main entry point. Takes raw PDF bytes, returns (report_text, undetermined_count).
+    patient_surname: optional override for the patient last name (from the web form).
     """
     try:
         text = extract_text_from_pdf(pdf_bytes)
@@ -1911,5 +1912,7 @@ def process_pdf(pdf_bytes):
     logger.debug("Checkbox OCR results: %s", ocr_results)
 
     fields = extract_fields(text, ocr_results)
+    if patient_surname:
+        fields["last_name"] = patient_surname
     report, undetermined_count = build_report(fields)
     return report, undetermined_count

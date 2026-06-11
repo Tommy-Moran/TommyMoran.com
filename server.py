@@ -687,7 +687,8 @@ def tilt_table_process():
         if len(pdf_bytes) == 0:
             return jsonify({'error': 'Uploaded PDF is empty.'}), 400
 
-        report_text, review_count = process_pdf(pdf_bytes)
+        patient_surname = request.form.get('patient_surname', '').strip() or None
+        report_text, review_count = process_pdf(pdf_bytes, patient_surname=patient_surname)
 
         # Optional LLM grammar/prose cleanup. Prefers Claude Sonnet (ANTHROPIC_API_KEY),
         # falls back to GPT-4o-mini (OPENAI_API_KEY). The deterministic content (facts,
