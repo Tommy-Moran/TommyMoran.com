@@ -1428,38 +1428,38 @@ def _compose_symptoms(f):
 
 
 def _compose_medical_history(f):
-    """Comorbidities, GI, mental health, and family history — template structure."""
+    """
+    All condition categories (associated conditions, GI, mental health) merged into
+    one flat 'Associated conditions include:' list, followed by family history.
+    """
     parts = []
 
-    # Associated conditions (template label)
-    cond = _sentence_case_list(f.get("conditions"))
-    if _has(cond) and cond != "none reported":
-        parts.append(f"Associated conditions include: {cond}.")
-    elif cond == "none reported":
+    # Collect every condition item into a single flat list
+    all_items = []
+
+    def _add(field_val):
+        v = _sentence_case_list(field_val)
+        if _has(v) and v != "none reported":
+            # Split "a, b and c" back to individual items, strip blanks
+            for item in re.split(r',\s*|\s+and\s+', v):
+                item = item.strip()
+                if item:
+                    all_items.append(item)
+
+    _add(f.get("conditions"))
+    _add(f.get("gi_diagnosis"))
+    _add(f.get("gi_symptoms"))
+    _add(f.get("mental_health"))
+
+    cond_raw = f.get("conditions")
+    cond_none = (_sentence_case_list(cond_raw) == "none reported")
+
+    if all_items:
+        parts.append(f"Associated conditions include: {', '.join(all_items)}.")
+    elif cond_none:
         parts.append("No associated conditions were reported.")
     else:
         parts.append(f"Associated conditions: {_UNDETERMINED}.")
-
-    # "Other medical history includes:" label + GI + mental health detail
-    other_detail = []
-    gi_dx = _sentence_case_list(f.get("gi_diagnosis"))
-    gi_sx = _sentence_case_list(f.get("gi_symptoms"))
-    gi_bits = []
-    if _has(gi_dx) and gi_dx != "none reported":
-        gi_bits.append(gi_dx)
-    if _has(gi_sx) and gi_sx != "none reported":
-        gi_bits.append(gi_sx)
-    if gi_bits:
-        other_detail.append(f"Gastrointestinal: {'; '.join(gi_bits)}.")
-
-    mh = _sentence_case_list(f.get("mental_health"))
-    if _has(mh) and mh != "none reported":
-        other_detail.append(f"Mental health: {mh}.")
-
-    if other_detail:
-        parts.append("Other medical history includes: " + " ".join(other_detail))
-    else:
-        parts.append("Other medical history includes:")
 
     # Family history — template format
     fh = f.get("family_history")
@@ -1467,7 +1467,6 @@ def _compose_medical_history(f):
     if fh == "unremarkable" and (not _has(fhc) or fhc == "none reported"):
         parts.append("Family history is unremarkable.")
     elif _has(fh) and fh != "unremarkable":
-        # fh is already "remarkable for [detail]"
         parts.append(f"Family history is {fh} with hypotension/fainting.")
     elif _has(fhc) and fhc != "none reported":
         parts.append(f"Family history is remarkable for {fhc} with POTS.")
