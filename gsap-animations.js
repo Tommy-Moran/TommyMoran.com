@@ -184,23 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ─── 10b. PROFILE IMAGE HEARTBEAT PULSE ──────────────────────────────────
-    // Subtle scale pulse on the img itself (mask-image hides box-shadow effects)
-    gsap.to('.profile-image img', {
-        scale: 1.015,
-        duration: 0.18,
-        repeat: -1,
-        repeatDelay: 0.85,
-        yoyo: false,
-        ease: 'power2.out',
-        onRepeat: function() {
-            gsap.to('.profile-image img', {
-                scale: 1,
-                duration: 0.5,
-                ease: 'power2.out'
-            });
-        }
-    });
+    // ─── 10b. (heartbeat pulse removed — caused jitter with mask-image on mobile)
 
     // ─── 11. FOOTER ──────────────────────────────────────────────────────────
     gsap.from('footer', {

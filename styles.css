@@ -639,20 +639,32 @@ a:hover { text-decoration: underline; }
 }
 
 .ecg-path {
-    stroke: #60a5fa;
+    stroke: #38bdf8;
     stroke-width: 2.5;
     fill: none;
     opacity: 0;
-    filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.8)) drop-shadow(0 0 12px rgba(96, 165, 250, 0.4));
+    /* Neon glow: bright white core, layered colour halos */
+    filter:
+        drop-shadow(0 0 2px rgba(255,255,255,0.95))
+        drop-shadow(0 0 6px #38bdf8)
+        drop-shadow(0 0 18px rgba(56, 189, 248, 0.75))
+        drop-shadow(0 0 38px rgba(56, 189, 248, 0.30));
 }
 
 @media (max-width: 768px) {
     .ecg-container {
-        height: 80px;
-        left: -1rem;
-        right: -1rem;
+        height: 100px;
+        left: -0.5rem;
+        right: -0.5rem;
     }
-    .ecg-path { stroke-width: 2; }
+    .ecg-path {
+        stroke-width: 3.5;
+        /* Stronger neon on mobile where screen is smaller */
+        filter:
+            drop-shadow(0 0 3px rgba(255,255,255,0.95))
+            drop-shadow(0 0 8px #38bdf8)
+            drop-shadow(0 0 22px rgba(56, 189, 248, 0.80));
+    }
 }
 
 /* ── Tools page styles ────────────────────────────────────── */
@@ -1201,7 +1213,7 @@ a:hover { text-decoration: underline; }
     /* Hero */
     .hero {
         min-height: auto;
-        padding: 2rem 0 4rem;
+        padding: 2rem 0 7rem;  /* extra bottom space keeps ECG clear of location text */
         align-items: center;
     }
 
