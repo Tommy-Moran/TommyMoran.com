@@ -653,17 +653,16 @@ a:hover { text-decoration: underline; }
 
 @media (max-width: 768px) {
     .ecg-container {
-        height: 100px;
-        left: -0.5rem;
-        right: -0.5rem;
+        position: relative;
+        bottom: auto;
+        left: -1rem;
+        right: auto;
+        width: calc(100% + 2rem);
+        height: 110px;
+        margin-top: 3rem;
     }
     .ecg-path {
         stroke-width: 3.5;
-        /* Stronger neon on mobile where screen is smaller */
-        filter:
-            drop-shadow(0 0 3px rgba(255,255,255,0.95))
-            drop-shadow(0 0 8px #38bdf8)
-            drop-shadow(0 0 22px rgba(56, 189, 248, 0.80));
     }
 }
 
@@ -1213,8 +1212,9 @@ a:hover { text-decoration: underline; }
     /* Hero */
     .hero {
         min-height: auto;
-        padding: 2rem 0 7rem;  /* extra bottom space keeps ECG clear of location text */
+        padding: 2rem 0 2rem;
         align-items: center;
+        flex-direction: column;
     }
 
     .hero-content {
