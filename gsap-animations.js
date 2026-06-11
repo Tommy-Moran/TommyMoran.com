@@ -185,17 +185,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ─── 10b. PROFILE IMAGE HEARTBEAT PULSE ──────────────────────────────────
-    gsap.to('.profile-image', {
-        boxShadow: '0 0 0 5px rgba(96, 165, 250, 0.55), 0 0 60px rgba(96, 165, 250, 0.4)',
+    // Subtle scale pulse on the img itself (mask-image hides box-shadow effects)
+    gsap.to('.profile-image img', {
+        scale: 1.015,
         duration: 0.18,
         repeat: -1,
-        repeatDelay: 0.82,
+        repeatDelay: 0.85,
         yoyo: false,
         ease: 'power2.out',
         onRepeat: function() {
-            gsap.to('.profile-image', {
-                boxShadow: '0 0 0 3px rgba(96, 165, 250, 0.22), 0 0 40px rgba(96, 165, 250, 0.18)',
-                duration: 0.4,
+            gsap.to('.profile-image img', {
+                scale: 1,
+                duration: 0.5,
                 ease: 'power2.out'
             });
         }
