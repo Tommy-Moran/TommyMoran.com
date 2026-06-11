@@ -1555,22 +1555,39 @@ def _compose_test(f):
     drug = f.get("tilt_drug")
     test_type = f.get("test_type")
 
+    # Build bracketed symptom list for "(nausea, dizziness, ...)" suffix
+    symp_raw = _sentence_case_list(f.get("symptoms"))
+    palp = _yn(f.get("palpitations"))
+    palp_type = _sentence_case_list(f.get("palpitation_type"))
+    symp_items = []
+    if palp == "yes":
+        symp_items.append(
+            f"palpitations ({palp_type})" if (_has(palp_type) and palp_type != "none reported")
+            else "palpitations"
+        )
+    if _has(symp_raw) and symp_raw != "none reported":
+        clean = re.sub(r',?\s*palpitations?\b', '', symp_raw, flags=re.I).strip().strip(',').strip()
+        if clean:
+            symp_items.append(clean)
+    symp_suffix = f" ({', '.join(symp_items)})" if symp_items else ""
+
     def _interp_phrase(result_calc, readings, baseline_sbp, hr_rise):
+        fam = f"familiar symptoms{symp_suffix}"
         if result_calc == _RESULT_POTS:
             rise_str = f" with heart rate increase by {hr_rise} bpm" if hr_rise is not None else ""
-            return f"positive for a POTS response{rise_str} and {pr} experienced familiar symptoms"
+            return f"positive for a POTS response{rise_str} and {pr} experienced {fam}"
         if result_calc == _RESULT_OI:
-            return f"positive for orthostatic intolerance and {pr} experienced familiar symptoms"
+            return f"positive for orthostatic intolerance and {pr} experienced {fam}"
         if result_calc == _RESULT_VVS:
             subtype = _vvs_subtype(readings, baseline_sbp)
             if subtype == "bp_first":
                 return (
                     f"positive for a vasovagal response with blood pressure drop prior to "
-                    f"bradycardia and {pr} experienced familiar symptoms"
+                    f"bradycardia and {pr} experienced {fam}"
                 )
             return (
                 f"positive for a vasovagal response with bradycardia occurring prior to "
-                f"blood pressure drop and {pr} experienced familiar symptoms"
+                f"blood pressure drop and {pr} experienced {fam}"
             )
         if result_calc == _RESULT_NORMAL:
             return "normal"
@@ -1790,11 +1807,18 @@ def build_report(fields):
     else:
         conclusion_block = conclusion_sentence
 
+    # Append consistency statement for positive diagnoses
+    _POSITIVE_DIAGNOSES = {"POTS", "OH", "VVS", "VVP", "MIXED"}
+    if diagnosis_key in _POSITIVE_DIAGNOSES:
+        conclusion_block += "\nClinical history is consistent with this diagnosis."
+
     recommendation_sentence = _compose_recommendation(diagnosis_key)
-    # Split "Recommendations: text" into heading + body on separate lines
+    # Split "Recommendations: text" into heading + one sentence per line
     if ": " in recommendation_sentence:
         rec_head, rec_body = recommendation_sentence.split(": ", 1)
-        recommendation_block = f"{rec_head}:\n{rec_body}"
+        rec_sentences = [s.strip() for s in rec_body.split(". ") if s.strip()]
+        rec_sentences = [(s if s.endswith(".") else s + ".") for s in rec_sentences]
+        recommendation_block = rec_head + ":\n" + "\n".join(rec_sentences)
     else:
         recommendation_block = recommendation_sentence
 
