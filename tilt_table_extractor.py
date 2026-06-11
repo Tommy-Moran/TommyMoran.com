@@ -872,9 +872,11 @@ def extract_fields(text, ocr_results=None):
     d["control_result_calc"] = _calculate_control_result(d)
     d["control_tolerance"] = _infer_tolerance(text, "control", d)
     d["control_symptom_severity"] = _infer_severity(text, "control")
+    d["control_symptom_text"] = _extract_study_symptoms(text, "control", d)
 
     d["phase2_result_calc"] = _calculate_phase2_result(d)
     d["phase2_tolerance"] = _infer_tolerance(text, "phase 2", d)
+    d["phase2_symptom_text"] = _extract_study_symptoms(text, "phase 2", d)
 
     return d
 
@@ -1027,6 +1029,43 @@ def _calculate_phase2_result(d):
         return _RESULT_OI
 
     return _RESULT_NORMAL
+
+
+def _extract_study_symptoms(text, phase, d):
+    """
+    Extract and clean the clinician's free-text symptom notes from the
+    'Any symptoms?' section of the tilt test for a given phase.
+    Returns a lowercase comma-normalised string (e.g. 'dizziness, nausea')
+    or None if nothing useful was found.
+    """
+    if phase == "control":
+        notes = d.get("control_notes", "")
+        section_pat = r"Any\s+symptoms\?(.{0,200}?)(?:Phase\s+2|Phase\s+Stage|$)"
+    else:
+        notes = d.get("phase2_notes", "")
+        section_pat = r"Any\s+symptoms\?(.{0,400}?)(?:Results\s+Conclusion|$)"
+
+    sm = re.search(section_pat, text, re.DOTALL | re.IGNORECASE)
+    raw = (sm.group(1) if sm else "") + " " + (notes or "")
+
+    # Strip page footers, URLs, dates
+    raw = re.sub(r"projectredcap\.org[^\n]*", " ", raw, flags=re.I)
+    raw = re.sub(r"\d{1,2}/\d{1,2}/\d{2,4}", " ", raw)
+    # Remove leading Yes/No answer token
+    raw = re.sub(r"^\s*(Yes|No)\b\s*", "", raw.strip(), flags=re.I)
+    # Normalise whitespace and trailing punctuation
+    raw = re.sub(r"\s+", " ", raw).strip().rstrip(".,;:")
+
+    if len(raw) < 3:
+        return None
+    # Reject "no symptoms" answers
+    if re.match(
+        r"^(?:no\s+symptoms?|nil|none|asymptomatic|well|no\s+issues?|no\s+complaint)\s*$",
+        raw, re.I
+    ):
+        return None
+
+    return raw.lower()
 
 
 def _infer_tolerance(text, phase, d):
@@ -1581,24 +1620,13 @@ def _compose_test(f):
     drug = f.get("tilt_drug")
     test_type = f.get("test_type")
 
-    # Build bracketed symptom list from the patient's associated features survey data
-    # e.g. "(dizziness, fatigue)" or "(palpitations (SVT), nausea)"
-    symp_raw = _sentence_case_list(f.get("symptoms"))
-    palp = _yn(f.get("palpitations"))
-    palp_type = _sentence_case_list(f.get("palpitation_type"))
-    symp_items = []
-    if palp == "yes":
-        symp_items.append(
-            f"palpitations ({palp_type})" if (_has(palp_type) and palp_type != "none reported")
-            else "palpitations"
-        )
-    if _has(symp_raw) and symp_raw != "none reported":
-        clean = re.sub(r',?\s*palpitations?\b', '', symp_raw, flags=re.I).strip().strip(',').strip()
-        if clean:
-            symp_items.append(clean)
-    symp_suffix = f" ({', '.join(symp_items)})" if symp_items else ""
+    def _study_suffix(symptom_text):
+        """Return bracketed suffix from clinician study notes, or empty string."""
+        if symptom_text:
+            return f" ({symptom_text})"
+        return ""
 
-    def _interp_phrase(result_calc, readings, baseline_sbp, hr_rise):
+    def _interp_phrase(result_calc, readings, baseline_sbp, hr_rise, symp_suffix):
         fam = f"familiar symptoms{symp_suffix}"
         if result_calc == _RESULT_POTS:
             rise_str = f" with heart rate increase by {hr_rise} bpm" if hr_rise is not None else ""
@@ -1625,7 +1653,10 @@ def _compose_test(f):
     ctrl_readings = f.get("control_readings", [])
     baseline_sbp = _extract_systolic(f.get("baseline_bp"))
     ctrl_hr_rise = _max_hr_rise_control(f)
-    ctrl_phrase = _interp_phrase(ctrl_calc, ctrl_readings, baseline_sbp, ctrl_hr_rise)
+    ctrl_phrase = _interp_phrase(
+        ctrl_calc, ctrl_readings, baseline_sbp, ctrl_hr_rise,
+        _study_suffix(f.get("control_symptom_text"))
+    )
     baseline_line = f"Baseline tilt interpretation: {ctrl_phrase}."
 
     # Clinician control notes (appended inline if present)
@@ -1647,7 +1678,10 @@ def _compose_test(f):
         p2_baseline_sbp = p2_readings[0][0] if p2_readings else None
         p2_subsequent = p2_readings[1:] if len(p2_readings) > 1 else []
         p2_hr_rise = _max_hr_rise_phase2(f)
-        p2_phrase = _interp_phrase(p2_calc, p2_subsequent, p2_baseline_sbp, p2_hr_rise)
+        p2_phrase = _interp_phrase(
+            p2_calc, p2_subsequent, p2_baseline_sbp, p2_hr_rise,
+            _study_suffix(f.get("phase2_symptom_text"))
+        )
 
         if drug == "Isoprenaline":
             drug_label = "Isoprenaline"
