@@ -119,8 +119,8 @@ _CHECKBOX_FIELDS = {
         "stop_anchor": "Does change in posture",
         "options": ["Standing", "Sitting", "Lying down", "No association with posture"],
         "display_map": {
-            "Standing": "standing",
-            "Sitting": "sitting",
+            "Standing": "standing posture",
+            "Sitting": "seated posture",
             "Lying down": "lying down",
             "No association with posture": "no consistent posture",
         },
@@ -218,6 +218,10 @@ _CHECKBOX_FIELDS = {
         "anchor": "formal diagnosis of",
         "stop_anchor": "suffer from the following",
         "options": ["Oesophageal Dysmotility", "Gastroperesis/early satiety", "IBS"],
+        "display_map": {
+            "Gastroperesis/early satiety": "gastroparesis/early satiety",
+            "Oesophageal Dysmotility": "oesophageal dysmotility",
+        },
         "multi": True,
     },
     "gi_symptoms": {
@@ -877,17 +881,31 @@ def _normalise_unit(raw):
 
 
 def _unit_to_frequency(unit_str, count_str=None):
-    mapping = {
-        "month": "monthly", "week": "weekly",
-        "day": "daily", "year": "yearly"
-    }
+    """Convert a count + unit to a qualitative frequency word: daily/weekly/monthly/rarely."""
     unit_lower = unit_str.lower()
-    word = mapping.get(unit_lower, "infrequently")
 
-    if count_str and str(count_str) not in ("1", "", "______"):
-        singular = {"month": "month", "week": "week", "day": "day", "year": "year"}
-        return f"{count_str} times per {singular.get(unit_lower, unit_lower)}"
-    return word
+    count = 1
+    if count_str and count_str not in ("", "______"):
+        try:
+            count = int(count_str)
+        except (ValueError, TypeError):
+            count = 1
+
+    # Approximate weekly rate for bucketing
+    per_week = {
+        "day": count * 7,
+        "week": count,
+        "month": count / 4.33,
+        "year": count / 52,
+    }.get(unit_lower, count)
+
+    if per_week >= 6:
+        return "daily"
+    if per_week >= 1:
+        return "weekly"
+    if per_week >= 0.2:
+        return "monthly"
+    return "rarely"
 
 
 # ─────────────────────────────────────────────────────────────
@@ -1105,6 +1123,13 @@ def _trim_trailing_period(s):
     return s.rstrip().rstrip(".").rstrip()
 
 
+def _lc_first(s):
+    """Lowercase the first character of a string (for free-text inserted mid-sentence)."""
+    if not s:
+        return s
+    return s[0].lower() + s[1:]
+
+
 def _patient_ref(f):
     """Return 'Mr/Ms/Mx LastName' based on extracted name and sex, or the HMS placeholder."""
     last = f.get("last_name")
@@ -1237,8 +1262,9 @@ def _compose_history(f):
     freq = f.get("frequency")
     pre_freq = f.get("presyncope_frequency")
 
-    # Syncope history
-    if _has(dur_n) and _has(dur_u):
+    # Syncope history — zero or missing duration = no overt syncope
+    has_syncope_dur = _has(dur_n) and _has(dur_u) and str(dur_n).strip() not in ("0", "")
+    if has_syncope_dur:
         s = f"Syncope symptoms for {dur_n} {dur_u}"
         if _has(freq):
             s += f", occurring {freq}"
@@ -1247,8 +1273,9 @@ def _compose_history(f):
     else:
         parts.append("No overt syncope.")
 
-    # Presyncope history
-    if _has(pre_dur_n) and _has(pre_dur_u):
+    # Presyncope history — zero or missing duration handled similarly
+    has_presync_dur = _has(pre_dur_n) and _has(pre_dur_u) and str(pre_dur_n).strip() not in ("0", "")
+    if has_presync_dur:
         s = f"Presyncope symptoms for {pre_dur_n} {pre_dur_u}"
         if _has(pre_freq):
             s += f", occurring {pre_freq}"
@@ -1256,26 +1283,7 @@ def _compose_history(f):
         parts.append(s)
     elif _has(pre_freq):
         parts.append(f"Presyncope symptoms occurring {pre_freq}.")
-    else:
-        parts.append("No presyncope history was reported.")
-
-    # Episode counts + most recent date
-    sync_ep = f.get("syncope_episodes_last_month")
-    pre_ep = f.get("presyncope_episodes_last_month")
-    recent = f.get("most_recent_date")
-
-    if _has(sync_ep) or _has(pre_ep):
-        ep_bits = []
-        if _has(sync_ep):
-            ep_bits.append(f"{sync_ep} syncope")
-        if _has(pre_ep):
-            ep_bits.append(f"{pre_ep} presyncope")
-        ep_clause = f"There have been {_join_and(ep_bits)} episodes in the last month"
-        if _has(recent):
-            ep_clause += f", with the most recent episode on {recent}."
-        else:
-            ep_clause += "."
-        parts.append(ep_clause)
+    # else: omit silently — no presyncope to report
 
     # Warning syncope — template phrasing
     nws = f.get("no_warning_syncope")
@@ -1292,7 +1300,7 @@ def _compose_history(f):
     else:
         parts.append(f"High risk syncope frequency: {_UNDETERMINED}.")
 
-    # Initiating event — template phrasing
+    # Initiating event — template phrasing; lowercase free-text detail
     ile = f.get("initiating_life_event")
     detail = f.get("initiating_event_detail")
     if _yn(ile) == "yes":
@@ -1303,7 +1311,12 @@ def _compose_history(f):
             sub.append("surgical or trauma")
         if _yn(f.get("event_was_emotional")) == "yes":
             sub.append("emotional trauma")
-        context = _trim_trailing_period(detail) if _has(detail) else (_join_and(sub) if sub else "a known event")
+        if _has(detail):
+            context = _lc_first(_trim_trailing_period(detail))
+        elif sub:
+            context = _join_and(sub)
+        else:
+            context = "a known event"
         parts.append(f"Symptom onset occurred in the context of {context}.")
     elif _yn(ile) == "no":
         parts.append("No clear precipitating illness/factors identified.")
@@ -1352,58 +1365,64 @@ def _compose_triggers(f):
     else:
         parts.append(f"Symptom triggers: {_UNDETERMINED}.")
 
+    # Only report exercise syncope if it was actually present
     sde = _yn(f.get("syncope_during_exercise"))
     sae = _yn(f.get("syncope_after_exercise"))
-    if sde == "no" and sae == "no":
-        parts.append("No exercise-related syncope was reported.")
-    elif sde == "yes" or sae == "yes":
+    if sde == "yes" or sae == "yes":
         ex_parts = []
         if sde == "yes":
             ex_parts.append("during exercise")
         if sae == "yes":
             ex_parts.append("after exercise")
-        parts.append(f"Exercise-related syncope was reported {_join_and(ex_parts)}.")
-    else:
-        parts.append(f"Exercise-related syncope: {_UNDETERMINED}.")
+        parts.append(f"Exercise-related syncope reported {_join_and(ex_parts)}.")
 
+    # Only report menstrual correlation if present
     mc = _yn(f.get("menstrual_correlation"))
     md = f.get("menstrual_detail")
     if mc == "yes":
         if _has(md):
-            parts.append(f"A correlation with the menstrual cycle was observed: {_trim_trailing_period(md)}.")
+            parts.append(f"Menstrual cycle correlation: {_lc_first(_trim_trailing_period(md))}.")
         else:
             parts.append("A correlation with the menstrual cycle was observed.")
-    elif mc == "no":
-        parts.append("No correlation with the menstrual cycle was reported.")
-    else:
-        parts.append(f"Menstrual cycle correlation: {_UNDETERMINED}.")
 
     obs = f.get("other_observations")
     if _has(obs):
-        parts.append(f"Other observations: {_trim_trailing_period(obs)}.")
+        parts.append(f"Other observations: {_lc_first(_trim_trailing_period(obs))}.")
 
     return " ".join(parts)
 
 
 def _compose_symptoms(f):
-    """Associated symptoms + palpitations — template label 'Common associated features include:'."""
-    symptoms = _sentence_case_list(f.get("symptoms"))
+    """Associated symptoms + palpitations — palpitations come first, no duplication."""
+    symptoms_raw = _sentence_case_list(f.get("symptoms"))
     palp = _yn(f.get("palpitations"))
     palp_type = _sentence_case_list(f.get("palpitation_type"))
 
-    feature_parts = []
-    if _has(symptoms) and symptoms != "none reported":
-        feature_parts.append(symptoms)
-
+    # Build palpitations string (comes first per user requirement)
     if palp == "yes":
-        if _has(palp_type) and palp_type != "none reported":
-            feature_parts.append(f"palpitations ({palp_type})")
-        else:
-            feature_parts.append("palpitations")
+        palp_str = (f"palpitations ({palp_type})"
+                    if (_has(palp_type) and palp_type != "none reported")
+                    else "palpitations")
+    else:
+        palp_str = None
+
+    # Strip "palpitations" from the OCR symptoms string to avoid duplication
+    if _has(symptoms_raw) and symptoms_raw != "none reported":
+        clean_symp = re.sub(r',?\s*palpitations?\b', '', symptoms_raw, flags=re.I)
+        clean_symp = clean_symp.strip().strip(',').strip()
+    else:
+        clean_symp = None
+
+    # Assemble: palpitations first, then the rest
+    feature_parts = []
+    if palp_str:
+        feature_parts.append(palp_str)
+    if clean_symp:
+        feature_parts.append(clean_symp)
 
     if feature_parts:
         return f"Common associated features include: {', '.join(feature_parts)}."
-    if symptoms == "none reported" and palp == "no":
+    if symptoms_raw == "none reported" and palp == "no":
         return "No associated features were reported."
     return f"Associated features: {_UNDETERMINED}."
 
@@ -1610,7 +1629,7 @@ def _compose_test(f):
     if _has(rc):
         paragraphs.append(f"Clinician's results conclusion: {_trim_trailing_period(rc)}.")
 
-    return "\n\n".join(paragraphs)
+    return "\n".join(paragraphs)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -1751,7 +1770,7 @@ def build_report(fields):
     and 'Recommendation' single-line headings.
     Returns (report_text: str, undetermined_count: int).
     """
-    summary_blocks = [
+    regular_blocks = [
         _compose_history(fields),
         _compose_postural(fields),
         _compose_triggers(fields),
@@ -1759,18 +1778,33 @@ def build_report(fields):
         _compose_medical_history(fields),
         _compose_medications(fields),
         _compose_investigations(fields),
-        _compose_test(fields),
     ]
-    summary_text = "\n\n".join(b.strip() for b in summary_blocks if b and b.strip())
+    regular_text = "\n".join(b.strip() for b in regular_blocks if b and b.strip())
+
+    tilt_text = _compose_test(fields)
 
     conclusion_sentence, diagnosis_key = _compose_conclusion(fields)
+    # Split "Conclusions: text" into heading + body on separate lines
+    if ": " in conclusion_sentence:
+        conc_head, conc_body = conclusion_sentence.split(": ", 1)
+        conclusion_block = f"{conc_head}:\n{conc_body}"
+    else:
+        conclusion_block = conclusion_sentence
+
     recommendation_sentence = _compose_recommendation(diagnosis_key)
+    # Split "Recommendations: text" into heading + body on separate lines
+    if ": " in recommendation_sentence:
+        rec_head, rec_body = recommendation_sentence.split(": ", 1)
+        recommendation_block = f"{rec_head}:\n{rec_body}"
+    else:
+        recommendation_block = recommendation_sentence
 
     full_report = (
-        "Summary\n\n"
-        f"{summary_text}\n\n"
-        f"{conclusion_sentence}\n\n"
-        f"{recommendation_sentence}"
+        "Summary\n"
+        f"{regular_text}\n\n"
+        f"{tilt_text}\n\n"
+        f"{conclusion_block}\n\n"
+        f"{recommendation_block}"
     )
 
     undetermined_count = len(re.findall(re.escape(_UNDETERMINED), full_report))
@@ -1807,8 +1841,8 @@ def llm_cleanup_report(report_text, anthropic_api_key=None, openai_api_key=None)
         "medications, measurements or values.\n"
         "2. Do NOT add any clinical interpretations, opinions or recommendations not already "
         "present in the text.\n"
-        "3. Keep the four section headings (Summary, Conclusions:, Recommendations:) exactly "
-        "as-is — same capitalisation, same position.\n"
+        "3. Keep the three section headings (Summary, Conclusions:, Recommendations:) exactly "
+        "as-is — same capitalisation, each on its own line.\n"
         "4. Keep every [undetermined] placeholder as the exact literal string [undetermined].\n"
         "5. Keep any 'Mr/Ms/Mx [Name]' patient references exactly as-is. Also keep "
         "<HMS-Patient_FirstName> exactly as-is if it appears.\n"

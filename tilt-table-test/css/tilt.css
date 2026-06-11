@@ -246,15 +246,31 @@ header p.subtitle {
 /* ===== Report Output ===== */
 .report-output {
     font-family: 'Georgia', serif;
-    font-size: 0.92rem;
-    line-height: 1.85;
     color: var(--dark);
-    white-space: pre-wrap;
     background: #fafafa;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 24px;
     min-height: 180px;
+}
+
+.report-heading {
+    font-family: 'Georgia', serif;
+    font-size: 11pt;
+    font-weight: bold;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.report-body {
+    font-family: 'Georgia', serif;
+    font-size: 9pt;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.report-spacer {
+    height: 14px;
 }
 
 .report-output .review-marker {
@@ -265,19 +281,6 @@ header p.subtitle {
     color: #856404;
     font-family: monospace;
     font-size: 0.85em;
-}
-
-/* ===== Section labels inside report ===== */
-.report-section-label {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--primary);
-    margin-top: 18px;
-    margin-bottom: 2px;
-    display: block;
 }
 
 /* ===== Copy Button ===== */

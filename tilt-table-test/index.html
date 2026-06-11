@@ -143,14 +143,31 @@
         });
 
         function renderReport(reportText, reviewCount) {
-            // Escape all HTML first so <HMS-Patient_FirstName> renders as text,
-            // then replace the already-safe [undetermined] tokens with styled spans.
-            const safe = escapeHtml(reportText);
-            const highlighted = safe.replace(
-                /\[undetermined\]/g,
-                match => `<span class="review-marker">${match}</span>`
-            );
-            reportOutput.innerHTML = highlighted;
+            // Convert plain text to HTML with styled headings and proper line breaks.
+            // Section headings (Summary, Conclusions:, Recommendations:) are bold 11pt;
+            // body text is 9pt. Blank lines (\n\n) produce visible spacing.
+            const lines = reportText.split('\n');
+            const HEADINGS = new Set(['Summary', 'Conclusions:', 'Recommendations:']);
+            let html = '';
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line === '') {
+                    html += '<div class="report-spacer"></div>';
+                    continue;
+                }
+                const escaped = escapeHtml(line).replace(
+                    /\[undetermined\]/g,
+                    '<span class="review-marker">[undetermined]</span>'
+                );
+                if (HEADINGS.has(line.trim())) {
+                    html += `<div class="report-heading">${escaped}</div>`;
+                } else {
+                    html += `<div class="report-body">${escaped}</div>`;
+                }
+            }
+
+            reportOutput.innerHTML = html;
 
             if (reviewCount > 0) {
                 reviewNotice.textContent =
