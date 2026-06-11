@@ -1447,9 +1447,14 @@ def _compose_medical_history(f):
                     all_items.append(item)
 
     _add(f.get("conditions"))
-    _add(f.get("gi_diagnosis"))
-    _add(f.get("gi_symptoms"))
     _add(f.get("mental_health"))
+
+    # GI: any GI condition/symptom → single "suspected IBS" entry
+    gi_diag = _sentence_case_list(f.get("gi_diagnosis"))
+    gi_symp = _sentence_case_list(f.get("gi_symptoms"))
+    if ((_has(gi_diag) and gi_diag != "none reported") or
+            (_has(gi_symp) and gi_symp != "none reported")):
+        all_items.append("suspected IBS")
 
     cond_raw = f.get("conditions")
     cond_none = (_sentence_case_list(cond_raw) == "none reported")
@@ -1473,7 +1478,7 @@ def _compose_medical_history(f):
     else:
         parts.append(f"Family history: {_UNDETERMINED}.")
 
-    return " ".join(parts)
+    return "\n".join(parts)
 
 
 def _compose_medications(f):
@@ -1555,23 +1560,18 @@ def _compose_test(f):
     drug = f.get("tilt_drug")
     test_type = f.get("test_type")
 
-    # Build bracketed symptom list for "(nausea, dizziness, ...)" suffix
-    symp_raw = _sentence_case_list(f.get("symptoms"))
-    palp = _yn(f.get("palpitations"))
-    palp_type = _sentence_case_list(f.get("palpitation_type"))
-    symp_items = []
-    if palp == "yes":
-        symp_items.append(
-            f"palpitations ({palp_type})" if (_has(palp_type) and palp_type != "none reported")
-            else "palpitations"
-        )
-    if _has(symp_raw) and symp_raw != "none reported":
-        clean = re.sub(r',?\s*palpitations?\b', '', symp_raw, flags=re.I).strip().strip(',').strip()
-        if clean:
-            symp_items.append(clean)
-    symp_suffix = f" ({', '.join(symp_items)})" if symp_items else ""
+    def _tol_suffix(tolerance_str):
+        """Convert tolerance string to bracketed suffix for the report.
+        'experienced presyncope' → ' (presyncope)'
+        'tolerated the test well' → ''
+        """
+        if not tolerance_str or tolerance_str == "tolerated the test well":
+            return ""
+        prefix = "experienced "
+        s = tolerance_str[len(prefix):] if tolerance_str.startswith(prefix) else tolerance_str
+        return f" ({s})"
 
-    def _interp_phrase(result_calc, readings, baseline_sbp, hr_rise):
+    def _interp_phrase(result_calc, readings, baseline_sbp, hr_rise, symp_suffix):
         fam = f"familiar symptoms{symp_suffix}"
         if result_calc == _RESULT_POTS:
             rise_str = f" with heart rate increase by {hr_rise} bpm" if hr_rise is not None else ""
@@ -1598,7 +1598,8 @@ def _compose_test(f):
     ctrl_readings = f.get("control_readings", [])
     baseline_sbp = _extract_systolic(f.get("baseline_bp"))
     ctrl_hr_rise = _max_hr_rise_control(f)
-    ctrl_phrase = _interp_phrase(ctrl_calc, ctrl_readings, baseline_sbp, ctrl_hr_rise)
+    ctrl_suffix = _tol_suffix(f.get("control_tolerance"))
+    ctrl_phrase = _interp_phrase(ctrl_calc, ctrl_readings, baseline_sbp, ctrl_hr_rise, ctrl_suffix)
     baseline_line = f"Baseline tilt interpretation: {ctrl_phrase}."
 
     # Clinician control notes (appended inline if present)
@@ -1620,7 +1621,8 @@ def _compose_test(f):
         p2_baseline_sbp = p2_readings[0][0] if p2_readings else None
         p2_subsequent = p2_readings[1:] if len(p2_readings) > 1 else []
         p2_hr_rise = _max_hr_rise_phase2(f)
-        p2_phrase = _interp_phrase(p2_calc, p2_subsequent, p2_baseline_sbp, p2_hr_rise)
+        p2_suffix = _tol_suffix(f.get("phase2_tolerance"))
+        p2_phrase = _interp_phrase(p2_calc, p2_subsequent, p2_baseline_sbp, p2_hr_rise, p2_suffix)
 
         if drug == "Isoprenaline":
             drug_label = "Isoprenaline"
