@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ─── 10b. PROFILE IMAGE HEARTBEAT PULSE ──────────────────────────────────
     gsap.to('.profile-image', {
-        boxShadow: '0 0 0 6px rgba(0, 112, 243, 0.5), 0 0 60px rgba(0, 112, 243, 0.4)',
+        boxShadow: '0 0 0 5px rgba(96, 165, 250, 0.55), 0 0 60px rgba(96, 165, 250, 0.4)',
         duration: 0.18,
         repeat: -1,
         repeatDelay: 0.82,
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ease: 'power2.out',
         onRepeat: function() {
             gsap.to('.profile-image', {
-                boxShadow: '0 0 0 4px rgba(0, 112, 243, 0.3), 0 0 30px rgba(0, 112, 243, 0.15)',
+                boxShadow: '0 0 0 3px rgba(96, 165, 250, 0.22), 0 0 40px rgba(96, 165, 250, 0.18)',
                 duration: 0.4,
                 ease: 'power2.out'
             });
