@@ -1,3 +1,70 @@
+/* ── Particle canvas ──────────────────────────────────────── */
+function initParticles() {
+    const canvas = document.getElementById('particle-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    let W, H, particles;
+    const COUNT     = 70;
+    const LINK_DIST = 130;
+
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+        constructor() { this.reset(true); }
+        reset(init) {
+            this.x  = Math.random() * W;
+            this.y  = init ? Math.random() * H : (Math.random() < 0.5 ? -5 : H + 5);
+            this.vx = (Math.random() - 0.5) * 0.2;
+            this.vy = (Math.random() - 0.5) * 0.2;
+            this.r  = Math.random() * 1.1 + 0.4;
+            this.o  = Math.random() * 0.3 + 0.08;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < -10 || this.x > W + 10 || this.y < -10 || this.y > H + 10) this.reset(false);
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${this.o})`;
+            ctx.fill();
+        }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    particles = Array.from({ length: COUNT }, () => new Particle());
+
+    function frame() {
+        ctx.clearRect(0, 0, W, H);
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx   = particles[i].x - particles[j].x;
+                const dy   = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < LINK_DIST) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(255,255,255,${(1 - dist / LINK_DIST) * 0.07})`;
+                    ctx.lineWidth   = 0.5;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(frame);
+    }
+    frame();
+}
+
+initParticles();
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get both timeline blocks and regular sections
     const sections = document.querySelectorAll('section[id], .timeline-block');
