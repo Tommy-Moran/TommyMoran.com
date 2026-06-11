@@ -34,11 +34,6 @@
                 <div class="file-name" id="file-name"></div>
             </div>
 
-            <div class="surname-row">
-                <label for="patient-surname">Patient surname <span class="surname-hint">(used for Mr/Ms reference in report)</span></label>
-                <input type="text" id="patient-surname" placeholder="e.g. Smith" autocomplete="off" spellcheck="false">
-            </div>
-
             <div class="error-box" id="error-box"></div>
 
             <button class="btn-primary" id="process-btn" disabled>Generate Report</button>
@@ -77,7 +72,6 @@
         const resultsSection = document.getElementById('results-section');
         const reportOutput   = document.getElementById('report-output');
         const copyBtn   = document.getElementById('copy-btn');
-        const surnameInput = document.getElementById('patient-surname');
         const copyLabel = document.getElementById('copy-label');
         const copyIcon  = document.getElementById('copy-icon');
         const reviewNotice = document.getElementById('review-notice');
@@ -121,8 +115,6 @@
 
             const formData = new FormData();
             formData.append('pdf', selectedFile);
-            const surname = surnameInput.value.trim();
-            if (surname) formData.append('patient_surname', surname);
 
             try {
                 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';

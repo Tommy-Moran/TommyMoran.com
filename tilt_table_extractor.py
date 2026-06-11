@@ -544,16 +544,26 @@ def extract_fields(text, ocr_results=None):
     # ── Patient demographics ──────────────────────────────────
     d["first_name"] = "<HMS-Patient_FirstName>"
 
-    # Attempt to extract last name from common REDCap name field formats:
-    # "Name: Smith, John" or "Patient Name: SMITH John" or "Surname: Smith"
+    # Attempt to extract last name from common REDCap name field formats.
+    # Try broadest variety of label/format combinations first.
     d["last_name"] = _field(
         text,
-        r"(?:Patient\s+)?Name[:\s]+([A-Za-z''\-]+)\s*,",   # "Smith, John" — last name before comma
-        r"Surname[:\s]+([A-Za-z''\-]+)",
-        r"Family\s+[Nn]ame[:\s]+([A-Za-z''\-]+)",
+        # "Surname Smith" or "Patient surname Smith" (space-separated, no colon — REDCap flattened)
+        r"(?:Patient\s+)?[Ss]urname\s+([A-Za-z''\-]{2,})",
+        # "Last name: Smith" or "Last Name Smith"
+        r"[Ll]ast\s+[Nn]ame[:\s]+([A-Za-z''\-]{2,})",
+        # "Family name Smith" or "Family Name: Smith"
+        r"[Ff]amily\s+[Nn]ame[:\s]+([A-Za-z''\-]{2,})",
+        # "Name: Smith, John" or "Patient Name Smith," — last name before comma
+        r"(?:Patient\s+)?Name[:\s]+([A-Za-z''\-]{2,})\s*,",
+        # "Participant: Smith, John"
+        r"Participant[:\s]+([A-Za-z''\-]{2,})\s*,",
         label="last_name"
     )
-    if d["last_name"] == _UNDETERMINED:
+    # Title-case the extracted name (REDCap may store it all-caps or all-lowercase)
+    if d["last_name"] and d["last_name"] != _UNDETERMINED:
+        d["last_name"] = d["last_name"].capitalize()
+    else:
         d["last_name"] = None
 
     d["mrn"] = _field(
@@ -1189,9 +1199,15 @@ def _vvs_subtype(readings, baseline_sbp):
 
 # Medical acronyms/abbreviations that must remain uppercase mid-sentence
 _KEEP_UPPER = {
-    "pots", "ibs", "ecg", "echo", "eeg", "mri", "ct", "ep",
+    "pots", "ibs", "ecg", "eeg", "mri", "ct", "ep",
     "ssri", "snri", "adhd", "mcas", "gtn", "ocp", "oi",
 }
+
+# Words that look like acronyms (all-caps, short) but must be lowercase
+_FORCE_LOWER = {"echo"}
+
+# Proper nouns that must always be title-cased
+_KEEP_TITLE = {"holter"}
 
 
 def _sentence_case_list(text):
@@ -1200,8 +1216,9 @@ def _sentence_case_list(text):
     acronyms and all-uppercase abbreviations of ≤5 chars.
 
     'Emotional Stress, Known Dehydration' → 'emotional stress, known dehydration'
-    'ECG, ECHO and Stress Test'           → 'ECG, ECHO and stress test'
+    'ECG, ECHO and Stress Test'           → 'ECG, echo and stress test'
     'POTS, IBS'                           → 'POTS, IBS'
+    'HOLTER MONITOR'                      → 'Holter monitor'
     """
     if not text:
         return text
@@ -1214,8 +1231,12 @@ def _sentence_case_list(text):
             punct_tail = core[-1] + punct_tail
             core = core[:-1]
         core_lower = core.lower()
+        if core_lower in _FORCE_LOWER:
+            return core_lower + punct_tail    # force lowercase
         if core_lower in _KEEP_UPPER:
             return core + punct_tail          # keep original casing
+        if core_lower in _KEEP_TITLE:
+            return core_lower[0].upper() + core_lower[1:] + punct_tail  # force title case
         if core.upper() == core and 1 < len(core) <= 5:
             return core + punct_tail          # short all-caps token — keep
         # Lowercase the first character
@@ -1922,10 +1943,9 @@ def llm_cleanup_report(report_text, anthropic_api_key=None, openai_api_key=None)
     return report_text
 
 
-def process_pdf(pdf_bytes, patient_surname=None):
+def process_pdf(pdf_bytes):
     """
     Main entry point. Takes raw PDF bytes, returns (report_text, undetermined_count).
-    patient_surname: optional override for the patient last name (from the web form).
     """
     try:
         text = extract_text_from_pdf(pdf_bytes)
@@ -1938,7 +1958,5 @@ def process_pdf(pdf_bytes, patient_surname=None):
     logger.debug("Checkbox OCR results: %s", ocr_results)
 
     fields = extract_fields(text, ocr_results)
-    if patient_surname:
-        fields["last_name"] = patient_surname
     report, undetermined_count = build_report(fields)
     return report, undetermined_count
