@@ -247,7 +247,7 @@ header p.subtitle {
 
 /* ===== Report Output ===== */
 .report-output {
-    font-family: 'Georgia', serif;
+    font-family: Arial, sans-serif;
     color: var(--dark);
     background: #fafafa;
     border: 1px solid #e0e0e0;
@@ -257,7 +257,7 @@ header p.subtitle {
 }
 
 .report-heading {
-    font-family: 'Georgia', serif;
+    font-family: Arial, sans-serif;
     font-size: 11pt;
     font-weight: bold;
     line-height: 1.5;
@@ -265,7 +265,7 @@ header p.subtitle {
 }
 
 .report-body {
-    font-family: 'Georgia', serif;
+    font-family: Arial, sans-serif;
     font-size: 9pt;
     line-height: 1.7;
     margin: 0;

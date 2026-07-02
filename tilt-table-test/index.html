@@ -147,7 +147,7 @@
             // Section headings (Summary, Conclusions:, Recommendations:) are bold 11pt;
             // body text is 9pt. Blank lines (\n\n) produce visible spacing.
             const lines = reportText.split('\n');
-            const HEADINGS = new Set(['Summary', 'Conclusions:', 'Recommendations:']);
+            const HEADINGS = new Set(['Summary', 'Conclusions', 'Recommendations']);
             let html = '';
 
             for (let i = 0; i < lines.length; i++) {

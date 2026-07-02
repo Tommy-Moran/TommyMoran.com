@@ -146,6 +146,9 @@ _CHECKBOX_FIELDS = {
             "Known Dehydration", "Febrile illness", "Hot environment",
             "Toilet (voiding)", "Eating (or after)", "During driving",
         ],
+        "display_map": {
+            "Known Dehydration": "dehydration",
+        },
         "multi": True,
     },
     "symptoms": {
@@ -732,7 +735,7 @@ def extract_fields(text, ocr_results=None):
     if fh_yes_m:
         detail = fh_yes_m.group(1).strip()
         if detail and "_" not in detail and detail.lower() not in ("", "n/a"):
-            d["family_history"] = f"remarkable for {detail}"
+            d["family_history"] = f"remarkable for {_lc_first(detail)}"
         else:
             d["family_history"] = "unremarkable"
     elif re.search(r"Family\s+history\s+of\s+hypotension[^?]*\?\s*No\s*\n", text, re.IGNORECASE):
@@ -1051,6 +1054,15 @@ def _extract_study_symptoms(text, phase, d):
     # Strip page footers, URLs, dates
     raw = re.sub(r"projectredcap\.org[^\n]*", " ", raw, flags=re.I)
     raw = re.sub(r"\d{1,2}/\d{1,2}/\d{2,4}", " ", raw)
+    raw = re.sub(r"_{2,}", " ", raw)
+
+    # Strip vitals table row structure: "control/phase N minute [readings]"
+    # e.g. "control 9 minute 40 30" or "control 10 minute ______ ______"
+    raw = re.sub(
+        r"\b(?:control|phase\s+\d+?)\s+\d+\s+minutes?(?:\s+[\d_]+){0,3}",
+        " ", raw, flags=re.I
+    )
+
     # Remove leading Yes/No answer token
     raw = re.sub(r"^\s*(Yes|No)\b\s*", "", raw.strip(), flags=re.I)
     # Normalise whitespace and trailing punctuation
@@ -1065,7 +1077,16 @@ def _extract_study_symptoms(text, phase, d):
     ):
         return None
 
-    return raw.lower()
+    # Deduplicate repeated symptom phrases (same text appearing per-row in table)
+    seen, unique_parts = set(), []
+    for chunk in re.split(r'[.]\s*', raw):
+        chunk = chunk.strip().lower()
+        if chunk and chunk not in seen:
+            seen.add(chunk)
+            unique_parts.append(chunk)
+
+    result = ", ".join(unique_parts).strip().strip(",")
+    return result if len(result) >= 3 else None
 
 
 def _infer_tolerance(text, phase, d):
@@ -1532,7 +1553,7 @@ def _compose_medical_history(f):
     if fh == "unremarkable" and (not _has(fhc) or fhc == "none reported"):
         parts.append("Family history is unremarkable.")
     elif _has(fh) and fh != "unremarkable":
-        parts.append(f"Family history is {fh} with hypotension/fainting.")
+        parts.append(f"Family history is {fh}.")
     elif _has(fhc) and fhc != "none reported":
         parts.append(f"Family history is remarkable for {fhc} with POTS.")
     else:
@@ -1659,14 +1680,6 @@ def _compose_test(f):
     )
     baseline_line = f"Baseline tilt interpretation: {ctrl_phrase}."
 
-    # Clinician control notes (appended inline if present)
-    ctrl_notes = f.get("control_notes", "")
-    if ctrl_notes and not ctrl_notes.startswith("[REVIEW") and not ctrl_notes.startswith(_UNDETERMINED):
-        note_clean = ctrl_notes.rstrip()
-        if not note_clean.endswith((".", "!", "?")):
-            note_clean += "."
-        baseline_line += " " + note_clean
-
     paragraphs = [baseline_line]
 
     # Phase 2 / drug tilt interpretation
@@ -1691,14 +1704,6 @@ def _compose_test(f):
             drug_label = "Pharmacological"
 
         drug_line = f"{drug_label} tilt interpretation: {p2_phrase}."
-
-        p2_notes = f.get("phase2_notes", "")
-        if p2_notes and not p2_notes.startswith("[REVIEW") and not p2_notes.startswith(_UNDETERMINED):
-            note_clean = p2_notes.rstrip()
-            if not note_clean.endswith((".", "!", "?")):
-                note_clean += "."
-            drug_line += " " + note_clean
-
         paragraphs.append(drug_line)
 
     # Free-text results conclusion from clinician
@@ -1861,10 +1866,10 @@ def build_report(fields):
     tilt_text = _compose_test(fields)
 
     conclusion_sentence, diagnosis_key = _compose_conclusion(fields)
-    # Split "Conclusions: text" into heading + body on separate lines
+    # Split "Conclusions: text" into heading (no colon) + body on separate lines
     if ": " in conclusion_sentence:
         conc_head, conc_body = conclusion_sentence.split(": ", 1)
-        conclusion_block = f"{conc_head}:\n{conc_body}"
+        conclusion_block = f"{conc_head}\n{conc_body}"
     else:
         conclusion_block = conclusion_sentence
 
@@ -1879,7 +1884,7 @@ def build_report(fields):
         rec_head, rec_body = recommendation_sentence.split(": ", 1)
         rec_sentences = [s.strip() for s in rec_body.split(". ") if s.strip()]
         rec_sentences = [(s if s.endswith(".") else s + ".") for s in rec_sentences]
-        recommendation_block = rec_head + ":\n" + "\n".join(rec_sentences)
+        recommendation_block = rec_head + "\n" + "\n".join(rec_sentences)
     else:
         recommendation_block = recommendation_sentence
 
@@ -1925,8 +1930,8 @@ def llm_cleanup_report(report_text, anthropic_api_key=None, openai_api_key=None)
         "medications, measurements or values.\n"
         "2. Do NOT add any clinical interpretations, opinions or recommendations not already "
         "present in the text.\n"
-        "3. Keep the three section headings (Summary, Conclusions:, Recommendations:) exactly "
-        "as-is — same capitalisation, each on its own line.\n"
+        "3. Keep the three section headings (Summary, Conclusions, Recommendations) exactly "
+        "as-is — same capitalisation, no colons, each on its own line.\n"
         "4. Keep every [undetermined] placeholder as the exact literal string [undetermined].\n"
         "5. Keep any 'Mr/Ms/Mx [Name]' patient references exactly as-is. Also keep "
         "<HMS-Patient_FirstName> exactly as-is if it appears.\n"
