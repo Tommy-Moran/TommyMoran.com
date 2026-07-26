@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://tommymoran-com-chatbot.onrender.com; frame-ancestors 'none';">
+    <title>ASCVD Risk Calculator — Thomas Moran</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/ascvd.css">
+</head>
+<body>
+    <a href="/tools" class="back-link">&#8592; Tools</a>
+
+    <div class="page">
+        <header class="page-header">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    <path d="M3.5 12h4l1.5-4 3 8 1.5-4h6.5" stroke="#ffffff" stroke-opacity="0.9"/>
+                </svg>
+            </div>
+            <h1>ASCVD Risk Calculator</h1>
+            <p>10-year atherosclerotic cardiovascular disease risk using the ACC/AHA Pooled Cohort Equations — every value entered and displayed in SI units (mmol/L), no manual conversion required.</p>
+            <div class="badge-row">
+                <span class="pill-tag">SI units throughout</span>
+                <span class="pill-tag">Auto-fills from a GP referral PDF</span>
+                <span class="pill-tag">Local processing only</span>
+            </div>
+        </header>
+
+        <div class="disclaimer">
+            <strong>Clinical decision-support tool — not a substitute for clinical judgement.</strong>
+            Uploaded PDFs are parsed for text extraction only and are not stored on the server. Auto-filled fields are always editable — verify every value before calculating risk.
+        </div>
+
+        <!-- Step 1: Upload -->
+        <section class="card">
+            <span class="card-eyebrow">Step 1 &middot; Optional</span>
+            <h2>Auto-fill from a GP referral</h2>
+            <p class="card-hint">Upload the referral letter PDF and the fields below will be pre-populated where they can be confidently identified. Anything not found is left for manual entry.</p>
+
+            <div class="upload-zone" id="upload-zone">
+                <input type="file" id="pdf-input" accept="application/pdf">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <path d="M14 2v6h6"/>
+                    <path d="M12 18v-6"/>
+                    <path d="M9.5 14.5 12 12l2.5 2.5"/>
+                </svg>
+                <p><strong>Click to select</strong> or drag and drop a PDF here</p>
+                <p>GP referral letter, discharge summary, or pathology report</p>
+                <div class="file-name" id="file-name"></div>
+            </div>
+
+            <div class="upload-status" id="upload-status"></div>
+        </section>
+
+        <!-- Step 2: Form -->
+        <section class="card">
+            <span class="card-eyebrow">Step 2</span>
+            <h2>Patient &amp; risk factors</h2>
+            <p class="card-hint">Validated for primary prevention, ages 40&ndash;79, without known ASCVD.</p>
+
+            <form id="risk-form" novalidate>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="age">Age <span class="unit-hint">years</span></label>
+                        <input type="number" id="age" name="age" min="20" max="110" placeholder="e.g. 62" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Sex</label>
+                        <div class="segmented" id="sex-toggle" data-field="sex">
+                            <button type="button" data-value="female">Female</button>
+                            <button type="button" data-value="male">Male</button>
+                        </div>
+                    </div>
+
+                    <div class="field span-2">
+                        <label>Race / ethnicity</label>
+                        <div class="segmented" id="race-toggle" data-field="race">
+                            <button type="button" class="active" data-value="white">White or other</button>
+                            <button type="button" data-value="black">African American / Black</button>
+                        </div>
+                        <span class="field-note">The Pooled Cohort Equations were derived from White and African American cohorts. "White or other" is the guideline-recommended default for patients outside those two groups.</span>
+                    </div>
+
+                    <div class="field">
+                        <label for="sbp">Systolic BP <span class="unit-hint">mmHg</span></label>
+                        <input type="number" id="sbp" name="sbp" min="70" max="260" placeholder="e.g. 138" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Treated for hypertension?</label>
+                        <div class="segmented" id="treated-toggle" data-field="treated">
+                            <button type="button" class="active" data-value="no">No</button>
+                            <button type="button" data-value="yes">Yes</button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="tc">Total cholesterol <span class="unit-hint">mmol/L</span></label>
+                        <input type="number" id="tc" name="tc" min="1" max="20" step="0.1" placeholder="e.g. 5.4" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="hdl">HDL cholesterol <span class="unit-hint">mmol/L</span></label>
+                        <input type="number" id="hdl" name="hdl" min="0.2" max="5" step="0.1" placeholder="e.g. 1.2" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="ldl">LDL cholesterol <span class="unit-hint">mmol/L &middot; optional, not used in calculation</span></label>
+                        <input type="number" id="ldl" name="ldl" min="0.2" max="10" step="0.1" placeholder="e.g. 3.1">
+                    </div>
+
+                    <div class="field">
+                        <label>Current smoker?</label>
+                        <div class="segmented" id="smoker-toggle" data-field="smoker">
+                            <button type="button" class="active" data-value="no">No</button>
+                            <button type="button" data-value="yes">Yes</button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Diabetes?</label>
+                        <div class="segmented" id="diabetes-toggle" data-field="diabetes">
+                            <button type="button" class="active" data-value="no">No</button>
+                            <button type="button" data-value="yes">Yes</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" id="calc-btn">Calculate 10-year risk</button>
+                <div class="form-error" id="form-error"></div>
+            </form>
+        </section>
+
+        <!-- Step 3: Results -->
+        <section class="card results-card" id="results-card">
+            <span class="card-eyebrow">Result</span>
+            <h2>10-year ASCVD risk</h2>
+
+            <div class="results-top">
+                <div class="risk-number-wrap">
+                    <div class="risk-number" id="risk-number">&mdash;</div>
+                    <div class="risk-number-label">10-yr risk</div>
+                </div>
+                <div class="risk-interpretation">
+                    <div class="risk-category-pill" id="risk-category-pill">&nbsp;</div>
+                    <div id="risk-interpretation-text"></div>
+                </div>
+            </div>
+
+            <div class="risk-meter">
+                <div class="seg seg-low" style="width:20%"></div>
+                <div class="seg seg-borderline" style="width:15%"></div>
+                <div class="seg seg-intermediate" style="width:35%"></div>
+                <div class="seg seg-high" style="width:30%"></div>
+                <div class="risk-marker" id="risk-marker" style="left:0%"></div>
+            </div>
+            <div class="risk-scale-labels">
+                <span>0%</span>
+                <span>5%</span>
+                <span>7.5%</span>
+                <span>20%</span>
+                <span>50%+</span>
+            </div>
+
+            <div class="range-warning" id="range-warning"></div>
+
+            <hr class="section-divider">
+
+            <p class="card-hint" style="margin-bottom:0.75rem;">ACC/AHA risk categories (2018 Cholesterol Guideline)</p>
+            <table class="threshold-table">
+                <thead>
+                    <tr><th>Category</th><th>10-yr risk</th><th>General consideration</th></tr>
+                </thead>
+                <tbody id="threshold-tbody">
+                    <tr data-cat="low"><td><span class="threshold-dot" style="background:#16a34a"></span>Low</td><td>&lt; 5%</td><td>Emphasise lifestyle</td></tr>
+                    <tr data-cat="borderline"><td><span class="threshold-dot" style="background:#ca8a04"></span>Borderline</td><td>5% to &lt; 7.5%</td><td>Consider risk-enhancing factors</td></tr>
+                    <tr data-cat="intermediate"><td><span class="threshold-dot" style="background:#ea580c"></span>Intermediate</td><td>7.5% to &lt; 20%</td><td>Moderate-intensity statin reasonable</td></tr>
+                    <tr data-cat="high"><td><span class="threshold-dot" style="background:#dc2626"></span>High</td><td>&ge; 20%</td><td>High-intensity statin reasonable</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer class="page-footer">
+            <p>Pooled Cohort Equations (Goff DC et al., 2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk, <em>Circulation</em> 2014). For primary-prevention risk discussion only &mdash; always applied alongside full clinical assessment.</p>
+        </footer>
+    </div>
+
+    <script src="js/ascvd.js"></script>
+</body>
+</html>

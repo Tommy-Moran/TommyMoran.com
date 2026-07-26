@@ -14,6 +14,7 @@ from io import StringIO
 import re
 from collections import defaultdict
 from tilt_table_extractor import process_pdf, llm_cleanup_report
+from ascvd_extractor import process_pdf as process_ascvd_pdf
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -67,6 +68,23 @@ CORS(app, resources={
         "supports_credentials": False
     },
     r"/tilt-table-test/process": {
+        "origins": [
+            "https://tommymoran.com",
+            "https://tommymoran-com-chatbot.onrender.com",
+            "http://localhost:8000",
+            "http://127.0.0.1:8000",
+            "http://localhost:8080",
+            "http://127.0.0.1:8080",
+            "http://localhost:8081",
+            "http://127.0.0.1:8081",
+            "http://localhost:8082",
+            "http://127.0.0.1:8082"
+        ],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"],
+        "supports_credentials": False
+    },
+    r"/ascvd-risk-calculator/extract": {
         "origins": [
             "https://tommymoran.com",
             "https://tommymoran-com-chatbot.onrender.com",
@@ -708,6 +726,59 @@ def tilt_table_process():
         return jsonify({'error': str(e)}), 422
     except Exception as e:
         logger.error("Unexpected error in tilt table processing: %s", str(e))
+        return jsonify({'error': 'An unexpected error occurred while processing the PDF.'}), 500
+
+
+# ─────────────────────────────────────────────────────────────
+# ASCVD Risk Calculator routes
+# ─────────────────────────────────────────────────────────────
+
+@app.route('/ascvd-risk-calculator')
+def ascvd_redirect():
+    return redirect('/ascvd-risk-calculator/')
+
+@app.route('/ascvd-risk-calculator/')
+def ascvd_index():
+    return send_from_directory('ascvd-risk-calculator', 'index.html')
+
+@app.route('/ascvd-risk-calculator/<path:path>')
+def ascvd_static(path):
+    return send_from_directory('ascvd-risk-calculator', path)
+
+@app.route('/ascvd-risk-calculator/extract', methods=['POST', 'OPTIONS'])
+def ascvd_extract():
+    logger.info("ASCVD extract endpoint accessed")
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        origin = request.headers.get('Origin')
+        if origin in ALLOWED_ORIGINS:
+            response.headers.add('Access-Control-Allow-Origin', origin)
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
+        return response
+
+    if 'pdf' not in request.files:
+        return jsonify({'error': 'No PDF file uploaded.'}), 400
+
+    pdf_file = request.files['pdf']
+    if not pdf_file.filename.lower().endswith('.pdf'):
+        return jsonify({'error': 'Uploaded file must be a PDF.'}), 400
+
+    try:
+        pdf_bytes = pdf_file.read()
+        if len(pdf_bytes) == 0:
+            return jsonify({'error': 'Uploaded PDF is empty.'}), 400
+        if len(pdf_bytes) > 10 * 1024 * 1024:
+            return jsonify({'error': 'PDF is too large (max 10 MB).'}), 400
+
+        fields, found_count = process_ascvd_pdf(pdf_bytes)
+        return jsonify({'fields': fields, 'found_count': found_count})
+
+    except ValueError as e:
+        logger.error("ASCVD PDF extraction error: %s", str(e))
+        return jsonify({'error': str(e)}), 422
+    except Exception as e:
+        logger.error("Unexpected error in ASCVD extraction: %s", str(e))
         return jsonify({'error': 'An unexpected error occurred while processing the PDF.'}), 500
 
 
